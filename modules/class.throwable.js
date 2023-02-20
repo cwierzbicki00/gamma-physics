@@ -5,3 +5,12 @@
 
 // description: Contains an abstract base class for a throwable object, and other
 //              derived classes of specific throwable objects.
+
+<script type="module">
+    import
+</script>
+
+class throwable {
+    constructor () {}
+
+}
