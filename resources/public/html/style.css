@@ -1,7 +1,68 @@
+body {
+  font-size: 100%; /* default font size */
+}
+
 .container {
   position: relative;
-  width: 20vw;
-  height: 25vh;
+  width: 40vw;
+  height: 50vh;
+}
+
+.main-title {
+  position: absolute;
+  width: 50%;
+  height: 12%;
+  left: 25%;
+  top: 20%;
+  text-align: center;
+  font-family: system-ui, sans-serif;
+  font-size: 2.5em;
+}
+
+/* MEDIA QUERIES FOR SCREEN SIZE */
+
+/* If the screen height is 500px tall or less */
+@media screen and (max-height: 500px) {
+  .container {
+    height: 250px;
+  }
+}
+
+/* If the screen width is 900px tall or less */
+@media screen and (max-width: 900px) {
+  .container {
+    width: 360px;
+  }
+}
+
+/* If the screen size is 601px wide or more */
+@media screen and (min-width: 1301px) {
+  .main-title {
+    font-size: 2.5em;
+  }
+}
+
+/* If the screen size is 600px wide or less */
+@media screen and (max-width: 1300px) {
+  .main-title {
+    font-size: 1.5em;
+  }
+}
+
+/* If the screen size is 601px tall or more */
+@media screen and (min-height: 601px) {
+  .btn-start {
+    font-size: 1.5em;
+    height: 12%;
+  }
+}
+
+/* If the screen size is 600px tall or less */
+@media screen and (max-height: 600px) {
+  .btn-start {
+    font-size: 1em;
+    height: 30px;
+  }
 }
 
 .canvas1 {
@@ -14,11 +75,10 @@
 .btn-start {
   position: absolute;
   width: 20%;
-  height: 12%;
+  /* height: 12%; */
   left: 40%;
   top: 60%;
   font-family: system-ui, sans-serif;
-  font-size: 100%;
   cursor: pointer;
   font-weight: bold;
   border: none;
