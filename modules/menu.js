@@ -5,20 +5,13 @@
 
 // description: basic menu with functioning start button
 
-let hideElement = (docObj, index, className) =>
-  docObj[index].classList.add(className);
-
 function startGame() {
   // game code here
   console.log("game started");
-  //hide title screen elements
-  hideElement(startButton, 0, "hidden");
-  hideElement(startTitle, 0, "hidden");
 }
 
 //when button clicked start game
 let startButton = document.getElementsByClassName("btn-start");
-let startTitle = document.getElementsByClassName("main-title");
 
 startButton[0].addEventListener("click", startGame);
 
