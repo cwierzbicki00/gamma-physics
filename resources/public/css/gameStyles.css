@@ -4,8 +4,8 @@ body {
 
 .container {
   position: relative;
-  width: 40vw;
-  height: 50vh;
+  width: 715px;
+  height: 510px;
 }
 
 .canvas1 {
@@ -29,7 +29,7 @@ body {
 .points,
 .level,
 .time {
-  font-size: 1em;
+  font-size: 1.25em;
   height: 20px;
   color: black;
 }
@@ -56,15 +56,4 @@ body {
   outline: 0;
   box-shadow: rgba(255, 255, 255, 0.8) 0 15px 30px -5px;
   border: 3px solid #1c142d;
-}
-
-/* MEDIA QUERIES FOR SCREEN SIZE */
-
-/* Sets screen size */
-@media screen and ((max-height: 1430px) or (max-width: 850px)) {
-  .container {
-    font-size: 1em;
-    width: 572px;
-    height: 425px;
-  }
 }
