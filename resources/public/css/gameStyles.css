@@ -75,7 +75,6 @@ body {
 .btn-start {
   position: absolute;
   width: 20%;
-  /* height: 12%; */
   left: 40%;
   top: 60%;
   font-family: system-ui, sans-serif;
