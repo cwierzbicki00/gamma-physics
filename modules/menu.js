@@ -11,16 +11,19 @@
 //startButton[0].addEventListener("click", startGame);
 
 //p5js setup to start game on load
+
 function setup() {
   startGame();
 }
+
+//global var for game ball
+let gameBall;
 
 function startGame() {
   // game code here
   console.log("game started");
   createCanvas(windowWidth, windowHeight);
-  let gameBall;
-  buildBall(1, gameBall); // TODO replace parameter with appropriate menu selection
+  gameBall = buildBall(1, gameBall); // TODO replace parameter with appropriate menu selection
 }
 
 function mousePressed() {
@@ -58,6 +61,7 @@ function buildBall(ballType, _gameBall) {
       _gameBall = new throwable(150, height + 150, 0.142);
       break;
   }
+  return _gameBall;
 }
 
 // function setup() {
