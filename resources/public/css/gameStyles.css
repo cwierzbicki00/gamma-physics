@@ -47,16 +47,28 @@ canvas {
   left: 0%;
   top: 0%;
   background-color: lightgray;
-  padding: 0.5rem;
   
+}
+.points{
+  padding: 10px;
+  /* align to center */
+  text-align: center;
+}
+.level{
+  padding: 10px;
+  text-align: center;
+}
+.time{
+  padding: 10px;
+  text-align: center;
 }
 
 .gamescreen {
-  width: 100%;
+  width: 90%;
   height: 90%;
   position: absolute;
   display: block;
-  left: 0%;
+  left: 10%;
   top: 10%;
 }
 
