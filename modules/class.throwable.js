@@ -8,71 +8,101 @@
 
 // ---------------------------------------------------------- throwable: base --
 class throwable {
-    constructor () {
-        // throw an exception if abstract class ctor is called
-        if (this.constructor === throwable) {
-            throw new Error("Attempted instantiation of abstract base class.")
-        }
-        this.type = 'abstract parent';
-
-        // physical properties
-        this.weight = 0.0; // in kg
-        this.radius = 0.0; // in cm
-        this.color = color(211, 211, 211); // default: light grey
-
-        // physics properties
-        this.bounciness = 0; // may need updated to appropriate p5.js property
-        this.skinFriction = 0.0; // ^^
-
-        // positioning properties
-        this.currX = 0;
-        this.currY = 0;
+    constructor(x, y, m) {
+        this.dragging = false;
+        this.rollover = false;
+        this.offset = createVector();
+        this.pos = createVector(x, y);
+        this.vel = createVector(0, 0);
+        this.acc = createVector(0, 0);
+        this.mass = m;
+        this.r = sqrt(this.mass) * 16;
+        this.angle = 0;
+        this.angleV = 0;
+        this.prev = createVector();
+        this.type = "baseball" // TODO change to update with menu selection
 
     }
+
     print() {
         console.log(this.type);
     }
 
-    movementThroughAir(beginX = this.currX, beginY = this.currY){
-        let step = 0.01; // Size of each step along the path
-        let pct = 0.0; // Percentage traveled (0.0 to 1.0)
-        let exponent = 4; // Determines the curve (derive from weight?)
 
-        let distX = mouseX - this.currX;
-        let distY = mouseY - this.currY;
+    over(x, y) { // checks if the object is moused over
+        this.rollover = dist(x, y, this.pos.x, this.pos.y) < this.r;
+        return this.rollover;
+    }
 
-        pct += step;
-        if (pct < 1.0) {
-            this.currX = beginX + pct * distX;
-            this.currY = beginY + pow(pct, exponent) * distY;
+    applyForce(force) {
+        let f = p5.Vector.div(force, this.mass);
+        this.acc.add(f);
+    }
+
+    edges() { // rebounds object if it touches a window edge
+        if (this.pos.y >= height - this.r) {
+            this.pos.y = height - this.r;
+            this.vel.y *= -0.95;
+        }
+        if (this.pos.x >= width - this.r) {
+            this.pos.x = width - this.r;
+            this.vel.x *= -0.95;
+        }
+        else if (this.pos.x <= this.r) {
+            this.pos.x = this.r;
+            this.vel.x *= -0.95;
         }
     }
-}
 
-// ---------------------------------------------------- throwable: ballTennis --
-class ballTennis extends throwable { // 'extends' inherits base class
-    constructor() {
-        super(); // call ctor of abstract base class
-        this.type = 'tennis ball';
-        // TODO set object variables to those specific to a tennis ball
+    update() {
+        if (this.dragging) {
+            this.prev.lerp(this.pos, 0.1);
+            this.pos.x = mouseX + this.offset.x;
+            this.pos.y = mouseY + this.offset.y;
+            this.vel.set(0,0);
+        }
+
+        this.vel.add(this.acc);
+        this.pos.add(this.vel);
+        this.acc.set(0, 0);
+        this.angleV = this.vel.x * 0.05;
+        this.angle += this.angleV;
     }
 
-    // call base class movement and pass this object's properties
-    movementThroughAir() {
-        super.movementThroughAir(this.currX, this.currY);
+    show() {
+        push();
+        translate(this.pos.x, this.pos.y);
+        stroke(255);
+        strokeWeight(2);
+        if (this.dragging) {
+            fill(255, 50);
+        }
+        else if (this.rollover) {
+            fill(255,100);
+        }
+        else {
+            fill(255, 150);
+        }
+        rotate(this.angle);
+        ellipse(0, 0, this.r * 2);
+        strokeWeight(4);
+        line(0,0, this.r,0);
+        pop();
     }
-}
 
-// --------------------------------------------------- throwable: ballWhiffle --
-class ballWhiffle extends throwable { // 'extends' inherits base class
-    constructor() {
-        super(); // call ctor of abstract base class
-        this.type = 'whiffle ball';
-        // TODO set object variables to those specific to a whiffle ball
+    pressed(x, y) { // allow user to drag ball if it was clicked on
+
+        if (this.over(x, y)) {
+            this.dragging = true;
+            this.offset.set(this.pos.x - mouseX, this.pos.y - mouseY);
+        }
     }
 
-    // call base class movement and pass this object's properties
-    movementThroughAir() {
-        super.movementThroughAir(this.currX, this.currY);
+    released() { // throw the ball when mouse is released
+        this.dragging = false;
+        this.vel.x = this.pos.x - this.prev.x;
+        this.vel.y = this.pos.y - this.prev.y;
+        this.vel.mult(0.1);
     }
+
 }
