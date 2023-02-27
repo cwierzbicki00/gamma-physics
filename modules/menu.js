@@ -14,16 +14,39 @@
 
 function setup() {
   startGame();
+  // Set the alpha value of the canvas background to 0 for transparency
 }
 
 //global var for game ball
 let gameBall;
 
 function startGame() {
-  // game code here
   console.log("game started");
-  createCanvas(windowWidth, windowHeight);
-  gameBall = buildBall(1, gameBall); // TODO replace parameter with appropriate menu selection
+  let canvasContainer = document.getElementById("canvas-container");
+  let canvas = createCanvas(
+    canvasContainer.offsetWidth,
+    canvasContainer.offsetHeight
+  );
+  canvas.parent(canvasContainer);
+  // Set the alpha value of the canvas background to 0 for transparency
+  background(0, 0, 0, 0);
+
+  // Make the canvas transparent
+  canvas.style("background-color", "transparent");
+  gameBall = buildBall(1, gameBall);
+
+  // Add reset button to get ball back.
+  //place at bottom left of canvas.
+  let resetButton = createButton("Reset");
+  resetButton.position(0, height - resetButton.height);
+
+  // Add an event listener to the reset button
+  resetButton.mousePressed(resetGame);
+
+  function resetGame() {
+    // Reset the ball if reset clicked
+    gameBall.reset();
+  }
 }
 
 function mousePressed() {
@@ -39,7 +62,14 @@ function draw() {
   // textAlign(CENTER);
   // textSize(36);
   // text("Gamma Game", width / 2, height / 3);
-  background(0);
+  //background(0);
+
+  clear();
+
+  // Check if the ball has bounced 10 times (buggy, so disabled)
+  //   if (gameBall.bounceCount >= 15) {
+  //     gameBall.reset(); // Reset the ball
+  //   }
 
   let gravity = createVector(0, 0.2);
   let weight = p5.Vector.mult(gravity, gameBall.mass);
