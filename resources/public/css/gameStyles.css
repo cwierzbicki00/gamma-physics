@@ -1,0 +1,59 @@
+body {
+  font-size: 100%; /* default font size */
+}
+
+.container {
+  position: relative;
+  width: 715px;
+  height: 510px;
+}
+
+.canvas1 {
+  background: linear-gradient(0deg, #c0b6d3, #e2deeb, #c0b6d3);
+  position: absolute;
+  width: 100%;
+  height: 100%;
+}
+
+.scoreboard {
+  width: 100%;
+  height: 10%;
+  position: absolute;
+  display: grid;
+  grid-template-columns: 25% 50% 25%;
+  left: 0%;
+  top: 0%;
+  background-color: lightgray;
+}
+
+.points,
+.level,
+.time {
+  font-size: 1.25em;
+  height: 20px;
+  color: black;
+}
+
+.btn-mainMenu {
+  position: absolute;
+  width: 25%;
+  left: 75%;
+  top: 88%;
+  font-family: system-ui, sans-serif;
+  cursor: pointer;
+  font-weight: bold;
+  border: none;
+  text-align: center;
+  border: 3px solid #705d97;
+  border-radius: 6px;
+  white-space: nowrap;
+  height: 12%;
+  font-size: 1.5em;
+}
+
+.btn-mainMenu:active,
+.btn-mainMenu:hover {
+  outline: 0;
+  box-shadow: rgba(255, 255, 255, 0.8) 0 15px 30px -5px;
+  border: 3px solid #1c142d;
+}
