@@ -14,7 +14,17 @@ class Receptacle
     {
       this.center = center;
       this.extend = extend;
+
+      //0-1
+      this.friction = 0;
       this.isEnter = false;
+    }
+    //should handle friction to return range(0, 1)
+    getBounceForce()
+    {
+        //simple handler for testing
+        //assume this.friction in range(0,1)
+        return 1 - this.friction;
     }
     OnCollisionEnter(ball)
     {
@@ -47,11 +57,11 @@ class Receptacle
                     
                     if(ball.pos.y > this.center.y + this.extend.y)
                     {
-                        ball.vel.y *= -0.95;
+                        ball.vel.y *= -1 *this.getBounceForce();
                     }
                     else
                     {
-                        ball.vel.x *= -0.95;
+                        ball.vel.x *= -1 * this.getBounceForce();
                     }
                 }
             }
