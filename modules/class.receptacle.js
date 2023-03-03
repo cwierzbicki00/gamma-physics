@@ -26,6 +26,8 @@ class Receptacle
         //assume this.friction in range(0,1)
         return 1 - this.friction;
     }
+
+    // return true if the ball score
     OnCollisionEnter(ball)
     {
         //Enter From Left
@@ -35,30 +37,37 @@ class Receptacle
         let enterTop = (ball.pos.y + ball.getRadius() < this.center.y + this.extend.y && ball.pos.y + ball.getRadius() >= this.center.y - this.extend.y);
         let enterBottom = (ball.pos.y - ball.getRadius()> this.center.y - this.extend.y && ball.pos.y - ball.getRadius() <= this.center.y + this.extend.y);
 
-
+        //If Collision detected
         if((enterLeft || enterRight) && (enterTop|| enterBottom))
         {
+            //if the ball is not inside the receptacle
             if(!this.isEnter)
             {
                 let vec = createVector(this.center.x - ball.pos.x, this.center.y - ball.pos.y);
                 let degree = degrees(atan2(vec.y, vec.x));
-                //if ball hit top surface=> score
-                if(degree > 45 && degree < 135)
-                {
-                    if(!this.isEnter)
-                    {
-                        score = true;
-                        this.isEnter = true;
-                    }
+
+                //calculate the angle of the line from the center of the retangle to the upper left corner
+                let upperLeftAngle = degrees(atan2(this.extend.y, this.extend.x));
+
+                //calculate the angle of the line from center of the rectangle to the upper right coner
+                let upperRightAngle = 180 - upperLeftAngle;
+                // Check if the resulting angle falls within the range of the upper surface of the retangle
+                if (degree > upperLeftAngle && degree < upperRightAngle) {
+                    score = true;
+                    this.isEnter = true;
                 }
+
+                //if collide on the side and bottom => bounce back
                 else
                 {
                     
-                    
+                    //if collide at bottom => flip vertically
                     if(ball.pos.y > this.center.y + this.extend.y)
                     {
                         ball.vel.y *= -1 *this.getBounceForce();
+                        
                     }
+                    //if collide at side => flip horizontally
                     else
                     {
                         ball.vel.x *= -1 * this.getBounceForce();
@@ -67,6 +76,7 @@ class Receptacle
             }
             
         }
+        // if collision not detected => not collide => set isenter = false
         else 
         {
             this.isEnter = false;
@@ -91,12 +101,17 @@ class Receptacle
       strokeWeight(4);
       pop();
     }
+    //return true if the ball score
     update(ball)
     {
-        this.OnCollisionEnter(ball);
+        return this.OnCollisionEnter(ball);
     }
     
   
 
   }
-  
+  //value > max? value = max: value
+  //value < min? value = min: value
+  function clamp(val, minVal, maxVal) {
+    return min(max(val, minVal), maxVal);
+  }

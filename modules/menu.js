@@ -80,7 +80,12 @@ function draw() {
   gameBall.edges();
   gameBall.show();
   receptacle.show();
-  receptacle.update(gameBall);
+
+  //if score = true => scored 
+  let score = receptacle.update(gameBall);
+  //=> trigger event
+
+
 
   // stroke(255);
   // strokeWeight(4);
@@ -97,7 +102,7 @@ function buildBall(ballType, _gameBall) {
 }
 function buildReceptacle()
 {
-    let extend = createVector(100, 100);
+    let extend = createVector(200, 100);
     let pos = createVector(windowWidth/2 - extend.x,windowHeight/2);
     let _receptacle = new Receptacle(pos,extend);
     return _receptacle;
