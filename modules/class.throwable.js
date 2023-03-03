@@ -30,7 +30,11 @@ class throwable {
   print() {
     console.log(this.type);
   }
-
+  getRadius() 
+  {
+    // *4 is from the main branch, maybe for someone testing purpose
+    return this.r * 2
+  }
   over(x, y) {
     // Calculate the distance between the mouse and the center of the ball
     let distance = dist(x, y, this.pos.x, this.pos.y);
@@ -96,7 +100,8 @@ class throwable {
     }
     rotate(this.angle);
     //Just to make the ball bigger (FOR NOW)
-    ellipse(0, 0, this.r * 4);
+    //*2 to get diameter
+    ellipse(0, 0, this.getRadius() * 2);
     strokeWeight(4);
     line(0, 0, this.r, 0);
     pop();

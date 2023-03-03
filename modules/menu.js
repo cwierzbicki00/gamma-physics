@@ -19,7 +19,7 @@ function setup() {
 
 //global var for game ball
 let gameBall;
-
+let receptacle;
 function startGame() {
   console.log("game started");
   let canvasContainer = document.getElementById("canvas-container");
@@ -34,7 +34,7 @@ function startGame() {
   // Make the canvas transparent
   canvas.style("background-color", "transparent");
   gameBall = buildBall(1, gameBall);
-
+  receptacle = buildReceptacle();
   // Add reset button to get ball back.
   //place at bottom left of canvas.
   let resetButton = createButton("Reset");
@@ -79,10 +79,12 @@ function draw() {
   gameBall.update();
   gameBall.edges();
   gameBall.show();
+  receptacle.show();
+  receptacle.update(gameBall);
 
-  stroke(255);
-  strokeWeight(4);
-  line(width, 150, width - 75, 150);
+  // stroke(255);
+  // strokeWeight(4);
+  // line(width, 150, width - 75, 150);
 }
 
 function buildBall(ballType, _gameBall) {
@@ -92,6 +94,13 @@ function buildBall(ballType, _gameBall) {
       break;
   }
   return _gameBall;
+}
+function buildReceptacle()
+{
+    let extend = createVector(100, 100);
+    let pos = createVector(windowWidth/2 - extend.x,windowHeight/2);
+    let _receptacle = new Receptacle(pos,extend);
+    return _receptacle;
 }
 
 // function setup() {
