@@ -20,11 +20,14 @@ class throwable {
     this.angle = 0;
     this.angleV = 0;
     this.prev = createVector();
-    this.type = "baseball"; // TODO change to update with menu selection
-
+    //this.type = "baseball"; // TODO change to update with menu selection
+    this.type = "basketball";
     //Christian added ->
     this.bounceCount = 0; // Initialize the bounce count to zero
     this.initialPos = createVector(x, y); // Store the initial position of the ball
+
+    // create image property
+    this.img = null;
   }
 
   print() {
@@ -87,18 +90,23 @@ class throwable {
     translate(this.pos.x, this.pos.y);
     stroke(255);
     strokeWeight(2);
+
     if (this.dragging) {
-      fill(255, 50);
+      //fill(255, 50);
+      tint(255, 50); // replace fill() with tint()
     } else if (this.rollover) {
-      fill(255, 100);
+      //fill(255, 100);
+      tint(255, 100);
     } else {
-      fill(255, 150);
+      tint(255, 200);
     }
     rotate(this.angle);
     //Just to make the ball bigger (FOR NOW)
-    ellipse(0, 0, this.r * 4);
-    strokeWeight(4);
-    line(0, 0, this.r, 0);
+    //ellipse(0, 0, this.r * 4);
+    //line(0, 0, this.r, 0);
+    //strokeWeight(4);
+    imageMode(CENTER);
+    image(this.img, 0, 0, this.r * 4, this.r * 4); // replace ellipse() with image()
     pop();
   }
 
