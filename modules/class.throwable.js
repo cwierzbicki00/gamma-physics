@@ -104,7 +104,7 @@ class throwable {
     //Just to make the ball bigger (FOR NOW)
     //ellipse(0, 0, this.r * 4);
     //line(0, 0, this.r, 0);
-    //strokeWeight(4);
+    //strokeWeight(4); 
     imageMode(CENTER);
     image(this.img, 0, 0, this.r * 4, this.r * 4); // replace ellipse() with image()
     pop();
