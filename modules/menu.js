@@ -98,9 +98,8 @@ function buildBall(ballType, _gameBall) {
   //  have ballType determined via menu?
   //  figure out size issue
   switch (ballType) {
-
     case "basketball":
-      _gameBall = new throwable(150, height + 150, 0.284);
+      _gameBall = new throwable(150, height + 150, 0.784);
       _gameBall.img = loadImage("https://i.imgur.com/ToktDdG.png");
 
       break;
@@ -117,7 +116,7 @@ function buildBall(ballType, _gameBall) {
       _gameBall.img = loadImage("https://i.imgur.com/wSzErKC.png");
       break;
     default:
-      //
+    //
   }
   return _gameBall;
 }
