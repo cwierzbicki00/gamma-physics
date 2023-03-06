@@ -3,11 +3,12 @@ body {
 }
 
 .container {
-  position: relative;
-  width: 40vw;
-  height: 50vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
 }
-
 .main-title {
   position: absolute;
   width: 50%;

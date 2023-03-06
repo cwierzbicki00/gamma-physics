@@ -1,12 +1,35 @@
 body {
   font-size: 100%; /* default font size */
 }
-
+/* 
 .container {
   position: relative;
   width: 715px;
   height: 510px;
+} */
+
+.container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+
 }
+
+#canvas-container {
+  width: 85%;
+  height: 85%;
+  border: 2px dashed grey;
+  /* only show on bottom, left, right */
+  border-top:none;
+}
+
+canvas {
+  width: 100%;
+  height: 100%;
+}
+
 
 .canvas1 {
   background: linear-gradient(0deg, #c0b6d3, #e2deeb, #c0b6d3);
@@ -24,6 +47,29 @@ body {
   left: 0%;
   top: 0%;
   background-color: lightgray;
+  
+}
+.points{
+  padding: 10px;
+  /* align to center */
+  text-align: center;
+}
+.level{
+  padding: 10px;
+  text-align: center;
+}
+.time{
+  padding: 10px;
+  text-align: center;
+}
+
+.gamescreen {
+  width: 90%;
+  height: 90%;
+  position: absolute;
+  display: block;
+  left: 10%;
+  top: 10%;
 }
 
 .points,
@@ -49,6 +95,7 @@ body {
   white-space: nowrap;
   height: 12%;
   font-size: 1.5em;
+  padding: 0.5rem;
 }
 
 .btn-mainMenu:active,
