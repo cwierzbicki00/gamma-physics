@@ -81,11 +81,9 @@ function draw() {
   gameBall.show();
   receptacle.show();
 
-  //if score = true => scored 
+  //if score = true => scored
   let score = receptacle.update(gameBall);
   //=> trigger event
-
-
 
   // stroke(255);
   // strokeWeight(4);
@@ -95,16 +93,15 @@ function draw() {
 function buildBall(ballType, _gameBall) {
   switch (ballType) {
     case 1: // baseball
-      _gameBall = new throwable(150, height + 150, 0.142);
+      _gameBall = new throwable(350, height + 150, 0.284);
       break;
   }
   return _gameBall;
 }
-function buildReceptacle()
-{
-    let pos = createVector(windowWidth*0.65,windowHeight*0.65); // windowWidth/2 - extend.x,windowHeight/2
-    let extend = createVector(200, 100);
-    return new Receptacle(pos, extend);
+function buildReceptacle() {
+  let pos = createVector(windowWidth * 0.65, windowHeight * 0.65); // windowWidth/2 - extend.x,windowHeight/2
+  let extend = createVector(200, 100);
+  return new Receptacle(pos, extend);
 }
 
 // function setup() {
