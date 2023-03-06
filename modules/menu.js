@@ -33,8 +33,11 @@ function startGame() {
 
   // Make the canvas transparent
   canvas.style("background-color", "transparent");
-  gameBall = buildBall(1, gameBall);
+
+  gameBall = buildBall("basketball", gameBall);
+
   receptacle = buildReceptacle();
+
   // Add reset button to get ball back.
   //place at bottom left of canvas.
   let resetButton = createButton("Reset");
@@ -91,10 +94,30 @@ function draw() {
 }
 
 function buildBall(ballType, _gameBall) {
+  // TODO:
+  //  have ballType determined via menu?
+  //  figure out size issue
   switch (ballType) {
-    case 1: // baseball
-      _gameBall = new throwable(350, height + 150, 0.284);
+
+    case "basketball":
+      _gameBall = new throwable(150, height + 150, 0.284);
+      _gameBall.img = loadImage("https://i.imgur.com/ToktDdG.png");
+
       break;
+    case "bowlingball":
+      _gameBall = new throwable(150, height + 150, 0.142);
+      _gameBall.img = loadImage("https://i.imgur.com/cbOBDxF.png");
+      break;
+    case "golfball":
+      _gameBall = new throwable(150, height + 150, 0.142);
+      _gameBall.img = loadImage("https://i.imgur.com/wOLqk4C.png");
+      break;
+    case "tennisball":
+      _gameBall = new throwable(150, height + 150, 0.142);
+      _gameBall.img = loadImage("https://i.imgur.com/wSzErKC.png");
+      break;
+    default:
+      //
   }
   return _gameBall;
 }
