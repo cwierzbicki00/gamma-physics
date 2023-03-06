@@ -102,10 +102,9 @@ function buildBall(ballType, _gameBall) {
 }
 function buildReceptacle()
 {
+    let pos = createVector(windowWidth*0.65,windowHeight*0.65); // windowWidth/2 - extend.x,windowHeight/2
     let extend = createVector(200, 100);
-    let pos = createVector(windowWidth/2 - extend.x,windowHeight/2);
-    let _receptacle = new Receptacle(pos,extend);
-    return _receptacle;
+    return new Receptacle(pos, extend);
 }
 
 // function setup() {
