@@ -7,9 +7,8 @@
 //              manipulated by the player to be tossed at a receptacle.
 
 class throwable {
-// --------------------------------------------------------------------- ctor --
+  // --------------------------------------------------------------------- ctor --
   constructor(x, y, m) {
-
     // size parameters for the throwable
     this.mass = m;
     this.r = sqrt(this.mass) * 16; // sets radius of the throwable
@@ -36,16 +35,14 @@ class throwable {
 
   getRadius() {
     // *4 is from the main branch, maybe for someone testing purpose
-    return this.r * 2
+    return this.r * 2;
   }
 
   over(x, y) {
     // Calculate the distance between the mouse and the center of the ball
     let distance = dist(x, y, this.pos.x, this.pos.y);
 
-    // Check if the distance is less than or equal to the diameter of the ball
-    //should be r*2 potentially.
-    this.rollover = distance <= this.r * 4;
+    this.rollover = distance <= this.r * 2;
     return this.rollover;
   }
 
@@ -57,22 +54,25 @@ class throwable {
   edges() {
     // rebounds the throwable if it collides with an edge of the canvas
 
-    if (this.pos.y >= height - this.r) { // bottom edge
+    if (this.pos.y >= height - this.r) {
+      // bottom edge
       this.pos.y = height - this.r;
       this.vel.y *= -0.95;
       this.bounceCount++;
-    }
-    else if (this.pos.y <= this.r) { // top edge
+    } else if (this.pos.y <= this.r) {
+      // top edge
       this.pos.y = this.r;
       this.vel.y *= -0.95;
       this.bounceCount++;
     }
 
-    if (this.pos.x >= width - this.r) { // right edge
+    if (this.pos.x >= width - this.r) {
+      // right edge
       this.pos.x = width - this.r;
       this.vel.x *= -0.95;
       this.bounceCount++;
-    } else if (this.pos.x <= this.r) { // left edge
+    } else if (this.pos.x <= this.r) {
+      // left edge
       this.pos.x = this.r;
       this.vel.x *= -0.95;
       this.bounceCount++;
@@ -113,8 +113,6 @@ class throwable {
     }
 
     rotate(this.angle);
-    // Just to make the ball bigger (FOR NOW)
-    // * 2 to get diameter
     ellipse(0, 0, this.getRadius() * 2);
     strokeWeight(4);
     line(0, 0, this.r, 0);
