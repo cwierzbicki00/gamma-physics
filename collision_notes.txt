@@ -10,4 +10,16 @@ FOR FLOOR:
 	collision = near horizontal middle of sprite (a line)
 
 FOR RECIPTICLES:
-	consists of bg component and fg component, fg component has collision
+	Layers:
+		fg component (no collision)
+			v
+		collision component (collision = edge of sprite rounded)
+			v
+		bg component (no collision)
+
+	Special Notes:
+		Backboard of basketball hoop needs a vertical line of collision
+	
+	
+
+	
