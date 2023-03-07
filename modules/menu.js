@@ -19,7 +19,7 @@ function setup() {
 
 //global var for game ball
 let gameBall;
-
+let receptacle;
 function startGame() {
   console.log("game started");
   let canvasContainer = document.getElementById("canvas-container");
@@ -33,7 +33,10 @@ function startGame() {
 
   // Make the canvas transparent
   canvas.style("background-color", "transparent");
-  gameBall = buildBall(1, gameBall);
+
+  gameBall = buildBall("basketball", gameBall);
+
+  receptacle = buildReceptacle();
 
   // Add reset button to get ball back.
   //place at bottom left of canvas.
@@ -79,19 +82,48 @@ function draw() {
   gameBall.update();
   gameBall.edges();
   gameBall.show();
+  receptacle.show();
 
-  stroke(255);
-  strokeWeight(4);
-  line(width, 150, width - 75, 150);
+  //if score = true => scored
+  let score = receptacle.update(gameBall);
+  //=> trigger event
+
+  // stroke(255);
+  // strokeWeight(4);
+  // line(width, 150, width - 75, 150);
 }
 
 function buildBall(ballType, _gameBall) {
+  // TODO:
+  //  have ballType determined via menu?
+  //  figure out size issue
   switch (ballType) {
-    case 1: // baseball
-      _gameBall = new throwable(150, height + 150, 0.142);
+    case "basketball":
+      _gameBall = new throwable(150, height + 150, 0.784);
+      _gameBall.img = loadImage("https://i.imgur.com/ToktDdG.png");
+
       break;
+    case "bowlingball":
+      _gameBall = new throwable(150, height + 150, 0.142);
+      _gameBall.img = loadImage("https://i.imgur.com/cbOBDxF.png");
+      break;
+    case "golfball":
+      _gameBall = new throwable(150, height + 150, 0.142);
+      _gameBall.img = loadImage("https://i.imgur.com/wOLqk4C.png");
+      break;
+    case "tennisball":
+      _gameBall = new throwable(150, height + 150, 0.142);
+      _gameBall.img = loadImage("https://i.imgur.com/wSzErKC.png");
+      break;
+    default:
+    //
   }
   return _gameBall;
+}
+function buildReceptacle() {
+  let pos = createVector(windowWidth * 0.65, windowHeight * 0.65); // windowWidth/2 - extend.x,windowHeight/2
+  let extend = createVector(200, 100);
+  return new Receptacle(pos, extend);
 }
 
 // function setup() {
