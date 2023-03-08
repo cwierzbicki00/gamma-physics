@@ -58,6 +58,7 @@ class Receptacle {
                 if (degree > upperLeftAngle && degree < upperRightAngle) {
                     score = true;
                     this.isEnter = true;
+                    // reset() we should return the ball to the actuall default location after scoring each point 
                 }
 
                 // if collide on the side and bottom => bounce back
