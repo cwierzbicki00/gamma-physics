@@ -11,7 +11,8 @@ class throwable {
   constructor(x, y, m) {
     // size parameters for the throwable
     this.mass = m;
-    this.r = sqrt(this.mass) * 16; // sets radius of the throwable
+    //this.r = sqrt(this.mass) * 16; // sets radius of the throwable
+    this.r = null; // setting radius of ball in buildBall() based on which type of ball
 
     this.dragging = false;
     this.rollover = false;
@@ -24,7 +25,7 @@ class throwable {
     this.prev = createVector();
 
     //this.type = "baseball"; // TODO change to update with menu selection
-    this.type = "basketball";
+    this.type = null; // setting type of ball in buildBall() based on which type of ball
 
     //Christian added ->
     this.bounceCount = 0; // Initialize the bounce count to zero
@@ -34,20 +35,31 @@ class throwable {
     this.img = null;
   }
 
+  //========SETTERS================
+  setRad(rad) {
+    this.r = rad;
+  }
+
+  setType(ball) {
+    this.type = ball;
+  }
+  //===============================
+
   print() {
     console.log(this.type);
   }
 
   getRadius() {
     // *4 is from the main branch, maybe for someone testing purpose
-    return this.r * 2;
+    return this.r;
   }
 
   over(x, y) {
     // Calculate the distance between the mouse and the center of the ball
     let distance = dist(x, y, this.pos.x, this.pos.y);
-
-    this.rollover = distance <= this.r * 2;
+    
+    // removed * 2 (?)
+    this.rollover = distance <= this.r;
     return this.rollover;
   }
 
@@ -123,7 +135,8 @@ class throwable {
     rotate(this.angle);
 
     imageMode(CENTER);
-    image(this.img, 0, 0, this.r * 2, this.r * 2); // replace ellipse() with image()
+    image(this.img, 0, 0, this.img.width, this.img.height); // replace ellipse() with image()
+
     pop();
   }
 
@@ -158,4 +171,5 @@ class throwable {
     this.acc = createVector(0, 0);
     this.bounceCount = 0; // Reset the bounce count to zero
   }
+
 }

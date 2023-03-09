@@ -96,28 +96,38 @@ function draw() {
 function buildBall(ballType, _gameBall) {
   // TODO:
   //  have ballType determined via menu?
-  //  figure out size issue
   switch (ballType) {
-
     case "basketball":
-      _gameBall = new throwable(150, height + 150, 0.284);
-      _gameBall.img = loadImage("https://i.imgur.com/ToktDdG.png");
-
+      _gameBall = new throwable(150, height + 150, 0.784);
+      // _gameBall.img = loadImage("https://i.imgur.com/ToktDdG.png"); original
+      _gameBall.img = loadImage("https://i.imgur.com/d5B8YI0.png"); // scaled sprites via image editor and reupload
+      // radius = width of scaled sprite / 2 (pixels)
+      _gameBall.setRad(74);
+      _gameBall.setType("basketball");
       break;
     case "bowlingball":
       _gameBall = new throwable(150, height + 150, 0.142);
-      _gameBall.img = loadImage("https://i.imgur.com/cbOBDxF.png");
+      // _gameBall.img = loadImage("https://i.imgur.com/cbOBDxF.png"); original 
+      _gameBall.img = loadImage("https://i.imgur.com/NTqjnK4.png");
+      _gameBall.setRad(72);
+      _gameBall.setType("bowlingball");
       break;
     case "golfball":
       _gameBall = new throwable(150, height + 150, 0.142);
-      _gameBall.img = loadImage("https://i.imgur.com/wOLqk4C.png");
+      // _gameBall.img = loadImage("https://i.imgur.com/wOLqk4C.png"); original
+      _gameBall.img = loadImage("https://i.imgur.com/cXYIMIm.png");
+      _gameBall.setRad(18);
+      _gameBall.setType("golfball");
       break;
     case "tennisball":
       _gameBall = new throwable(150, height + 150, 0.142);
-      _gameBall.img = loadImage("https://i.imgur.com/wSzErKC.png");
+      // _gameBall.img = loadImage("https://i.imgur.com/wSzErKC.png"); original
+      _gameBall.img = loadImage("https://i.imgur.com/ZL0oho5.png");
+      _gameBall.setRad(26);
+      _gameBall.setType("tennisball");
       break;
     default:
-      //
+      console.log("Invalid ball.");
   }
   return _gameBall;
 }
