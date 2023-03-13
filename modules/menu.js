@@ -67,7 +67,6 @@ function draw() {
   // text("Gamma Game", width / 2, height / 3);
   //background(0);
 
-  console.log(cos(radians(90)));
   clear();
 
   // Check if the ball has bounced 10 times (buggy, so disabled)
@@ -87,6 +86,7 @@ function draw() {
 
   //if score = true => scored
   let score = receptacle.update(gameBall);
+  console.log(score);
   //=> trigger event
 
   // stroke(255);

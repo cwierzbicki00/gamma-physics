@@ -38,6 +38,7 @@ class Receptacle
     }
 
     // return true if the ball score
+    //vertex 0 and 1 create the entrance edge, the only edge that does not collide with the ball.
     OnCollisionEnter(ball) 
     {
         
@@ -57,14 +58,14 @@ class Receptacle
               {
                 if(i == 0)
                 {
-                  return 1;
+                  return true;
                 }
                 else
                 {
                   let newP = ballPosAfterCollide(ball.pos, ballImgOnEdge,ball.getRadius());
                   ball.pos = newP;
                   ball.vel = getBounceVelocity(edge, ball.vel);
-                  return 0;
+                  return false;
                 }
               }
 
@@ -73,6 +74,7 @@ class Receptacle
 
 
         }
+        return false;
     }
 
     show() 
