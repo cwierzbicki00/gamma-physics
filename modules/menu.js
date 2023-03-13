@@ -67,6 +67,7 @@ function draw() {
   // text("Gamma Game", width / 2, height / 3);
   //background(0);
 
+  console.log(cos(radians(90)));
   clear();
 
   // Check if the ball has bounced 10 times (buggy, so disabled)
@@ -121,9 +122,16 @@ function buildBall(ballType, _gameBall) {
   return _gameBall;
 }
 function buildReceptacle() {
-  let pos = createVector(windowWidth * 0.65, windowHeight * 0.65); // windowWidth/2 - extend.x,windowHeight/2
-  let extend = createVector(200, 100);
-  return new Receptacle(pos, extend);
+  let pos = createVector(width/2, height/2) ; // windowWidth/2 - extend.x,windowHeight/2
+  let vertices = [
+    createVector(width/2 - 50, height/2 - 100),
+    createVector(width/2 + 50, height/2 - 100),
+    createVector(width/2 + 100, height/2),
+    createVector(width/2 + 50, height/2 + 100),
+    createVector(width/2 - 50, height/2 + 100),
+    createVector(width/2 - 100, height/2)
+  ];
+  return new Receptacle(pos, vertices);
 }
 
 // function setup() {

@@ -40,7 +40,7 @@ class throwable {
 
   getRadius() {
     // *4 is from the main branch, maybe for someone testing purpose
-    return this.r * 2;
+    return this.r;
   }
 
   over(x, y) {
