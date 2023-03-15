@@ -28,26 +28,42 @@ function startGame() {
     canvasContainer.offsetHeight
   );
   canvas.parent(canvasContainer);
-  // Set the alpha value of the canvas background to 0 for transparency
   background(0, 0, 0, 0);
-
-  // Make the canvas transparent
   canvas.style("background-color", "transparent");
 
-  gameBall = buildBall("basketball", gameBall);
+  gameBall = buildBall("golfball", gameBall);
 
   receptacle = buildReceptacle();
 
-  // Add reset button to get ball back.
-  //place at bottom left of canvas.
   let resetButton = createButton("Reset");
   resetButton.position(0, height - resetButton.height);
-
-  // Add an event listener to the reset button
   resetButton.mousePressed(resetGame);
 
+  let golfballButton = createButton("Golfball");
+  golfballButton.position(0, height - resetButton.height * 4);
+  golfballButton.mousePressed(() => {
+    gameBall = buildBall("golfball", gameBall);
+  });
+
+  let basketballButton = createButton("Basketball");
+  basketballButton.position(0, height - resetButton.height * 6);
+  basketballButton.mousePressed(() => {
+    gameBall = buildBall("basketball", gameBall);
+  });
+
+  let bowlingballButton = createButton("Bowlingball");
+  bowlingballButton.position(0, height - resetButton.height * 8);
+  bowlingballButton.mousePressed(() => {
+    gameBall = buildBall("bowlingball", gameBall);
+  });
+
+  let tennisballButton = createButton("Tennisball");
+  tennisballButton.position(0, height - resetButton.height * 10);
+  tennisballButton.mousePressed(() => {
+    gameBall = buildBall("tennisball", gameBall);
+  });
+
   function resetGame() {
-    // Reset the ball if reset clicked
     gameBall.reset();
   }
 }
@@ -110,7 +126,7 @@ function buildBall(ballType, _gameBall) {
       break;
     case "bowlingball":
       _gameBall = new throwable(150, height + 150, 0.142);
-      // _gameBall.img = loadImage("https://i.imgur.com/cbOBDxF.png"); original 
+      // _gameBall.img = loadImage("https://i.imgur.com/cbOBDxF.png"); original
       _gameBall.img = loadImage("https://i.imgur.com/NTqjnK4.png");
       _gameBall.setRad(72);
       _gameBall.setType("bowlingball");
@@ -130,21 +146,19 @@ function buildBall(ballType, _gameBall) {
       _gameBall.setType("tennisball");
       break;
     default:
-
       console.log("Invalid ball.");
-
   }
   return _gameBall;
 }
 function buildReceptacle() {
-  let pos = createVector(width/2, height/2) ; // windowWidth/2 - extend.x,windowHeight/2
+  let pos = createVector(width / 2, height / 2); // windowWidth/2 - extend.x,windowHeight/2
   let vertices = [
-    createVector(width/2 - 50, height/2 - 100),
-    createVector(width/2 + 50, height/2 - 100),
-    createVector(width/2 + 100, height/2),
-    createVector(width/2 + 50, height/2 + 100),
-    createVector(width/2 - 50, height/2 + 100),
-    createVector(width/2 - 100, height/2)
+    createVector(width / 2 - 50, height / 2 - 100),
+    createVector(width / 2 + 50, height / 2 - 100),
+    createVector(width / 2 + 100, height / 2),
+    createVector(width / 2 + 50, height / 2 + 100),
+    createVector(width / 2 - 50, height / 2 + 100),
+    createVector(width / 2 - 100, height / 2),
   ];
   return new Receptacle(pos, vertices);
 }
