@@ -86,6 +86,7 @@ function draw() {
 
   //if score = true => scored
   let score = receptacle.update(gameBall);
+  console.log(score);
   //=> trigger event
 
   // stroke(255);
@@ -121,9 +122,16 @@ function buildBall(ballType, _gameBall) {
   return _gameBall;
 }
 function buildReceptacle() {
-  let pos = createVector(windowWidth * 0.65, windowHeight * 0.65); // windowWidth/2 - extend.x,windowHeight/2
-  let extend = createVector(200, 100);
-  return new Receptacle(pos, extend);
+  let pos = createVector(width/2, height/2) ; // windowWidth/2 - extend.x,windowHeight/2
+  let vertices = [
+    createVector(width/2 - 50, height/2 - 100),
+    createVector(width/2 + 50, height/2 - 100),
+    createVector(width/2 + 100, height/2),
+    createVector(width/2 + 50, height/2 + 100),
+    createVector(width/2 - 50, height/2 + 100),
+    createVector(width/2 - 100, height/2)
+  ];
+  return new Receptacle(pos, vertices);
 }
 
 // function setup() {
