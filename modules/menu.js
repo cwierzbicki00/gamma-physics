@@ -31,7 +31,7 @@ function startGame() {
   background(0, 0, 0, 0);
   canvas.style("background-color", "transparent");
 
-  gameBall = buildBall("golfball", gameBall);
+  gameBall = buildBall("tennisball", gameBall);
 
   receptacle = buildReceptacle();
 
