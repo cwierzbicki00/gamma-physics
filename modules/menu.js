@@ -95,6 +95,7 @@ function draw() {
   gameBall.applyForce(weight);
 
   gameBall.over(mouseX, mouseY);
+  gameBall.mouseOutOfBounds(); // rsmith
   gameBall.update();
   gameBall.edges();
   gameBall.show();

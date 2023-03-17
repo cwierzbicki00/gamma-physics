@@ -96,6 +96,15 @@ class throwable {
     }
   }
 
+  mouseOutOfBounds() { // rsmith
+    // releases the throwable if the mouse moves outside of left 20%
+    // of canvas and if the throwable is being dragged
+
+    if (mouseX > windowWidth * 0.2) { // sets boundary to left 20% of canvas
+      this.released();
+    }
+  }
+
   update() {
     // updates the location of the throwable on the screen
     // helper function for pressed()
@@ -142,16 +151,13 @@ class throwable {
 
   pressed(x, y) {
     // allow user to drag ball if it was clicked on
-    if (this.over(x, y)) {
+
+    if(this.over(x, y) && (mouseX < windowWidth * 0.2)) { // rsmith 2nd cond.
+      // second condition prevents user from clicking ball
+      // while outside the left 20% of the canvas
       this.dragging = true;
       this.offset.set(this.pos.x - mouseX, this.pos.y - mouseY);
     }
-    // TODO: release mouse click if mouseX moves beyond left side of canvas
-    /*
-    if (mouseX > windowWidth * 0.2) {
-      this.released();
-    }
-    */
   }
 
   released() {
