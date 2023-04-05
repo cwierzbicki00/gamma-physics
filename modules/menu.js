@@ -1,14 +1,9 @@
 //     file name: menu.js
-//        authors: Nathan Fleet, Ryan Smith
+//        authors: Nathan Fleet, Ryan Smith, Nick Weber
 //  date created: 20 Feb 2023
 // date modified: 27 Feb 2023
 
 // description: basic menu with functioning start button
-
-//when button clicked start game
-//let startButton = document.getElementsByClassName("btn-start");
-
-//startButton[0].addEventListener("click", startGame);
 
 //p5js setup to start game on load
 
@@ -17,51 +12,67 @@ function setup() {
   // Set the alpha value of the canvas background to 0 for transparency
 }
 
-//global var for game ball
+//global vars for game ball and receptacle
 let gameBall;
 let receptacle;
+
 function startGame() {
   console.log("game started");
+
+  //canvas setup -------------------------------------------------------
   let canvasContainer = document.getElementById("canvas-container");
   let canvas = createCanvas(
     canvasContainer.offsetWidth,
     canvasContainer.offsetHeight
   );
+
   canvas.parent(canvasContainer);
   background(0, 0, 0, 0);
   canvas.style("background-color", "transparent");
+  //---------------------------------------------------------------------
 
+  //build ball and receptacle
   gameBall = buildBall("tennisball", gameBall);
-
   receptacle = buildReceptacle();
 
+  //create and arrange buttons ------------------------------------------
   let resetButton = createButton("Reset");
-  resetButton.position(0, height - resetButton.height);
   resetButton.mousePressed(resetGame);
 
   let golfballButton = createButton("Golfball");
-  golfballButton.position(0, height - resetButton.height * 4);
   golfballButton.mousePressed(() => {
     gameBall = buildBall("golfball", gameBall);
   });
 
   let basketballButton = createButton("Basketball");
-  basketballButton.position(0, height - resetButton.height * 6);
   basketballButton.mousePressed(() => {
     gameBall = buildBall("basketball", gameBall);
   });
 
   let bowlingballButton = createButton("Bowlingball");
-  bowlingballButton.position(0, height - resetButton.height * 8);
   bowlingballButton.mousePressed(() => {
     gameBall = buildBall("bowlingball", gameBall);
   });
 
   let tennisballButton = createButton("Tennisball");
-  tennisballButton.position(0, height - resetButton.height * 10);
   tennisballButton.mousePressed(() => {
     gameBall = buildBall("tennisball", gameBall);
   });
+
+  //add styling to ball buttons
+  resetButton.addClass("list");
+  golfballButton.addClass("list");
+  basketballButton.addClass("list");
+  tennisballButton.addClass("list");
+  bowlingballButton.addClass("list");
+
+  //button positioning classes
+  resetButton.addClass("resetBtn");
+  golfballButton.addClass("golfBtn");
+  basketballButton.addClass("basketballBtn");
+  tennisballButton.addClass("tennisBtn");
+  bowlingballButton.addClass("bowlingBtn");
+  //---------------------------------------------------------------------
 
   function resetGame() {
     gameBall.reset();
@@ -77,12 +88,6 @@ function mouseReleased() {
 }
 
 function draw() {
-  // background(150);
-  // textAlign(CENTER);
-  // textSize(36);
-  // text("Gamma Game", width / 2, height / 3);
-  //background(0);
-
   clear();
 
   // Check if the ball has bounced 10 times (buggy, so disabled)
