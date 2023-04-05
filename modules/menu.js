@@ -35,33 +35,33 @@ function startGame() {
 
   receptacle = buildReceptacle();
 
-  // let resetButton = createButton("Reset");
-  // // resetButton.position(0, height - resetButton.height);
-  // resetButton.mousePressed(resetGame);
+  let resetButton = createButton("Reset");
+  // resetButton.position(0, height - resetButton.height);
+  resetButton.mousePressed(resetGame);
 
-  // let golfballButton = createButton("Golfball");
-  // // golfballButton.position(0, height - resetButton.height * 4);
-  // golfballButton.mousePressed(() => {
-  //   gameBall = buildBall("golfball", gameBall);
-  // });
+  let golfballButton = createButton("Golfball");
+  // golfballButton.position(0, height - resetButton.height * 4);
+  golfballButton.mousePressed(() => {
+    gameBall = buildBall("golfball", gameBall);
+  });
 
-  // let basketballButton = createButton("Basketball");
-  // // basketballButton.position(0, height - resetButton.height * 6);
-  // basketballButton.mousePressed(() => {
-  //   gameBall = buildBall("basketball", gameBall);
-  // });
+  let basketballButton = createButton("Basketball");
+  // basketballButton.position(0, height - resetButton.height * 6);
+  basketballButton.mousePressed(() => {
+    gameBall = buildBall("basketball", gameBall);
+  });
 
-  // let bowlingballButton = createButton("Bowlingball");
-  // // bowlingballButton.position(0, height - resetButton.height * 8);
-  // bowlingballButton.mousePressed(() => {
-  //   gameBall = buildBall("bowlingball", gameBall);
-  // });
+  let bowlingballButton = createButton("Bowlingball");
+  // bowlingballButton.position(0, height - resetButton.height * 8);
+  bowlingballButton.mousePressed(() => {
+    gameBall = buildBall("bowlingball", gameBall);
+  });
 
-  // let tennisballButton = createButton("Tennisball");
-  // // tennisballButton.position(0, height - resetButton.height * 10);
-  // tennisballButton.mousePressed(() => {
-  //   gameBall = buildBall("tennisball", gameBall);
-  // });
+  let tennisballButton = createButton("Tennisball");
+  // tennisballButton.position(0, height - resetButton.height * 10);
+  tennisballButton.mousePressed(() => {
+    gameBall = buildBall("tennisball", gameBall);
+  });
 
   //add styling to ball buttons
   resetButton.addClass("list");
@@ -69,6 +69,11 @@ function startGame() {
   basketballButton.addClass("list");
   tennisballButton.addClass("list");
   bowlingballButton.addClass("list");
+  resetButton.addClass("resetBtn");
+  golfballButton.addClass("golfBtn");
+  basketballButton.addClass("basketballBtn");
+  tennisballButton.addClass("tennisBtn");
+  bowlingballButton.addClass("bowlingBtn");
 
   function resetGame() {
     gameBall.reset();
