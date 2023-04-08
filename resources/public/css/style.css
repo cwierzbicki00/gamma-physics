@@ -93,3 +93,27 @@ body {
   box-shadow: rgba(255, 255, 255, 0.8) 0 15px 30px -5px;
   border: 3px solid #1c142d;
 }
+
+.btn-vision {
+  position: absolute;
+  bottom: 5%;
+  right: 5%;
+  font-family: system-ui, sans-serif;
+  cursor: pointer;
+  font-weight: bold;
+  border: none;
+  text-align: center;
+  border: 3px solid #705d97;
+  border-radius: 6px;
+  white-space: nowrap;
+  height: 7%;
+  font-size: 0.8em;
+  padding: 0.2rem;
+}
+
+.btn-vision:active,
+.btn-vision:hover {
+  outline: 0;
+  box-shadow: rgba(255, 255, 255, 0.8) 0 15px 30px -5px;
+  border: 3px solid #1c142d;
+}
