@@ -1,13 +1,9 @@
-//     file name: class.throwable.js
 //        authors: Ryan Smith
-//  date created: 20 Feb 2023
-// date modified: 06 Mar 2023
 
-// description: Contains a base class for a throwable object, which is
-//              manipulated by the player to be tossed at a receptacle.
+// Contains a base class for a throwable object, which is
+// manipulated by the player to be tossed at a receptacle.
 
 class throwable {
-  // --------------------------------------------------------------------- ctor --
   constructor(x, y, m) {
     // size parameters for the throwable
     this.mass = m;
@@ -24,10 +20,8 @@ class throwable {
     this.angleV = 0;
     this.prev = createVector();
 
-    //this.type = "baseball"; // TODO change to update with menu selection
     this.type = null; // setting type of ball in buildBall() based on which type of ball
 
-    //Christian added ->
     this.bounceCount = 0; // Initialize the bounce count to zero
     this.initialPos = createVector(x, y); // Store the initial position of the ball
 
@@ -50,15 +44,12 @@ class throwable {
   }
 
   getRadius() {
-    // *4 is from the main branch, maybe for someone testing purpose
     return this.r;
   }
 
+  // Calculate the distance between the mouse and the center of the ball
   over(x, y) {
-    // Calculate the distance between the mouse and the center of the ball
     let distance = dist(x, y, this.pos.x, this.pos.y);
-    
-    // removed * 2 (?)
     this.rollover = distance <= this.r;
     return this.rollover;
   }
@@ -68,9 +59,8 @@ class throwable {
     this.acc.add(f);
   }
 
+  // rebounds the throwable if it collides with an edge of the canvas
   edges() {
-    // rebounds the throwable if it collides with an edge of the canvas
-
     if (this.pos.y >= height - this.r) {
       // bottom edge
       this.pos.y = height - this.r;
@@ -96,10 +86,9 @@ class throwable {
     }
   }
 
+  // updates the location of the throwable on the screen
+  // helper function for pressed()
   update() {
-    // updates the location of the throwable on the screen
-    // helper function for pressed()
-
     if (this.dragging) {
       this.prev.lerp(this.pos, 0.1);
       this.pos.x = mouseX + this.offset.x;
@@ -123,10 +112,8 @@ class throwable {
     strokeWeight(2);
 
     if (this.dragging) {
-      //fill(255, 50);
-      tint(255, 50); // replace fill() with tint()
+      tint(255, 50);
     } else if (this.rollover) {
-      //fill(255, 100);
       tint(255, 100);
     } else {
       tint(255, 200);
@@ -140,22 +127,16 @@ class throwable {
     pop();
   }
 
+  // allow user to drag ball if it was clicked on
   pressed(x, y) {
-    // allow user to drag ball if it was clicked on
     if (this.over(x, y)) {
       this.dragging = true;
       this.offset.set(this.pos.x - mouseX, this.pos.y - mouseY);
     }
-    // TODO: release mouse click if mouseX moves beyond left side of canvas
-    /*
-    if (mouseX > windowWidth * 0.2) {
-      this.released();
-    }
-    */
   }
 
+  // throw the ball when mouse is released
   released() {
-    // throw the ball when mouse is released
     if (this.dragging) {
       this.dragging = false;
       this.vel.x = this.pos.x - this.prev.x;
@@ -164,12 +145,11 @@ class throwable {
     }
   }
 
+  // Reset ball to initial state
   reset() {
-    // Reset ball to initial state
     this.pos = this.initialPos.copy();
     this.vel = createVector(0, 0);
     this.acc = createVector(0, 0);
     this.bounceCount = 0; // Reset the bounce count to zero
   }
-
 }

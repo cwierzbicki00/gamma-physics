@@ -1,12 +1,6 @@
 body {
   font-size: 100%; /* default font size */
 }
-/* 
-.container {
-  position: relative;
-  width: 715px;
-  height: 510px;
-} */
 
 .container {
   display: flex;
@@ -20,7 +14,6 @@ body {
   width: 85%;
   height: 85%;
   border: 2px dashed grey;
-  /* only show on bottom, left, right */
   border-top: none;
 }
 
@@ -36,6 +29,8 @@ canvas {
   height: 100%;
 }
 
+/* scoreboard -----------------------------------------*/
+
 .scoreboard {
   width: 100%;
   height: 10%;
@@ -46,18 +41,28 @@ canvas {
   top: 0%;
   background-color: lightgray;
 }
+
 .points {
   padding: 10px;
-  /* align to center */
   text-align: center;
 }
+
 .level {
   padding: 10px;
   text-align: center;
 }
+
 .time {
   padding: 10px;
   text-align: center;
+}
+
+.points,
+.level,
+.time {
+  font-size: 1.25em;
+  height: 20px;
+  color: black;
 }
 
 /* ball selection menu -----------------------------------------*/
@@ -148,14 +153,6 @@ canvas {
   display: block;
   left: 10%;
   top: 10%;
-}
-
-.points,
-.level,
-.time {
-  font-size: 1.25em;
-  height: 20px;
-  color: black;
 }
 
 .btn-mainMenu {
