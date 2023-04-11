@@ -139,6 +139,10 @@ canvas {
   top: 55%;
 }
 
+.barrierBtn {
+  top: 65%;
+}
+
 /* ---------------------------------------------------------- */
 
 .gamescreen {
@@ -166,7 +170,7 @@ canvas {
   font-family: system-ui, sans-serif;
   cursor: pointer;
   font-weight: bold;
-  border: none;
+  border: none; // TODO: remove this because it is overwritten 2 lines down. rsmith
   text-align: center;
   border: 3px solid #705d97;
   border-radius: 6px;

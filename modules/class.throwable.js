@@ -33,6 +33,9 @@ class throwable {
 
     // create image property
     this.img = null;
+
+    // rsmith - tracks if mouse barrier is enabled
+    this.mouseBarrierActive = true;
   }
 
   //========SETTERS================
@@ -100,7 +103,7 @@ class throwable {
     // releases the throwable if the mouse moves outside of left 20%
     // of canvas and if the throwable is being dragged
 
-    if (mouseX > windowWidth * 0.2) { // sets boundary to left 20% of canvas
+    if (this.mouseBarrierActive && mouseX > windowWidth * 0.2) { // sets boundary to left 20% of canvas
       this.released();
     }
   }
@@ -152,13 +155,21 @@ class throwable {
   pressed(x, y) {
     // allow user to drag ball if it was clicked on
 
-    if(this.over(x, y) && (mouseX < windowWidth * 0.2)) { // rsmith 2nd cond.
-      // second condition prevents user from clicking ball
-      // while outside the left 20% of the canvas
-      this.dragging = true;
-      this.offset.set(this.pos.x - mouseX, this.pos.y - mouseY);
+    if (this.mouseBarrierActive) {
+      if (this.over(x, y) && (mouseX < windowWidth * 0.2)) { // rsmith 2nd cond.
+        // second condition prevents user from clicking ball
+        // while outside the left 20% of the canvas
+        this.dragging = true;
+        this.offset.set(this.pos.x - mouseX, this.pos.y - mouseY);
+      }
     }
-  }
+    else {
+        if (this.over(x, y)) {
+          this.dragging = true;
+          this.offset.set(this.pos.x - mouseX, this.pos.y - mouseY);
+        }
+      }
+    }
 
   released() {
     // throw the ball when mouse is released

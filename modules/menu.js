@@ -59,8 +59,15 @@ function startGame() {
     gameBall = buildBall("tennisball", gameBall);
   });
 
+  // rsmith - for turning off mouse barrier for debugging purposes
+  let disableBarrier = createButton("DEBUG: Disable Barrier");
+  disableBarrier.mousePressed(() => {
+    gameBall.mouseBarrierActive = !gameBall.mouseBarrierActive;
+  });
+
   //add styling to ball buttons
   resetButton.addClass("list");
+  disableBarrier.addClass("list");
   golfballButton.addClass("list");
   basketballButton.addClass("list");
   tennisballButton.addClass("list");
@@ -68,6 +75,7 @@ function startGame() {
 
   //button positioning classes
   resetButton.addClass("resetBtn");
+  disableBarrier.addClass("barrierBtn");
   golfballButton.addClass("golfBtn");
   basketballButton.addClass("basketballBtn");
   tennisballButton.addClass("tennisBtn");
