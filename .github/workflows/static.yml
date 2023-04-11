@@ -43,4 +43,4 @@ jobs:
         uses: actions/deploy-pages@v2
         with:
           # Serve static files from resources/public/html directory at the root of your GitHub Pages site
-          publish_dir: "./resources/public/html"
+          publish_dir: "resources/public/html"
