@@ -16,6 +16,8 @@ class Receptacle {
         this.center = center; // an (x, y) coordinate relative to windowSize
         this.vertices = vertices;
         this.edges = [];
+
+        this.score = 0; // rsmith - tracks the score of the receptacle
       
         for (let i = 0; i < this.vertices.length; i++) {
             let start = this.vertices[i];
@@ -31,6 +33,14 @@ class Receptacle {
     getBounceForce() {
         return 1 - this.friction;
     }
+
+    getScore() {
+        return this.score;
+    }
+
+    setScore(score) {
+        this.score = score;
+    }
   
     // return true if the ball score
     // vertex 0 and 1 create the entrance edge, the only edge that does not collide with the ball.
@@ -45,20 +55,20 @@ class Receptacle {
             let ballPerpenEnd = vectorProjection(ball.pos, edge);
             let ballImgOnEdge = lineLineIntersection(edgeStart, edgeEnd, ball.pos, ballPerpenEnd);
 
-            if (isPointInBetween(edgeStart, edgeEnd, ballImgOnEdge) == 1) {
+            if (isPointInBetween(edgeStart, edgeEnd, ballImgOnEdge) === 1) {
                 if (dist(ball.pos.x, ball.pos.y, ballImgOnEdge.x, ballImgOnEdge.y) < ball.getRadius()) {
                     if (i === 0) { // if the ball collides with the entry (top) edge
                         // set to true so next collision will reset it
                         ball.inside = true; // rsmith
                         scored = true; // rsmith - sets return value to true
                     } else { // if the ball collides with a non-entry edge
-                        let newP = ballPosAfterCollide(ball.pos, ballImgOnEdge, ball.getRadius());
-                        ball.pos = newP;
+                        ball.pos = ballPosAfterCollide(ball.pos, ballImgOnEdge, ball.getRadius());
                         ball.vel = getBounceVelocity(edge, ball.vel);
 
                         // rsmith
                         if (ball.inside) { // if the ball has entered the receptacle
-                            ball.reset(); // reset it
+                            this.setScore(this.getScore() + 1); // increment the score
+                            ball.reset(); // reset the ball
                         }
                     }
                 }
@@ -140,9 +150,7 @@ function ballPosAfterCollide(A, B, R) {
     direction.mult(R);
 
     // Add the direction vector to point A to get point C
-    let C = p5.Vector.add(B, direction);
-
-    return C;
+    return p5.Vector.add(B, direction);
 }
 
 function getBounceVelocity(edge, vel) {
