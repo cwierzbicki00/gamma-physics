@@ -9,6 +9,7 @@ body {
   justify-content: center;
   height: 100vh;
 }
+
 .main-title {
   position: absolute;
   width: 50%;
@@ -20,7 +21,7 @@ body {
   font-size: 2.5em;
 }
 
-/* MEDIA QUERIES FOR SCREEN SIZE */
+/* MEDIA QUERIES FOR SCREEN SIZE ---------------------------------*/
 
 /* If the screen height is 500px tall or less */
 @media screen and (max-height: 500px) {
@@ -65,6 +66,8 @@ body {
     height: 30px;
   }
 }
+
+/* -------------------------------------------------------------------------- */
 
 .canvas1 {
   background: linear-gradient(0deg, #c0b6d3, #e2deeb, #c0b6d3);

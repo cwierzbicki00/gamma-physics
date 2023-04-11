@@ -9,34 +9,33 @@
 
 
 class Receptacle {
-// --------------------------------------------------------------------- ctor --
+  
     constructor(center, vertices) {
-
+      
         // size parameters for the receptacle
         this.center = center; // an (x, y) coordinate relative to windowSize
         this.vertices = vertices;
         this.edges = [];
+      
         for (let i = 0; i < this.vertices.length; i++) {
             let start = this.vertices[i];
             let end = this.vertices[(i + 1) % this.vertices.length];
             let edge = createVector(end.x - start.x, end.y - start.y);
             this.edges.push(edge);
         }
-
     }
-
+      
     // should handle friction to return range(0, 1)
+    // simple handler for testing
+    // assume this.friction in range(0,1)
     getBounceForce() {
-        // simple handler for testing
-        // assume this.friction in range(0,1)
         return 1 - this.friction;
     }
-
+  
     // return true if the ball score
     // vertex 0 and 1 create the entrance edge, the only edge that does not collide with the ball.
     OnCollisionEnter(ball) {
         let scored = false; // rsmith
-        // this.edges.length
 
         for (let i = 0; i < this.edges.length; i++) {
             //CONTAIN TESTING VARIABLES
@@ -52,7 +51,6 @@ class Receptacle {
                         // set to true so next collision will reset it
                         ball.inside = true; // rsmith
                         scored = true; // rsmith - sets return value to true
-                        //return true; // rsmith - cleared for removal
                     } else { // if the ball collides with a non-entry edge
                         let newP = ballPosAfterCollide(ball.pos, ballImgOnEdge, ball.getRadius());
                         ball.pos = newP;
@@ -62,14 +60,11 @@ class Receptacle {
                         if (ball.inside) { // if the ball has entered the receptacle
                             ball.reset(); // reset it
                         }
-
-                        //return false; // rsmith - cleared for removal
                     }
                 }
             }
         }
         return scored; // rsmith - boolean to track if score should be incremented
-        //return false; // rsmith - cleared for removal
     }
 
     show() {
@@ -84,10 +79,9 @@ class Receptacle {
         noStroke();
         circle(this.center.x, this.center.y, 100);
     }
-
-
+  
+    // return true if the ball score
     update(ball) {
-        // return true if the ball score
         return this.OnCollisionEnter(ball);
     }
 }
