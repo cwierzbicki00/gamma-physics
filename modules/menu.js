@@ -1,15 +1,9 @@
-//     file name: menu.js
-//        authors: Nathan Fleet, Ryan Smith, Nick Weber
-//  date created: 20 Feb 2023
-// date modified: 27 Feb 2023
-
-// description: basic menu with functioning start button
+// authors: Nathan Fleet, Ryan Smith, Nick Weber
+// basic menu with functioning start button
 
 //p5js setup to start game on load
-
 function setup() {
   startGame();
-  // Set the alpha value of the canvas background to 0 for transparency
 }
 
 //global vars for game ball and receptacle
@@ -98,11 +92,6 @@ function mouseReleased() {
 function draw() {
   clear();
 
-  // Check if the ball has bounced 10 times (buggy, so disabled)
-  //   if (gameBall.bounceCount >= 15) {
-  //     gameBall.reset(); // Reset the ball
-  //   }
-
   let gravity = createVector(0, 0.2);
   let weight = p5.Vector.mult(gravity, gameBall.mass);
   gameBall.applyForce(weight);
@@ -118,21 +107,14 @@ function draw() {
   let score = receptacle.update(gameBall);
   console.log(score);
   //=> trigger event
-
-  // stroke(255);
-  // strokeWeight(4);
-  // line(width, 150, width - 75, 150);
 }
 
 function buildBall(ballType, _gameBall) {
-  // TODO:
-  //  have ballType determined via menu?
   switch (ballType) {
     case "basketball":
       _gameBall = new throwable(150, height + 150, 0.784);
-
-      // _gameBall.img = loadImage("https://i.imgur.com/ToktDdG.png"); original
-      _gameBall.img = loadImage("https://i.imgur.com/d5B8YI0.png"); // scaled sprites via image editor and reupload
+      // scaled sprites via image editor and reupload
+      _gameBall.img = loadImage("https://i.imgur.com/d5B8YI0.png");
       // radius = width of scaled sprite / 2 (pixels)
       _gameBall.setRad(74);
       _gameBall.setType("basketball");
@@ -164,8 +146,9 @@ function buildBall(ballType, _gameBall) {
   }
   return _gameBall;
 }
+
 function buildReceptacle() {
-  let pos = createVector(width / 2, height / 2); // windowWidth/2 - extend.x,windowHeight/2
+  let pos = createVector(width / 2, height / 2);
   let vertices = [
     createVector(width / 2 - 50, height / 2 - 100),
     createVector(width / 2 + 50, height / 2 - 100),
@@ -176,10 +159,3 @@ function buildReceptacle() {
   ];
   return new Receptacle(pos, vertices);
 }
-
-// function setup() {
-//   // createCanvas(400, 400);
-//   // startButton = createButton("Start");
-//   // startButton.position(width / 2 - startButton.width / 2, height / 2);
-//   // startButton.mousePressed(startGame);
-// }
