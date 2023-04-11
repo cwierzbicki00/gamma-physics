@@ -37,7 +37,8 @@ jobs:
         uses: actions/upload-pages-artifact@v1
         with:
           # Upload html
-          path: "resources/public/html"
+          path: "."
+          publish_dir: "resources/public/html"
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v2
