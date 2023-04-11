@@ -36,8 +36,11 @@ jobs:
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v1
         with:
-          # Serve static files from resources/public/html directory
-          publish_dir: "resources/public/html"
+          # Upload entire repository
+          path: "."
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v2
+        with:
+          # Serve static files from resources/public/html directory
+          publish_dir: "resources/public/html"
