@@ -10,10 +10,19 @@
 
 class Receptacle {
   
-    constructor(center, vertices) {
+    constructor(vertices) {
       
         // size parameters for the receptacle
-        this.center = center; // an (x, y) coordinate relative to windowSize
+        let size = vertices.length;
+        // size parameters for the receptacle
+        this.vertices = vertices;
+        let point0 = vertices[0];
+        let point1 = vertices[(0 +size/2) % size];
+        let point2 = vertices[1];
+        let point3 = vertices[(1 + size/2)  % size];
+        this.center = lineLineIntersection(point0, point1, point2, point3);
+
+
         this.vertices = vertices;
         this.edges = [];
 

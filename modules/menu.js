@@ -147,16 +147,13 @@ function buildBall(ballType, _gameBall) {
 }
 
 function buildReceptacle() {
-    let pos = createVector(width / 2, height / 2);
     let vertices = [
-        createVector(width / 2 - 50, height / 2 - 100),
-        createVector(width / 2 + 50, height / 2 - 100),
-        createVector(width / 2 + 100, height / 2),
+        createVector(width / 2 - 100, height / 2 - 100),
+        createVector(width / 2 + 100, height / 2 - 100),
         createVector(width / 2 + 50, height / 2 + 100),
         createVector(width / 2 - 50, height / 2 + 100),
-        createVector(width / 2 - 100, height / 2),
     ];
-    return new Receptacle(pos, vertices);
+    return new Receptacle(vertices);
 }
 
 // rsmith - draw score to top left of screen
