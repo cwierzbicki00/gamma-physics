@@ -56,6 +56,20 @@ class Receptacle {
     OnCollisionEnter(ball) {
         let scored = false; // rsmith
 
+
+        for(let i = 0 ; i < this.vertices.length; i++) 
+        {
+            if(p5.Vector.sub(ball.pos, this.vertices[i]).mag() < ball.getRadius())
+            {
+                let ballToVer = p5.Vector.sub(ball.pos, this.vertices[i]);
+                ball.vel = getBounceVelocity(createVector(-ballToVer.y, ballToVer.x), ball.vel);
+                ball.pos = ballPosAfterCollide(ball.pos, this.vertices[i], ball.getRadius());
+                break;
+            }
+        }
+
+
+
         for (let i = 0; i < this.edges.length; i++) {
             //CONTAIN TESTING VARIABLES
             let edge = this.edges[i];
@@ -63,22 +77,22 @@ class Receptacle {
             let edgeEnd = this.vertices[(i + 1) % this.vertices.length];
             let ballPerpenEnd = vectorProjection(ball.pos, edge);
             let ballImgOnEdge = lineLineIntersection(edgeStart, edgeEnd, ball.pos, ballPerpenEnd);
-
             if (isPointInBetween(edgeStart, edgeEnd, ballImgOnEdge) === 1) {
                 if (dist(ball.pos.x, ball.pos.y, ballImgOnEdge.x, ballImgOnEdge.y) < ball.getRadius()) {
                     if (i === 0) { // if the ball collides with the entry (top) edge
                         // set to true so next collision will reset it
                         ball.inside = true; // rsmith
                         scored = true; // rsmith - sets return value to true
+                        break;
                     } else { // if the ball collides with a non-entry edge
-                        ball.pos = ballPosAfterCollide(ball.pos, ballImgOnEdge, ball.getRadius());
                         ball.vel = getBounceVelocity(edge, ball.vel);
-
+                        ball.pos = ballPosAfterCollide(ball.pos, ballImgOnEdge, ball.getRadius());
                         // rsmith
                         if (ball.inside) { // if the ball has entered the receptacle
                             this.setScore(this.getScore() + 1); // increment the score
                             ball.reset(); // reset the ball
                         }
+                        break;
                     }
                 }
             }
@@ -155,10 +169,10 @@ function ballPosAfterCollide(A, B, R) {
     // Normalize the direction vector
     direction.normalize();
 
-    // Multiply the direction vector by 5 to get the magnitude of 5
-    direction.mult(R);
+    // Multiply the direction vector by R to get the magnitude of R
+    direction.mult(R * 1.2);
 
-    // Add the direction vector to point A to get point C
+    // Add the direction vector to point B to get supposed A after collide
     return p5.Vector.add(B, direction);
 }
 
