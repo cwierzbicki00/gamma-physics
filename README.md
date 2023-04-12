@@ -63,3 +63,8 @@ When the app is fully developed, it will change the world by encouraging users t
 
 **Mouse Boundary UI**
 ![mouse-boundary](notes/throw_boundary_idea.png)
+
+**Game Levels and themes**
+![Levels](https://user-images.githubusercontent.com/99323462/231593625-33acbe0f-a38e-4ce8-99e4-3e826ff60337.jpg)
+![Kitchen](https://user-images.githubusercontent.com/99323462/231593628-8242c9a8-5099-48b4-a037-ce6144ed8ceb.jpg)
+
