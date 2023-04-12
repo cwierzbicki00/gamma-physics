@@ -1,6 +1,17 @@
 # Vision Statement - Physics Based Game "Throw it in!"
 
-Last updated April, 2023.
+_Last updated April, 2023._
+
+_Authors: Gamma Group_
+
+## Table of Contents
+
+- [General Concept](#general-concept)
+- [Gameplay](#gameplay)
+- [Reward System](#reward-system)
+- [End Goal](#end-goal)
+- [Initial Concept Images](#initial-concept-images)
+- [More Recent Concept Images](#more-recent-concept-images)
 
 ## General Concept
 
@@ -20,30 +31,31 @@ When the app is fully developed, it will change the world by encouraging users t
 
 ## Initial Concept Images
 
-Start page
+**Start page**  
 ![START PAGE](vision-images/start.png)
-Begin practice
-![ENTER PRACTICE](vision-images/practice1.png)
-![PRACTICE IMAGE](vision-images/practice2.png)
+
+**Begin practice**  
+![ENTER PRACTICE](vision-images/practice1.png)  
+![PRACTICE IMAGE](vision-images/practice2.png)  
 ![END PRACTICE](vision-images/practice3.png)
 
-Practice ended, return to start page
+**Practice ended, return to start page**  
 ![START PAGE](vision-images/start.png)
 
-Begin first level
-![GAMEPLAY 1](vision-images/game1.png)
-![GAMEPLAY 2](vision-images/game2.png)
-![GAMEPLAY 3](vision-images/game3.png)
-![GAMEPLAY 4](vision-images/game4.png)
+**Begin first level**  
+![GAMEPLAY 1](vision-images/game1.png)  
+![GAMEPLAY 2](vision-images/game2.png)  
+![GAMEPLAY 3](vision-images/game3.png)  
+![GAMEPLAY 4](vision-images/game4.png)  
 ![GAMEPLAY 5](vision-images/game5.png)
 
-Time expired, End Level
+**Time expired, End Level**  
 ![TIME EXPIRED, END LEVEL](vision-images/end.png)
 
 ## More Recent Concept Images
 
-Full UI Sketch Concept
+**Full UI Sketch**
 ![ui-screenshot](notes/ui-sketch3x.png)
 
-Mouse Boundary UI
+**Mouse Boundary UI**
 ![mouse-boundary](notes/throw_boundary_idea.png)
