@@ -1,5 +1,80 @@
+
+
+/* Color Palette */
+/* When using (example):
+        background: var(--warm-gray-light);
+*/
+:root {
+    /* White */
+    --white: #f8f5f5;
+    /* Warm Gray Ramp */
+    --warm-gray-light: #e3e0d7;
+    --warm-gray-med-light: #c3b8b1;
+    --warm-gray-med: #a39391;
+    --warm-gray-med-dark: #8d7176;
+    --warm-gray-dark: #6a4c62;
+    /* Brick Ramp */
+    --brick-light-light: #dbac8c;
+    --brick-light: #d18b79;
+    --brick-med-light: #bd6868;
+    --brick-med: #96485b;
+    --brick-med-dark: #7a3757;
+    --brick-dark: #612447;
+    --brick-dark-dark: #421e42; /* use as "black" */
+    /* Aged Yellow */
+    --aged-yellow: #e6cfa1;
+    /* Green Ramp */
+    --green-light-light: #e7ebbc;
+    --green-light: #b2dba0;
+    --green-med-light: #87c293;
+    --green-med: #70a18f;
+    --green-med-dark: #637c8f;
+    /* Blue Ramp */
+    --blue-light-light: #c0e5f3;
+    --blue-light: #95c3e9;
+    --blue-med-light: #74a0d1;
+    --blue-med: #6074ab;
+    --blue-med-dark: #5b5280;
+    /* Nougat Ramp */
+    --nougat-light: #edd5ca;
+    --nougat-med-light: #dfb6ae;
+    --nougat-med: #c98f8f;
+    --nougat-dark-med: #b56e75;
+}
+
+/* Cayetano Normal */
+@font-face {
+    font-family: "Cayetano";
+    src: url('assets/fonts/cayetano/CAYETANR.otf') format('opentype');
+    font-weight: normal;
+    font-style: italic;
+}
+
+/* Cayetano Italic */
+@font-face {
+    font-family: "Cayetano";
+    src: url('assets/fonts/cayetano/CAYETNRI.otf') format('opentype');
+    font-weight: normal;
+    font-style: italic;
+}
+
+/* Cayetano Bold */
+@font-face {
+    font-family: "Cayetano";
+    src: url('assets/fonts/cayetano/CAYETNRB.otf') format('opentype');
+    font-weight: bold;
+    font-style: normal;
+}
+
+
 body {
-  font-size: 100%; /* default font size */
+    font-size: 100%; /* default font size */
+    font-family: "Cayetano", Arial, Helvetica, sans-serif;
+}
+
+header {
+    font-size: 115%;
+    font-family: "Cayetano", Arial, Helvetica, sans-serif;
 }
 
 .container {
