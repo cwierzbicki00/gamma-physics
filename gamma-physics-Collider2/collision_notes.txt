@@ -1,0 +1,25 @@
+// file name: collision_notes.txt
+// authors: Max Norman
+// date created: 28 Feb 2023
+// date modified: 28 Feb 2023
+
+FOR THROWABLE OBJECTS: 
+	collision = edge of sprite (a more perfect shape to round out pixel edges when scaled up)
+
+FOR FLOOR:
+	collision = near horizontal middle of sprite (a line)
+
+FOR RECIPTICLES:
+	Layers:
+		fg component (no collision)
+			v
+		collision component (collision = edge of sprite rounded)
+			v
+		bg component (no collision)
+
+	Special Notes:
+		Backboard of basketball hoop needs a vertical line of collision
+	
+	
+
+	
