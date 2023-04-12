@@ -9,31 +9,29 @@
 
 
 class Receptacle {
-  
+    // the order of polygon must be clock wise
+    // element 0 and 1 define the open-entry of the receptacle
     constructor(vertices) {
       
         // size parameters for the receptacle
         let size = vertices.length;
-        // size parameters for the receptacle
         this.vertices = vertices;
+
+        //calculate center of polygon based on vertices
         let point0 = vertices[0];
         let point1 = vertices[(0 +size/2) % size];
         let point2 = vertices[1];
         let point3 = vertices[(1 + size/2)  % size];
         this.center = lineLineIntersection(point0, point1, point2, point3);
-
-
-        this.vertices = vertices;
+        //calculate position of edges based on vertices
         this.edges = [];
-
-        this.score = 0; // rsmith - tracks the score of the receptacle
-      
         for (let i = 0; i < this.vertices.length; i++) {
             let start = this.vertices[i];
             let end = this.vertices[(i + 1) % this.vertices.length];
             let edge = createVector(end.x - start.x, end.y - start.y);
             this.edges.push(edge);
         }
+        this.score = 0; // rsmith - tracks the score of the receptacle
     }
       
     // should handle friction to return range(0, 1)
@@ -56,22 +54,21 @@ class Receptacle {
     OnCollisionEnter(ball) {
         let scored = false; // rsmith
 
-
+        //if collide with conners, bounce accordingly.
         for(let i = 0 ; i < this.vertices.length; i++) 
         {
             if(p5.Vector.sub(ball.pos, this.vertices[i]).mag() < ball.getRadius())
             {
                 let ballToVer = p5.Vector.sub(ball.pos, this.vertices[i]);
                 ball.vel = getBounceVelocity(createVector(-ballToVer.y, ballToVer.x), ball.vel);
+                //making sure that the ball will never overlap the vertex;
                 ball.pos = ballPosAfterCollide(ball.pos, this.vertices[i], ball.getRadius());
                 break;
             }
         }
 
-
-
+        //if not collide with conners => check collide with edges
         for (let i = 0; i < this.edges.length; i++) {
-            //CONTAIN TESTING VARIABLES
             let edge = this.edges[i];
             let edgeStart = this.vertices[i];
             let edgeEnd = this.vertices[(i + 1) % this.vertices.length];
@@ -86,6 +83,7 @@ class Receptacle {
                         break;
                     } else { // if the ball collides with a non-entry edge
                         ball.vel = getBounceVelocity(edge, ball.vel);
+                        //making sure that the ball will never overlap the edges;
                         ball.pos = ballPosAfterCollide(ball.pos, ballImgOnEdge, ball.getRadius());
                         // rsmith
                         if (ball.inside) { // if the ball has entered the receptacle
