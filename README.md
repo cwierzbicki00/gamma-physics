@@ -4,6 +4,10 @@ _Last updated April, 2023._
 
 _Authors: Gamma Group_
 
+## View The Game So Far! :globe_with_meridians:
+
+**[Play "Throw It In!"](https://cwierzbicki00.github.io/gamma-physics/)**
+
 ## Table of Contents
 
 - [General Concept](#general-concept)
