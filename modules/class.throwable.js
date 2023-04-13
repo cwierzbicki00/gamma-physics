@@ -1,131 +1,103 @@
-//        authors: Ryan Smith
+//     file name: class.throwable.js
+//       authors: Ryan Smith
+//  date created: 02 Mar 2023
+// date modified: 13 Apr 2023 (rsmith)
 
-// Contains a base class for a throwable object, which is
-// manipulated by the player to be tossed at a receptacle.
+// description: Contains a base class for a throwable object, which is
+//              manipulated by the player to be tossed at a receptacle.
 
-class throwable {
-  
-    constructor(x, y, m) {
-      
-        // size parameters for the throwable
-        this.mass = m;
-        this.r = null; // setting radius of ball in buildBall() based on which type of ball
+class Throwable {
 
-        this.dragging = false;
-        this.rollover = false;
-        this.offset = createVector();
-        this.pos = createVector(x, y);
-        this.vel = createVector(0, 0);
-        this.acc = createVector(0, 0);
-        this.angle = 0;
-        this.angleV = 0;
-        this.prev = createVector();
+    constructor(ballType) {
+        switch (ballType) {
+            case "basketball":
+                this.type   = 'basketball';
+                this.mass   = 0.625; // kilograms
+                this.bounce = 0.6; // testing
+                this.radius = 74;
+                this.img    = loadImage("https://i.imgur.com/d5B8YI0.png");
+                break;
+            case "bowlingball":
+                this.type   = 'bowlingball';
+                this.mass   = 6.800;
+                this.bounce = 0.1; // testing
+                this.radius = 72;
+                this.img    = loadImage("https://i.imgur.com/NTqjnK4.png");
+                break;
+            case "golfball":
+                this.type   = 'golfball';
+                this.mass   = 0.046;
+                this.bounce = 0.85; // testing
+                this.radius = 18;
+                this.img    = loadImage("https://i.imgur.com/cXYIMIm.png");
+                break;
+            case "tennisball":
+                this.type   = 'tennisball';
+                this.mass   = 0.056;
+                this.bounce = 0.75; // testing
+                this.radius = 26;
+                this.img    = loadImage("https://i.imgur.com/ZL0oho5.png");
+                break;
+            default:
+                throw new Error("Invalid ball type");
+        }
 
-        this.type = null; // setting type of ball in buildBall() based on which type of ball
+        // positional variables
+        this.initialPos = createVector(150, height - 150);
+        this.pos        = this.initialPos.copy();
+        this.vel        = createVector(0, 0);
+        this.acc        = createVector(0, 0);
+        this.offset     = createVector();
+        this.angle      = 0;
+        this.angleV     = 0;
+        this.prev       = createVector();
 
-        this.bounceCount = 0; // Initialize the bounce count to zero
-        this.initialPos = createVector(x, y); // Store the initial position of the ball
+        // status variables
+        this.dragging    = false;
+        this.rollover    = false;
+        this.bounceCount = 0;
+        this.inside      = false;
 
-        // create image property
-        this.img = null;
-
-        this.inside = false; // rsmith - changes to true if it enters receptacle
-        this.mouseBarrierActive = true; // rsmith - tracks if mouse barrier is enabled
+        console.log("Throwable " + this.type + " created");
     }
-
-    //========SETTERS================
-  
-    setRad(rad) {
-        this.r = rad;
-    }
-
-    setType(ball) {
-        this.type = ball;
-    }
-      
-    //===============================
 
     print() {
         console.log(this.type);
     }
 
-    getRadius() {
-        return this.r;
-    }
-
-    // Calculate the distance between the mouse and the center of the ball
-    over(x, y) {
-        let distance = dist(x, y, this.pos.x, this.pos.y);
-        this.rollover = distance <= this.r;
-        return this.rollover;
-    }
-
-    applyForce(force) {
-        let f = p5.Vector.div(force, this.mass);
-        this.acc.add(f);
-    }
-
-    // rebounds the throwable if it collides with an edge of the canvas
-    edges() {
-
-        if (this.pos.y >= height - this.r) {
-            // bottom edge
-            this.pos.y = height - this.r;
-            this.vel.y *= -0.95;
-            this.bounceCount++;
-        } else if (this.pos.y <= this.r) {
-            // top edge
-            this.pos.y = this.r;
-            this.vel.y *= -0.95;
-            this.bounceCount++;
-        }
-
-        if (this.pos.x >= width - this.r) {
-            // right edge
-            this.pos.x = width - this.r;
-            this.vel.x *= -0.95;
-            this.bounceCount++;
-        } else if (this.pos.x <= this.r) {
-            // left edge
-            this.pos.x = this.r;
-            this.vel.x *= -0.95;
-            this.bounceCount++;
-        }
-    }
-
-    // releases the throwable if the mouse moves outside of left 20%
-    // of canvas and if the throwable is being dragged
-    mouseOutOfBounds() { // rsmith
-        if (this.mouseBarrierActive && mouseX > windowWidth * 0.2) { // sets boundary to left 20% of canvas
-            this.released();
-        }
-    }
+    getRadius()   { return this.radius; }
+    getDragging() { return this.dragging; }
 
     // updates the location of the throwable on the screen
-    // helper function for pressed()
-    update() {
-        if (this.dragging) {
-            this.prev.lerp(this.pos, 0.1);
-            this.pos.x = mouseX + this.offset.x;
-            this.pos.y = mouseY + this.offset.y;
-            this.vel.set(0, 0);
-        }
+    update(environment) {
 
-        this.vel.add(this.acc);
-        this.pos.add(this.vel);
-        this.acc.set(0, 0);
+        this.applyEnvironmentalForces(environment.getGravity(), environment.getWind());
+        this.mouseOutOfBounds(environment);
+        this.mouseDragged();
+        this.edges();
+
+        // if (this.dragging) {
+        //     this.prev.lerp(this.pos, 0.1);
+        //     this.pos.x = mouseX + this.offset.x;
+        //     this.pos.y = mouseY + this.offset.y;
+        //     this.vel.set(0, 0);
+        // }
+
+        // this.vel.add(this.acc);
+        // this.pos.add(this.vel);
+        // this.acc.set(0, 0);
         this.angleV = this.vel.x * 0.05;
         this.angle += this.angleV;
     }
 
-    show() {
+    display() {
         push();
-        translate(this.pos.x, this.pos.y);
 
         // color parameters for the throwable
-        stroke(255);
-        strokeWeight(2);
+        //stroke(255);
+        //strokeWeight(2);
 
+        // TODO this stuff is broken
         if (this.dragging) {
             tint(255, 50);
         } else if (this.rollover) {
@@ -137,35 +109,133 @@ class throwable {
         rotate(this.angle);
 
         imageMode(CENTER);
-        image(this.img, 0, 0, this.img.width, this.img.height); // replace ellipse() with image()
+        image(this.img, this.pos.x, this.pos.y, this.img.width, this.img.height);
 
         pop();
     }
-  
+
     // allow user to drag ball if it was clicked on
-    pressed(x, y) {
-        if (this.mouseBarrierActive) {
-            if (this.over(x, y) && (mouseX < windowWidth * 0.2)) { // rsmith 2nd cond.
+    mousePressed(environment) {
+        if (environment.getBarrierStatus()) {
+            if (this.over() && (mouseX < windowWidth * 0.2)) {
                 // second condition prevents user from clicking ball
-                // while outside the left 20% of the canvas
+                // while outside the left 20% of the canvas (rsmith)
                 this.dragging = true;
                 this.offset.set(this.pos.x - mouseX, this.pos.y - mouseY);
+                this.prev.set(this.pos.x, this.pos.y);
             }
         } else {
-            if (this.over(x, y)) {
+            if (this.over()) {
                 this.dragging = true;
                 this.offset.set(this.pos.x - mouseX, this.pos.y - mouseY);
+                this.prev.set(this.pos.x, this.pos.y);
             }
         }
     }
 
-    released() {
-        // throw the ball when mouse is released
+    mouseDragged() {
+        if (this.dragging) {
+            this.pos.set(mouseX + this.offset.x, mouseY + this.offset.y);
+        }
+    }
+
+    // throw the ball when mouse is released
+    mouseReleased() {
         if (this.dragging) {
             this.dragging = false;
-            this.vel.x = this.pos.x - this.prev.x;
-            this.vel.y = this.pos.y - this.prev.y;
-            this.vel.mult(0.1);
+            //this.applyThrowForce();
+
+            // this.vel.x = this.pos.x - this.prev.x;
+            // this.vel.y = this.pos.y - this.prev.y;
+            // this.vel.mult(0.1);
+        }
+    }
+
+    // Calculate the distance between the mouse and the center of the ball
+    over() {
+        let distance = dist(mouseX, mouseY, this.pos.x, this.pos.y);
+        this.rollover = distance <= this.radius;
+        return this.rollover;
+    }
+
+    applyThrowForce() {
+
+        // mouse movement speed
+        let mx = (mouseX - pmouseX);
+        let my = (mouseY - pmouseY);
+        let mouse_speed = createVector(mx, my);
+
+        // mouse acceleration
+        let ax = mouse_speed.x / this.mass;
+        let ay = mouse_speed.y / this.mass;
+        let acceleration = createVector(ax, ay);
+
+        // apply mouse speed to velocity
+        this.vel.add(acceleration);
+
+        // move position based on velocity
+        this.pos.add(this.vel);
+    }
+
+    applyEnvironmentalForces(gravity = createVector(0, 9.8), wind= createVector(0, 0)) {
+
+        // adding force of gravity to acceleration f = g * m
+        let ax = gravity.x * this.mass;
+        let ay = gravity.y * this.mass;
+        let force = createVector(ax, ay);
+
+        // adding force of wind to acceleration f = a * m
+        let wx = wind.x * this.mass;
+        let wy = wind.y * this.mass;
+        force.add(createVector(wx, wy));
+
+        this.acc.add(force);
+
+        // apply acceleration to velocity
+        this.vel.add(this.acc);
+
+        // move position based on velocity
+        this.pos.add(this.vel);
+
+        // reset acceleration between each frame
+        this.acc.set(0, 0);
+    }
+
+    // rebounds the throwable if it collides with an edge of the canvas
+    edges() {
+
+        if (this.pos.y >= height - this.radius) {
+            // bottom edge
+            this.pos.y = height - this.radius;
+            this.vel.y *= -this.bounce;
+            this.bounceCount++;
+        } else if (this.pos.y <= this.radius) {
+            // top edge
+            this.pos.y = this.radius;
+            this.vel.y *= -this.bounce;
+            this.bounceCount++;
+        }
+
+        if (this.pos.x >= width - this.radius) {
+            // right edge
+            this.pos.x = width - this.radius;
+            this.vel.x *= -this.bounce;
+            this.bounceCount++;
+        } else if (this.pos.x <= this.radius) {
+            // left edge
+            this.pos.x = this.radius;
+            this.vel.x *= -this.bounce;
+            this.bounceCount++;
+        }
+    }
+
+    // releases the throwable if the mouse moves outside of left 20%
+    // of canvas and if the throwable is being dragged
+    mouseOutOfBounds(environment) {
+        if (this.dragging &&
+            environment.getBarrierStatus() &&
+            mouseX > windowWidth * 0.2) {
+            this.mouseReleased();
         }
     }
 
@@ -175,6 +245,7 @@ class throwable {
         this.vel = createVector(0, 0);
         this.acc = createVector(0, 0);
         this.inside = false;
-        this.bounceCount = 0; // Reset the bounce count to zero
+        this.bounceCount = 0;
+        console.log('Throwable reset');
     }
 }

@@ -1,7 +1,7 @@
 //     file name: class.receptacle.js
-//        authors: Quoc, Ryan Smith
+//       authors: Quoc, Ryan Smith
 //  date created: 02 Mar 2023
-// date modified: 17 Mar 2023 (rsmith)
+// date modified: 13 Apr 2023 (rsmith)
 
 // description: Contains a base class for a receptacle object, which is
 //              intended to be a target for the player to toss the throwable
@@ -9,23 +9,64 @@
 
 
 class Receptacle {
-  
-    constructor(center, vertices) {
-      
-        // size parameters for the receptacle
-        this.center = center; // an (x, y) coordinate relative to windowSize
-        this.vertices = vertices;
+
+    constructor(receptacleType) {
+
         this.edges = [];
 
-        this.score = 0; // rsmith - tracks the score of the receptacle
-      
+        switch(receptacleType) {
+            case 'goblet':
+                break;
+
+            case 'net':
+                break;
+
+            case 'trashcan':
+                break;
+
+            case 'vase':
+                break;
+
+            default:
+                this.center = createVector(width / 2, height / 2);
+                this.vertices = [
+                    createVector(width / 2 - 50, height / 2 - 100),
+                    createVector(width / 2 + 50, height / 2 - 100),
+                    createVector(width / 2 + 100, height / 2),
+                    createVector(width / 2 + 50, height / 2 + 100),
+                    createVector(width / 2 - 50, height / 2 + 100),
+                    createVector(width / 2 - 100, height / 2),
+                ];
+        }
+
+        // add edges to the receptacle based on vertices
         for (let i = 0; i < this.vertices.length; i++) {
             let start = this.vertices[i];
             let end = this.vertices[(i + 1) % this.vertices.length];
             let edge = createVector(end.x - start.x, end.y - start.y);
             this.edges.push(edge);
         }
+
+        console.log("Receptacle created");
     }
+
+    update(environment) {
+        this.OnCollisionEnter(environment.getThrowable(), environment);
+    }
+
+    display() {
+        beginShape();
+        for (let i = 0; i < this.vertices.length; i++) {
+            strokeWeight(3);
+            stroke(0, 255, 0);
+            vertex(this.vertices[i].x, this.vertices[i].y);
+        }
+        endShape(CLOSE);
+        fill(0, 255, 0, 100);
+        noStroke();
+        circle(this.center.x, this.center.y, 100);
+    }
+
       
     // should handle friction to return range(0, 1)
     // simple handler for testing
@@ -33,18 +74,10 @@ class Receptacle {
     getBounceForce() {
         return 1 - this.friction;
     }
-
-    getScore() {
-        return this.score;
-    }
-
-    setScore(score) {
-        this.score = score;
-    }
   
     // return true if the ball score
     // vertex 0 and 1 create the entrance edge, the only edge that does not collide with the ball.
-    OnCollisionEnter(ball) {
+    OnCollisionEnter(ball, environment) {
         let scored = false; // rsmith
 
         for (let i = 0; i < this.edges.length; i++) {
@@ -67,7 +100,7 @@ class Receptacle {
 
                         // rsmith
                         if (ball.inside) { // if the ball has entered the receptacle
-                            this.setScore(this.getScore() + 1); // increment the score
+                            environment.addScore(1); // increment the score
                             ball.reset(); // reset the ball
                         }
                     }
@@ -75,24 +108,6 @@ class Receptacle {
             }
         }
         return scored; // rsmith - boolean to track if score should be incremented
-    }
-
-    show() {
-        beginShape();
-        for (let i = 0; i < this.vertices.length; i++) {
-            strokeWeight(3);
-            stroke(0, 255, 0);
-            vertex(this.vertices[i].x, this.vertices[i].y);
-        }
-        endShape(CLOSE);
-        fill(0, 255, 0, 100);
-        noStroke();
-        circle(this.center.x, this.center.y, 100);
-    }
-  
-    // return true if the ball score
-    update(ball) {
-        return this.OnCollisionEnter(ball);
     }
 }
 
