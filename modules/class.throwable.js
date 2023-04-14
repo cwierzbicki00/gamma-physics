@@ -53,10 +53,12 @@ class Throwable {
         this.prev       = createVector();
 
         // status variables
-        this.dragging    = false;
-        this.rollover    = false;
-        this.bounceCount = 0;
-        this.inside      = false;
+        this.dragging      = false;
+        this.rollover      = false;
+        this.bounceCount   = 0;
+        this.inside        = false;
+        this.irrecoverable = false;
+        this.resetTimer    = false;
 
         console.log("Throwable " + this.type + " created");
     }
@@ -75,6 +77,7 @@ class Throwable {
         this.mouseOutOfBounds(environment);
         this.mouseDragged();
         this.edges();
+        this.recover();
 
         // if (this.dragging) {
         //     this.prev.lerp(this.pos, 0.1);
@@ -239,11 +242,36 @@ class Throwable {
         }
     }
 
+    // recover the throwable from beyond the mouse barrier after N seconds
+    recover() {
+        let time = 15; // seconds
+        let timer;
+        this.irrecoverable = this.pos.x > windowWidth * 0.2;
+        if (this.irrecoverable && !this.resetTimer) {
+            this.resetTimer = true;
+            timer = setInterval(() => {
+                console.log('Time until recovery: ' + time + ' seconds');
+                time--;
+                if (!this.irrecoverable){
+                    console.log('Recovery timer cancelled');
+                    this.resetTimer = false;
+                    clearInterval(timer);
+                }
+                if (time === 0) {
+                    this.reset();
+                    clearInterval(timer);
+                }
+            }, 1000);
+        }
+    }
+
     // Reset ball to initial state
     reset() {
         this.pos = this.initialPos.copy();
         this.vel = createVector(0, 0);
         this.acc = createVector(0, 0);
+        this.irrecoverable = false;
+        this.resetTimer = false;
         this.inside = false;
         this.bounceCount = 0;
         console.log('Throwable reset');
