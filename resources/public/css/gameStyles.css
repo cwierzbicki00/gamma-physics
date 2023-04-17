@@ -1,5 +1,6 @@
 /* make content fit on screen */
-body, html {
+body,
+html {
   margin: 0;
   padding: 0;
   width: 100%;
@@ -155,7 +156,7 @@ canvas {
 
 .barrierBtn {
   top: 92%;
-  left: 71.40%;
+  left: 71.4%;
 }
 
 /* ---------------------------------------------------------- */
@@ -177,14 +178,13 @@ canvas {
   font-family: system-ui, sans-serif;
   cursor: pointer;
   font-weight: bold;
-  border: none; // TODO: remove this because it is overwritten 2 lines down. rsmith
+  /* border: none; // TODO: remove this because it is overwritten 2 lines down. rsmith */
   text-align: center;
   border: 3px solid #705d97;
   border-radius: 6px;
   white-space: nowrap;
 
   font-size: 1.5em;
-
 }
 
 .btn-mainMenu:active,
