@@ -1,163 +1,136 @@
-// authors: Nathan Fleet, Ryan Smith, Nick Weber
+//     file name: menu.js
+//       authors: Quoc, Ryan Smith, Nathan Fleet, Nick Weber
+//  date created: 2 Mar 2023
+// date modified: 19 Apr 2023 (quoc)
 
-// p5js setup to start game on load - runs ONCE
+// description: Contains the driver code for the "Throw it in!" game.
+
+// global variables for environment
+// Import Matter.js modules
+const Engine = Matter.Engine;
+const World = Matter.World;
+const Bodies = Matter.Bodies;
+const Mouse = Matter.Mouse;
+const MouseConstraint = Matter.MouseConstraint;
+let engine;
+let world;
+let mConstraint;
+
+let level = 1;
+let environment;
+
+// p5.js setup to start game on load - runs ONCE
 function setup() {
-    startGame();
-}
+  console.log("Game started");
 
-// global vars for game ball and receptacle
-let gameBall;
-let receptacle;
+  // -- set up the canvas ----------------------------------------------------
 
-function startGame() {
-    console.log("game started");
+  let canvasContainer = document.getElementById("canvas-container");
+  let canvas = createCanvas(
+    canvasContainer.offsetWidth,
+    canvasContainer.offsetHeight
+  );
+  canvas.parent(canvasContainer);
+  background(0, 0, 0, 0);
+  canvas.style("background-color", "transparent");
+  console.log("Canvas created");
 
-    // canvas setup ------------------------------------------------------------
-    let canvasContainer = document.getElementById("canvas-container");
-    let canvas = createCanvas(
-        canvasContainer.offsetWidth,
-        canvasContainer.offsetHeight
-    );
+  frameRate(60);
+  console.log("Frame rate set to 60 FPS");
 
-    canvas.parent(canvasContainer);
-    background(0, 0, 0, 0);
-    canvas.style("background-color", "transparent");
-    // -------------------------------------------------------------------------
+  // -- build the environment ------------------------------------------------
+  engine = Matter.Engine.create();
+  world = engine.world;
 
-    //build ball and receptacle
-    gameBall = buildBall("tennisball", gameBall);
-    receptacle = buildReceptacle();
+  // Set up the mouse constraint for dragging the ball
+  const canvasElement = document.getElementById("canvas-container");
 
-    // create and arrange buttons ----------------------------------------------
-    let resetButton = createButton("Reset");
-    resetButton.mousePressed(resetGame);
+  const mouse = Mouse.create(canvasElement);
+  const mouseOptions = {
+    mouse: mouse,
+    constraint: {
+      stiffness: 0.2,
+      render: {
+        visible: false,
+      },
+    },
+  };
+  mConstraint = MouseConstraint.create(engine, mouseOptions);
+  World.add(world, mConstraint);
+  switch (level) {
+    case 2:
+      environment = new Environment(/*level2.json*/);
+      console.log("Level 2 environment created");
+      break;
+    case 3:
+      environment = new Environment(/*level3.json*/);
+      console.log("Level 3 environment created");
+      break;
+    default: // level 1
+      environment = new Environment(/*level1.json*/);
+      console.log("Level 1 environment created");
+      break;
+  }
+  // -- create and arrange buttons -------------------------------------------
+  let resetButton = createButton("Reset");
+  resetButton.mousePressed(resetGame);
 
-    let golfballButton = createButton("Golfball");
-    golfballButton.mousePressed(() => {
-        gameBall = buildBall("golfball", gameBall);
-    });
+  let golfballButton = createButton("Golfball");
+  golfballButton.mousePressed(() => {
+    environment.setThrowable("golfball");
+  });
 
-    let basketballButton = createButton("Basketball");
-    basketballButton.mousePressed(() => {
-        gameBall = buildBall("basketball", gameBall);
-    });
+  let basketballButton = createButton("Basketball");
+  basketballButton.mousePressed(() => {
+    environment.setThrowable("basketball");
+  });
 
-    let bowlingballButton = createButton("Bowlingball");
-    bowlingballButton.mousePressed(() => {
-        gameBall = buildBall("bowlingball", gameBall);
-    });
+  let bowlingballButton = createButton("Bowlingball");
+  bowlingballButton.mousePressed(() => {
+    environment.setThrowable("bowlingball");
+  });
 
-    let tennisballButton = createButton("Tennisball");
-    tennisballButton.mousePressed(() => {
-        gameBall = buildBall("tennisball", gameBall);
-    });
+  let tennisballButton = createButton("Tennisball");
+  tennisballButton.mousePressed(() => {
+    environment.setThrowable("tennisball");
+  });
 
-    // rsmith - for turning off mouse barrier for debugging purposes
-    let disableBarrier = createButton("DEBUG: Disable Barrier");
-    disableBarrier.mousePressed(() => {
-        gameBall.mouseBarrierActive = !gameBall.mouseBarrierActive;
-    });
+  // rsmith - for turning off mouse barrier for debugging purposes
+  let disableBarrier = createButton("DEBUG: Disable Barrier");
+  disableBarrier.mousePressed(() => {
+    environment.invertBarrierStatus();
+  });
 
-    /* condensing */
+  // add styling to ball buttons
     resetButton.addClass("list buttonSize resetBtn");
     disableBarrier.addClass("list buttonSize barrierBtn");
     golfballButton.addClass("list buttonSize golfBtn");
     basketballButton.addClass("list buttonSize basketballBtn");
     tennisballButton.addClass("list buttonSize tennisBtn");
     bowlingballButton.addClass("list buttonSize bowlingBtn");
-
-    // -------------------------------------------------------------------------
-}
-
-function resetGame() {
-    gameBall.reset();
-    receptacle.setScore(0); // rsmith
-}
-
-function mousePressed() {
-    gameBall.pressed(mouseX, mouseY);
-}
-
-function mouseReleased() {
-    gameBall.released();
 }
 
 function draw() {
-    clear(); // clears the entire canvas to be redrawn
-
-    drawScore(); // rsmith - draw score to screen
-
-    let gravity = createVector(0, 0.2);
-    let weight = p5.Vector.mult(gravity, gameBall.mass);
-    gameBall.applyForce(weight);
-
-    gameBall.over(mouseX, mouseY);
-    gameBall.mouseOutOfBounds(); // rsmith
-    gameBall.update();
-    gameBall.edges();
-    gameBall.show();
-    receptacle.show();
-    receptacle.OnCollisionEnter(gameBall); // rsmith
-
+  clear(); // clears the entire canvas to be redrawn
+  // TODO move this to the environment class when scoreboard is implemented
+  drawScore(); // rsmith - draw score to screen
+  // template for drawing objects
+  environment.update();
+  environment.receptacle.checkForEntry(environment.throwable);
+  environment.display();
 }
 
-function buildBall(ballType, _gameBall) {
-    switch (ballType) {
-        case "basketball":
-            _gameBall = new throwable(150, height + 150, 0.784);
-            // scaled sprites via image editor and reupload
-            _gameBall.img = loadImage("https://i.imgur.com/d5B8YI0.png");
-            // radius = width of scaled sprite / 2 (pixels)
-            _gameBall.setRad(74);
-            _gameBall.setType("basketball");
-
-            break;
-        case "bowlingball":
-            _gameBall = new throwable(150, height + 150, 0.142);
-            // _gameBall.img = loadImage("https://i.imgur.com/cbOBDxF.png"); original
-            _gameBall.img = loadImage("https://i.imgur.com/NTqjnK4.png");
-            _gameBall.setRad(72);
-            _gameBall.setType("bowlingball");
-            break;
-        case "golfball":
-            _gameBall = new throwable(150, height + 150, 0.142);
-            // _gameBall.img = loadImage("https://i.imgur.com/wOLqk4C.png"); original
-            _gameBall.img = loadImage("https://i.imgur.com/cXYIMIm.png");
-            _gameBall.setRad(18);
-            _gameBall.setType("golfball");
-            break;
-        case "tennisball":
-            _gameBall = new throwable(150, height + 150, 0.142);
-            // _gameBall.img = loadImage("https://i.imgur.com/wSzErKC.png"); original
-            _gameBall.img = loadImage("https://i.imgur.com/ZL0oho5.png");
-            _gameBall.setRad(26);
-            _gameBall.setType("tennisball");
-            break;
-        default:
-            console.log("Invalid ball.");
-    }
-    return _gameBall;
-}
-
-function buildReceptacle() {
-    let pos = createVector(width / 2, height / 2);
-    let vertices = [
-        createVector(width / 2 - 50, height / 2 - 100),
-        createVector(width / 2 + 50, height / 2 - 100),
-        createVector(width / 2 + 100, height / 2),
-        createVector(width / 2 + 50, height / 2 + 100),
-        createVector(width / 2 - 50, height / 2 + 100),
-        createVector(width / 2 - 100, height / 2),
-    ];
-    return new Receptacle(pos, vertices);
+function resetGame() {
+  environment.getThrowable().reset();
+  environment.resetScore();
+  console.log("Game reset");
 }
 
 // rsmith - draw score to top left of screen
 function drawScore() {
-    push(); // allows the following formatting to be temporary
-    textSize(64);
-    textAlign(CENTER, CENTER);
-    fill(0, 0, 0);
-    text("Score: " + receptacle.getScore(), width * 0.1, height * 0.1);
-    pop(); // ends the above formatting
+  push(); // allows the following formatting to be temporary
+  textSize(64);
+  fill(0, 0, 0);
+  text("Score: " + environment.getScore(), width * 0.1, height * 0.1);
+  pop(); // ends the above formatting
 }
