@@ -13,7 +13,7 @@ class Receptacle {
     constructor(receptacleType) {
 
         this.edges = [];
-
+        this.rType = receptacleType;
         switch(receptacleType) {
             case 'goblet':
                 break;
@@ -28,89 +28,52 @@ class Receptacle {
                 break;
 
             default:
-                this.center = createVector(width / 2, height / 2);
                 this.vertices = [
-                    createVector(width / 2 - 50, height / 2 - 100),
-                    createVector(width / 2 + 50, height / 2 - 100),
-                    createVector(width / 2 + 100, height / 2),
-                    createVector(width / 2 + 50, height / 2 + 100),
-                    createVector(width / 2 - 50, height / 2 + 100),
-                    createVector(width / 2 - 100, height / 2),
-                ];
+                    { x: width / 2 - 50, y: height / 2 - 100 },
+                    { x: width / 2 + 50, y: height / 2 - 100 },
+                    { x: width / 2 + 100, y: height / 2 },
+                    { x: width / 2 + 50, y: height / 2 + 100 },
+                    { x: width / 2 - 50, y: height / 2 + 100 },
+                    { x: width / 2 - 100, y: height / 2 },
+                  ];
+                let option = {
+                    isStatic: true,
+                    label: 'receptacle',
+                    render:{
+                        fillStyle: '#ff0000',
+                        strokeStyle: 'pink',
+                        lineWidth: 10
+                    }
+                }
+                this.body = Bodies.fromVertices(
+                    width / 2, 
+                    height / 2, 
+                    this.vertices, 
+                    option
+                );
         }
-
-        // add edges to the receptacle based on vertices
-        for (let i = 0; i < this.vertices.length; i++) {
-            let start = this.vertices[i];
-            let end = this.vertices[(i + 1) % this.vertices.length];
-            let edge = createVector(end.x - start.x, end.y - start.y);
-            this.edges.push(edge);
-        }
-
-        console.log("Receptacle created");
+        // Detect when the polygon collides with another body
+        // World.add(world, this.body);
+        World.add(world, this.body);
     }
-
-    update(environment) {
-        this.OnCollisionEnter(environment.getThrowable(), environment);
-    }
-
     display() {
         beginShape();
         for (let i = 0; i < this.vertices.length; i++) {
-            strokeWeight(3);
+            strokeWeight(50);
             stroke(0, 255, 0);
             vertex(this.vertices[i].x, this.vertices[i].y);
         }
         endShape(CLOSE);
         fill(0, 255, 0, 100);
         noStroke();
-        circle(this.center.x, this.center.y, 100);
-    }
-
-      
+    } 
     // should handle friction to return range(0, 1)
     // simple handler for testing
     // assume this.friction in range(0,1)
     getBounceForce() {
         return 1 - this.friction;
     }
-  
-    // return true if the ball score
-    // vertex 0 and 1 create the entrance edge, the only edge that does not collide with the ball.
-    OnCollisionEnter(ball, environment) {
-        let scored = false; // rsmith
-
-        for (let i = 0; i < this.edges.length; i++) {
-            //CONTAIN TESTING VARIABLES
-            let edge = this.edges[i];
-            let edgeStart = this.vertices[i];
-            let edgeEnd = this.vertices[(i + 1) % this.vertices.length];
-            let ballPerpenEnd = vectorProjection(ball.pos, edge);
-            let ballImgOnEdge = lineLineIntersection(edgeStart, edgeEnd, ball.pos, ballPerpenEnd);
-
-            if (isPointInBetween(edgeStart, edgeEnd, ballImgOnEdge) === 1) {
-                if (dist(ball.pos.x, ball.pos.y, ballImgOnEdge.x, ballImgOnEdge.y) < ball.getRadius()) {
-                    if (i === 0) { // if the ball collides with the entry (top) edge
-                        // set to true so next collision will reset it
-                        ball.inside = true; // rsmith
-                        scored = true; // rsmith - sets return value to true
-                    } else { // if the ball collides with a non-entry edge
-                        ball.pos = ballPosAfterCollide(ball.pos, ballImgOnEdge, ball.getRadius());
-                        ball.vel = getBounceVelocity(edge, ball.vel);
-
-                        // rsmith
-                        if (ball.inside) { // if the ball has entered the receptacle
-                            environment.addScore(1); // increment the score
-                            ball.reset(); // reset the ball
-                        }
-                    }
-                }
-            }
-        }
-        return scored; // rsmith - boolean to track if score should be incremented
-    }
 }
-
 // value > max? value = max: value
 // value < min? value = min: value
 function clamp(val, minVal, maxVal) {

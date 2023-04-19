@@ -11,6 +11,7 @@ class Environment {
     constructor(/*json file*/) {
 
         // game objects
+        this.addBoundaries();
         this.receptacle = new Receptacle('default');
         this.throwable  = new Throwable('tennisball');
         this.platforms  = [];
@@ -20,9 +21,7 @@ class Environment {
         // environmental physics
         this.gravity = createVector(0, 9.8); // earth gravity: 9.8 m/s^2
         this.wind    = createVector(0, 0);   // wind force: 0 m/s^2
-
         this.backgroundimage = null;
-
         // TODO move into class.scoreboard.js
         // scoreboard variables
         this.score = 0;
@@ -54,7 +53,7 @@ class Environment {
 
     update() {
         this.throwable.update(this);
-        this.receptacle.update(this);
+        // this.receptacle.update(this);
         // this.platforms.forEach(platform => platform.update(this));
         // this.scoreboard.update(this);
     }
@@ -64,6 +63,19 @@ class Environment {
     this.receptacle.display();
     // this.platforms.forEach(platform => platform.display(this));
     // this.scoreboard.display(this);
+    }
+    addBoundaries() 
+    {
+                // create the ground
+        const edgeOptions = {
+            isStatic: true,
+            label: 'edges'
+            };
+            let ground = Bodies.rectangle(width / 2, height, width, 5, edgeOptions);
+            let leftWall = Bodies.rectangle(0, height / 2, 5, height, edgeOptions);
+            let rightWall = Bodies.rectangle(width, height / 2, 5, height, edgeOptions);
+            let ceiling = Bodies.rectangle(width / 2, 0, width, 5, edgeOptions);
+            World.add(world, [ground, leftWall, rightWall, ceiling]);
     }
 
 }

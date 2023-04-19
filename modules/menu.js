@@ -6,6 +6,18 @@
 // description: Contains the driver code for the "Throw it in!" game.
 
 // global variables for environment
+// Import Matter.js modules
+const Engine = Matter.Engine;
+const World = Matter.World;
+const Bodies = Matter.Bodies;
+const Mouse = Matter.Mouse;
+const MouseConstraint = Matter.MouseConstraint;
+let engine;
+let world;
+let mConstraint;
+
+
+
 let level = 1;
 let environment;
 
@@ -29,7 +41,23 @@ function setup() {
     console.log('Frame rate set to 60 FPS');
 
     // -- build the environment ------------------------------------------------
-
+    engine = Matter.Engine.create();
+    world = engine.world;
+        
+    // Set up the mouse constraint for dragging the ball
+    const canvasElement = document.querySelector('body');
+    const mouse = Mouse.create(canvasElement);
+    const mouseOptions = {
+        mouse: mouse,
+        constraint: {
+        stiffness: 0.2,
+        render: {
+            visible: false
+        }
+        }
+    };
+    mConstraint = MouseConstraint.create(engine, mouseOptions);
+    World.add(world, mConstraint);
     switch(level){
         case 2:
             environment = new Environment(/*level2.json*/);
@@ -44,7 +72,6 @@ function setup() {
             console.log("Level 1 environment created");
             break;
     }
-
     // -- create and arrange buttons -------------------------------------------
     let resetButton = createButton("Reset");
     resetButton.mousePressed(resetGame);
@@ -98,28 +125,16 @@ function draw() {
 
     // TODO move this to the environment class when scoreboard is implemented
     drawScore(); // rsmith - draw score to screen
-
+    Matter.Engine.update(engine);
     // template for drawing objects
     environment.update();
     environment.display();
 }
-
 function resetGame() {
     environment.getThrowable().reset();
     environment.resetScore();
     console.log('Game reset');
 }
-
-function mousePressed() {
-    environment.getThrowable().mousePressed(environment);
-}
-
-function mouseReleased() {
-    if (environment.getThrowable().getDragging()) {
-        environment.getThrowable().mouseReleased();
-    }
-}
-
 // rsmith - draw score to top left of screen
 function drawScore() {
     push(); // allows the following formatting to be temporary
