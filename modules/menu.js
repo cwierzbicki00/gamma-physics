@@ -58,21 +58,14 @@ function startGame() {
         gameBall.mouseBarrierActive = !gameBall.mouseBarrierActive;
     });
 
-    //add styling to ball buttons
-    resetButton.addClass("list");
-    disableBarrier.addClass("list");
-    golfballButton.addClass("list");
-    basketballButton.addClass("list");
-    tennisballButton.addClass("list");
-    bowlingballButton.addClass("list");
+    /* condensing */
+    resetButton.addClass("list buttonSize resetBtn");
+    disableBarrier.addClass("list buttonSize barrierBtn");
+    golfballButton.addClass("list buttonSize golfBtn");
+    basketballButton.addClass("list buttonSize basketballBtn");
+    tennisballButton.addClass("list buttonSize tennisBtn");
+    bowlingballButton.addClass("list buttonSize bowlingBtn");
 
-    //button positioning classes
-    resetButton.addClass("resetBtn");
-    disableBarrier.addClass("barrierBtn");
-    golfballButton.addClass("golfBtn");
-    basketballButton.addClass("basketballBtn");
-    tennisballButton.addClass("tennisBtn");
-    bowlingballButton.addClass("bowlingBtn");
     // -------------------------------------------------------------------------
 }
 
