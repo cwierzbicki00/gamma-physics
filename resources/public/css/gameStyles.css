@@ -109,7 +109,7 @@ canvas {
   -webkit-user-select: none;
   touch-action: manipulation;
   vertical-align: baseline;
-  left: 0%;
+  left: 5%;
 }
 
 .list:hover,
@@ -131,32 +131,32 @@ canvas {
 /* positions each button */
 .tennisBtn {
   top: 92%;
-  left: 0%;
+  left: 2%;
 }
 
 .basketballBtn {
   top: 92%;
-  left: 14.28%;
+  left: 16.28%;
 }
 
 .golfBtn {
   top: 92%;
-  left: 28.56%;
+  left: 30.56%;
 }
 
 .bowlingBtn {
   top: 92%;
-  left: 42.84%;
+  left: 44.84%;
 }
 
 .resetBtn {
   top: 92%;
-  left: 57.12%;
+  left: 59.12%;
 }
 
 .barrierBtn {
   top: 92%;
-  left: 71.4%;
+  left: 73.4%;
 }
 
 /* ---------------------------------------------------------- */
