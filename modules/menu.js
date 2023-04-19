@@ -45,7 +45,8 @@ function setup() {
     world = engine.world;
         
     // Set up the mouse constraint for dragging the ball
-    const canvasElement = document.querySelector('body');
+    const canvasElement = document.getElementById('canvas-container');
+
     const mouse = Mouse.create(canvasElement);
     const mouseOptions = {
         mouse: mouse,
@@ -125,7 +126,6 @@ function draw() {
 
     // TODO move this to the environment class when scoreboard is implemented
     drawScore(); // rsmith - draw score to screen
-    Matter.Engine.update(engine);
     // template for drawing objects
     environment.update();
     environment.display();

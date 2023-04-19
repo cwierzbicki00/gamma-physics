@@ -53,6 +53,7 @@ class Environment {
 
     update() {
         this.throwable.update(this);
+        Matter.Engine.update(engine);
         // this.receptacle.update(this);
         // this.platforms.forEach(platform => platform.update(this));
         // this.scoreboard.update(this);

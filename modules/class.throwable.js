@@ -55,18 +55,13 @@ class Throwable {
         this.resetTimer    = false;
         
         let option = {
-            mass: this.mass,
+            friction: 0.001,
+            mass: 10,
             restitution: this.bounce,
-            render:{
-                fillStyle: '#ff0000',
-                strokeStyle: 'pink',
-                lineWidth: 10
-            },
             label: 'Ball'
         }
-        this.body = Bodies.circle(this.initialPos.x, this.initialPos.y , this.radius * 2,option);
+        this.body = Bodies.circle(this.initialPos.x, this.initialPos.y , this.radius,option);
         World.add(world,this.body);
-        console.log("Throwable " + this.type + " created");
     }
 
     print() {
@@ -96,16 +91,23 @@ class Throwable {
         } else {
             tint(255, 200);
         }
-        ellipse(this.body.position.x, this.body.position.y, this.radius * 2, this.radius * 2);
-        rotate(this.angle);
         imageMode(CENTER);
-        image(this.img, this.body.position.x, this.body.position.y, this.img.width, this.img.height);
+
+        // Translate the origin to the position of the ball
+        translate(this.body.position.x, this.body.position.y);
+        // Calculate the angle of rotation based on the angle of the body
+        let angle = this.body.angle;
+        // Rotate the image around its center pivot
+        rotate(angle);
+        // Draw the image with its center pivot at the ball's position
+        image(this.img, 0, 0, this.img.width, this.img.height);
+
         pop();
     }
 
     // allow user to drag ball if it was clicked on
     mousePressed(environment) {
-        if (mConstraint.body && environment.getBarrierStatus()) 
+        if (mConstraint.body&& environment.getBarrierStatus()) 
         {
             console.log(mConstraint.body.label);
             this.dragging = true;
@@ -113,8 +115,8 @@ class Throwable {
             const offset = mConstraint.constraint.pointB;
             const m = mConstraint.mouse;
             const forceVector = {
-            x: (m.position.x - pos.x - offset.x) * 0.00001,
-            y: (m.position.y - pos.y - offset.y) * 0.00001
+            x: (m.position.x - pos.x - offset.x) * 0.001,
+            y: (m.position.y - pos.y - offset.y) * 0.001
             };
             Matter.Body.applyForce(this.body, pos, forceVector);
             // Limit the ball's maximum velocity
@@ -127,20 +129,6 @@ class Throwable {
         }   
         else
             this.dragging = false;     
-    }
-    applyThrowForce() {
-        // mouse movement speed
-        let mx = (mouseX - pmouseX);
-        let my = (mouseY - pmouseY);
-        console.log(mx);
-        console.log(my);
-        let mouse_speed = {x:mx , y: my};
-
-        // mouse acceleration
-        let ax = mouse_speed.x / this.mass;
-        let ay = mouse_speed.y / this.mass;
-        // move position based on velocity
-        Matter.Body.applyForce(this.body,this.body.position, {x: ax, y: ay});
     }
 
     // recover the throwable from beyond the mouse barrier after N seconds
