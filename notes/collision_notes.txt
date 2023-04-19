@@ -7,8 +7,10 @@ FOR THROWABLE OBJECTS:
 	collision = edge of sprite (a more perfect shape to round out pixel edges when scaled up)
 
 FOR FLOOR:
-	collision = near horizontal middle of sprite (a line)
-
+	collision = near horizontal or vertical middle of sprite (a line)
+	
+	Floor should be on a layer behind throwable object
+	
 FOR RECIPTICLES:
 	Layers:
 		fg component (no collision)

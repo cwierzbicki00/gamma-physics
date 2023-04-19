@@ -1,5 +1,11 @@
-body {
-  font-size: 100%; /* default font size */
+/* make content fit on screen */
+body,
+html {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
 }
 
 .container {
@@ -7,12 +13,14 @@ body {
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  height: 100vh;
+  height: 100%; /* changed vh -> % */
 }
 
+/* Makes game take up *most* of the screen */
+/* left room for buttons for visibility, can be adjusted */
 #canvas-container {
-  width: 85%;
-  height: 85%;
+  width: 100%;
+  height: 90%;
   border: 2px dashed grey;
   border-top: none;
 }
@@ -67,13 +75,11 @@ canvas {
 
 /* ball selection menu -----------------------------------------*/
 
-.ballButtonContainer {
-  display: grid;
-  grid-template-rows: 10%;
-  position: absolute;
-  gap: 25%;
-  left: 0%;
-  top: 30%;
+/* removed .ballButtonContainer */
+/* added class for all buttons instead */
+.buttonSize {
+  width: 10%;
+  height: 3rem; /* You can adjust this value if needed */
 }
 
 .list {
@@ -103,8 +109,7 @@ canvas {
   -webkit-user-select: none;
   touch-action: manipulation;
   vertical-align: baseline;
-  width: 10%;
-  left: 0%;
+  left: 5%;
 }
 
 .list:hover,
@@ -125,56 +130,61 @@ canvas {
 
 /* positions each button */
 .tennisBtn {
-  top: 15%;
+  top: 92%;
+  left: 2%;
 }
 
 .basketballBtn {
-  top: 25%;
+  top: 92%;
+  left: 16.28%;
 }
 
 .golfBtn {
-  top: 35%;
+  top: 92%;
+  left: 30.56%;
 }
 
 .bowlingBtn {
-  top: 45%;
+  top: 92%;
+  left: 44.84%;
 }
 
 .resetBtn {
-  top: 55%;
+  top: 92%;
+  left: 59.12%;
 }
 
 .barrierBtn {
-  top: 65%;
+  top: 92%;
+  left: 73.4%;
 }
 
 /* ---------------------------------------------------------- */
 
 .gamescreen {
-  width: 90%;
+  width: 100%;
   height: 90%;
   position: absolute;
   display: block;
-  left: 10%;
+  left: 0;
   top: 10%;
 }
 
 .btn-mainMenu {
   position: absolute;
-  width: 25%;
-  left: 75%;
-  top: 88%;
+
+  left: 85.68%;
+  top: 92%;
   font-family: system-ui, sans-serif;
   cursor: pointer;
   font-weight: bold;
-  border: none; // TODO: remove this because it is overwritten 2 lines down. rsmith
+  /* border: none; // TODO: remove this because it is overwritten 2 lines down. rsmith */
   text-align: center;
   border: 3px solid #705d97;
   border-radius: 6px;
   white-space: nowrap;
-  height: 12%;
+
   font-size: 1.5em;
-  padding: 0.5rem;
 }
 
 .btn-mainMenu:active,

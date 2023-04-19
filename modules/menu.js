@@ -1,7 +1,7 @@
 //     file name: menu.js
 //       authors: Quoc, Ryan Smith, Nathan Fleet, Nick Weber
 //  date created: 2 Mar 2023
-// date modified: 13 Apr 2023 (rsmith)
+// date modified: 19 Apr 2023 (quoc)
 
 // description: Contains the driver code for the "Throw it in!" game.
 
@@ -102,25 +102,16 @@ function setup() {
   });
 
   // add styling to ball buttons
-  resetButton.addClass("list");
-  disableBarrier.addClass("list");
-  golfballButton.addClass("list");
-  basketballButton.addClass("list");
-  tennisballButton.addClass("list");
-  bowlingballButton.addClass("list");
-
-  // button positioning classes
-  resetButton.addClass("resetBtn");
-  disableBarrier.addClass("barrierBtn");
-  golfballButton.addClass("golfBtn");
-  basketballButton.addClass("basketballBtn");
-  tennisballButton.addClass("tennisBtn");
-  bowlingballButton.addClass("bowlingBtn");
+    resetButton.addClass("list buttonSize resetBtn");
+    disableBarrier.addClass("list buttonSize barrierBtn");
+    golfballButton.addClass("list buttonSize golfBtn");
+    basketballButton.addClass("list buttonSize basketballBtn");
+    tennisballButton.addClass("list buttonSize tennisBtn");
+    bowlingballButton.addClass("list buttonSize bowlingBtn");
 }
 
 function draw() {
   clear(); // clears the entire canvas to be redrawn
-
   // TODO move this to the environment class when scoreboard is implemented
   drawScore(); // rsmith - draw score to screen
   // template for drawing objects
@@ -128,11 +119,13 @@ function draw() {
   environment.receptacle.checkForEntry(environment.throwable);
   environment.display();
 }
+
 function resetGame() {
   environment.getThrowable().reset();
   environment.resetScore();
   console.log("Game reset");
 }
+
 // rsmith - draw score to top left of screen
 function drawScore() {
   push(); // allows the following formatting to be temporary
