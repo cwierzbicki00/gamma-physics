@@ -142,7 +142,7 @@ class Throwable {
 
   // recover the throwable from beyond the mouse barrier after N seconds
   recover() {
-    let time = 5; // seconds
+    let time = 15; // seconds
     let timer;
     this.irrecoverable = this.body.position.x > windowWidth * 0.2;
     if (this.irrecoverable && !this.resetTimer) {
