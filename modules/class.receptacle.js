@@ -51,10 +51,11 @@ class Receptacle {
                     this.vertices, 
                     option
                 );
+                World.add(world, this.body);
         }
         // Detect when the polygon collides with another body
         // World.add(world, this.body);
-        World.add(world, this.body);
+
     }
     display() {
         beginShape();

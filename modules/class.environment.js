@@ -15,6 +15,9 @@ class Environment {
         this.receptacle = new Receptacle('default');
         this.throwable  = new Throwable('tennisball');
         this.platforms  = [];
+        this.platforms.push( new Platform({ x: width/4, y: height }, width/2, 100, 40));
+        this.platforms.push( new Platform({ x: 400, y: height/2 }, 200, 100, 0));
+
         // TODO awaiting implementation of scoreboard class
         // this.scoreboard = new scoreboard();
 
@@ -55,14 +58,13 @@ class Environment {
         this.throwable.update(this);
         Matter.Engine.update(engine);
         // this.receptacle.update(this);
-        // this.platforms.forEach(platform => platform.update(this));
+       
         // this.scoreboard.update(this);
     }
-
     display() {
     this.throwable.display();
     this.receptacle.display();
-    // this.platforms.forEach(platform => platform.display(this));
+    this.platforms.forEach(platform => platform.display(this));
     // this.scoreboard.display(this);
     }
     addBoundaries() 
