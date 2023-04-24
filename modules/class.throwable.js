@@ -1,7 +1,7 @@
 //     file name: class.throwable.js
-//       authors: Ryan Smith
+//       authors: Ryan Smith, Christian Wierzbicki
 //  date created: 02 Mar 2023
-// date modified: 13 Apr 2023 (rsmith)
+// date modified: 24 Apr 2023 (rsmith)
 
 // description: Contains a base class for a throwable object, which is
 //              manipulated by the player to be tossed at a receptacle.
@@ -10,32 +10,44 @@ class Throwable {
   constructor(ballType) {
     switch (ballType) {
       case "basketball":
-        this.type = "basketball";
-        this.mass = 0.625; // kilograms
-        this.bounce = 0.6; // testing
         this.radius = 74;
         this.img = loadImage("https://i.imgur.com/d5B8YI0.png");
+        this.option = {
+          friction: 0.001,
+          mass: 0.625, // kilograms
+          restitution: 0.6, // testing
+          label: "basketball",
+        };
         break;
       case "bowlingball":
-        this.type = "bowlingball";
-        this.mass = 6.8;
-        this.bounce = 0.1; // testing
         this.radius = 72;
         this.img = loadImage("https://i.imgur.com/NTqjnK4.png");
+        this.option = {
+          friction: 0.001,
+          mass: 6.8,
+          restitution: 0.1,
+          label: "bowlingball",
+        };
         break;
       case "golfball":
-        this.type = "golfball";
-        this.mass = 0.046;
-        this.bounce = 0.85; // testing
         this.radius = 18;
         this.img = loadImage("https://i.imgur.com/cXYIMIm.png");
+        this.option = {
+          friction: 0.001,
+          mass: 0.046,
+          restitution: 0.85,
+          label: "golfball",
+        };
         break;
       case "tennisball":
-        this.type = "tennisball";
-        this.mass = 0.056;
-        this.bounce = 0.75; // testing
         this.radius = 26;
         this.img = loadImage("https://i.imgur.com/ZL0oho5.png");
+        this.option = {
+          friction: 0.001,
+          mass: 0.056,
+          restitution: 0.75,
+          label: "tennisball",
+        };
         break;
       default:
         throw new Error("Invalid ball type");
@@ -54,17 +66,12 @@ class Throwable {
     this.irrecoverable = false;
     this.resetTimer = false;
 
-    let option = {
-      friction: 0.001,
-      mass: 10,
-      restitution: this.bounce,
-      label: "Ball",
-    };
+    // matter.js body
     this.body = Bodies.circle(
       this.initialPos.x,
       this.initialPos.y,
       this.radius,
-      option
+      this.option,
     );
     World.add(world, this.body);
   }
@@ -122,10 +129,10 @@ class Throwable {
       const pos = this.body.position;
       const offset = mConstraint.constraint.pointB;
       const m = mConstraint.mouse;
-      const forceVector = {
-        x: (m.position.x - pos.x - offset.x) * 0.001,
-        y: (m.position.y - pos.y - offset.y) * 0.001,
-      };
+      const forceVector = Vector.create(
+        (m.position.x - pos.x - offset.x) * 0.001,
+        (m.position.y - pos.y - offset.y) * 0.001
+      );
       Matter.Body.applyForce(this.body, pos, forceVector);
       // Limit the ball's maximum velocity
       const maxVelocity = 20;
@@ -165,7 +172,7 @@ class Throwable {
 
   // Reset ball to initial state
   reset() {
-    Matter.Body.setVelocity(this.body, { x: 0, y: 0 });
+    Matter.Body.setVelocity(this.body, Vector.create( 0, 0 ));
     Matter.Body.setPosition(this.body, this.initialPos);
     this.irrecoverable = false;
     this.resetTimer = false;

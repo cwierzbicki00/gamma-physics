@@ -10,6 +10,9 @@
 const Engine = Matter.Engine;
 const World = Matter.World;
 const Bodies = Matter.Bodies;
+const Body = Matter.Body;
+const Vector = Matter.Vector;
+const Composite = Matter.Composite;
 const Mouse = Matter.Mouse;
 const MouseConstraint = Matter.MouseConstraint;
 let engine;
@@ -42,32 +45,32 @@ function setup() {
   engine = Matter.Engine.create();
   world = engine.world;
 
-  // Set up the mouse constraint for dragging the ball
-  const canvasElement = document.getElementById("canvas-container");
+  setMouseConstraint();
 
-  const mouse = Mouse.create(canvasElement);
-  const mouseOptions = {
-    mouse: mouse,
-    constraint: {
-      stiffness: 0.2,
-      render: {
-        visible: false,
-      },
-    },
-  };
-  mConstraint = MouseConstraint.create(engine, mouseOptions);
-  World.add(world, mConstraint);
+
   switch (level) {
     case 2:
-      environment = new Environment(/*level2.json*/);
+      fetch("../assets/jsons/level1-2.json")
+        .then((response) => response.json())
+        .then(data => {
+          environment = new Environment(data);
+        });
       console.log("Level 2 environment created");
       break;
     case 3:
-      environment = new Environment(/*level3.json*/);
+      fetch("../assets/jsons/level1-3.json")
+        .then((response) => response.json())
+        .then(data => {
+          environment = new Environment(data);
+        });
       console.log("Level 3 environment created");
       break;
     default: // level 1
-      environment = new Environment(/*level1.json*/);
+      fetch("../../../assets/jsons/level1-1.json")
+        .then((response) => response.json())
+        .then(data => {
+          environment = new Environment(data);
+        });
       console.log("Level 1 environment created");
       break;
   }
@@ -114,6 +117,7 @@ function draw() {
   clear(); // clears the entire canvas to be redrawn
   // TODO move this to the environment class when scoreboard is implemented
   drawScore(); // rsmith - draw score to screen
+
   // template for drawing objects
   environment.update();
   environment.receptacle.checkForEntry(environment.throwable);
@@ -133,4 +137,23 @@ function drawScore() {
   fill(0, 0, 0);
   text("Score: " + environment.getScore(), width * 0.1, height * 0.1);
   pop(); // ends the above formatting
+}
+
+function setMouseConstraint() {
+
+  // Set up the mouse constraint for dragging the ball
+  const canvasElement = document.getElementById("canvas-container");
+
+  const mouse = Mouse.create(canvasElement);
+  const mouseOptions = {
+    mouse: mouse,
+    constraint: {
+      stiffness: 1, // rsmith
+      render: {
+        visible: false,
+      },
+    },
+  };
+  mConstraint = MouseConstraint.create(engine, mouseOptions);
+  World.add(world, mConstraint);
 }

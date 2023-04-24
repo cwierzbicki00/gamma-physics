@@ -8,23 +8,29 @@
 
 
 class Environment {
-    constructor(/*json file*/) {
+    constructor(data) {
 
         // game objects
         this.addBoundaries();
-        this.receptacle = new Receptacle('default');
-        this.throwable  = new Throwable('tennisball');
+        this.receptacle = new Receptacle(data.receptacle.type); // TODO needs receptacle ctor implementation
+        this.throwable  = new Throwable(data.throwable.type);
         this.platforms  = [];
-        this.platforms.push( new Platform({ x: width/4, y: height }, width/2, 100, 40));
-        this.platforms.push( new Platform({ x: 400, y: height/2 }, 200, 100, 0));
+        // this.platforms.push( new Platform({ x: width/4, y: height }, width/2, 100, 40));
+        // this.platforms.push( new Platform({ x: 400, y: height/2 }, 200, 100, 0));
 
         // TODO awaiting implementation of scoreboard class
         // this.scoreboard = new scoreboard();
 
+        // progression variables
+        this.pointsRequired = data.pointsRequired;
+        this.timeAllowed = data.timeAllowed; // seconds
+
         // environmental physics
-        this.gravity = createVector(0, 9.8); // earth gravity: 9.8 m/s^2
-        this.wind    = createVector(0, 0);   // wind force: 0 m/s^2
-        this.backgroundimage = null;
+        this.gravity = createVector(data.gravity.x, data.gravity.y); // earth gravity: 9.8 m/s^2
+        this.wind    = createVector(data.wind.x, data.wind.y);   // wind force: 0 m/s^2
+
+        this.backgroundImage = null; //loadImage(data.backgroundImage);
+
         // TODO move into class.scoreboard.js
         // scoreboard variables
         this.score = 0;
@@ -45,7 +51,7 @@ class Environment {
     getBarrierStatus() { return this.mouseBarrierActive; }
 
     // modifiers
-    setThrowable(newType)       { this.throwable = new Throwable(newType); }
+    setThrowable(newType)       { World.remove(world, this.throwable.body); this.throwable = new Throwable(newType); }
     setReceptacle(newType)      { this.receptacle = new Receptacle(newType); }
     setGravity(newGravity)      { this.gravity = createVector(0, newGravity * -1); }
     setWind(newWindX, newWindY) { this.wind = createVector(newWindX, newWindY); }
@@ -61,14 +67,16 @@ class Environment {
        
         // this.scoreboard.update(this);
     }
+
     display() {
     this.throwable.display();
     this.receptacle.display();
     this.platforms.forEach(platform => platform.display(this));
     // this.scoreboard.display(this);
     }
-    addBoundaries() 
-    {
+
+    // ctor helper function to add the boundaries of the environment
+    addBoundaries()  {
                 // create the ground
         const edgeOptions = {
             isStatic: true,

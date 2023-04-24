@@ -1,0 +1,10 @@
+{
+  "receptacle": { "type": "vasedebug" },
+  "throwable": { "type": "bowlingball" },
+  "platforms": [],
+  "pointsRequired": 5,
+  "timeAllowed":  75,
+  "gravity": { "x": 0, "y": 9.8 },
+  "wind": { "x": 0, "y": 0 },
+  "backgroundImage": "IMGUR LINK HERE"
+}
