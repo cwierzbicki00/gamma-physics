@@ -152,27 +152,25 @@ class Throwable {
 
   // recover the throwable from beyond the mouse barrier after N seconds
   recover() {
-    if (!this.body == null) {
-      let time = 15; // seconds
-      let timer;
+    let time = 15; // seconds
+    let timer;
 
-      this.irrecoverable = this.body.position.x > windowWidth * 0.2;
-      if (this.irrecoverable && !this.resetTimer) {
-        this.resetTimer = true;
-        timer = setInterval(() => {
-          console.log("Time until recovery: " + time + " seconds");
-          time--;
-          if (!this.irrecoverable) {
-            console.log("Recovery timer cancelled");
-            this.resetTimer = false;
-            clearInterval(timer);
-          }
-          if (time === 0) {
-            this.reset();
-            clearInterval(timer);
-          }
-        }, 1000);
-      }
+    this.irrecoverable = this.body.position.x > windowWidth * 0.2;
+    if (this.irrecoverable && !this.resetTimer) {
+      this.resetTimer = true;
+      timer = setInterval(() => {
+        console.log("Time until recovery: " + time + " seconds");
+        time--;
+        if (!this.irrecoverable) {
+          console.log("Recovery timer cancelled");
+          this.resetTimer = false;
+          clearInterval(timer);
+        }
+        if (time === 0) {
+          this.reset();
+          clearInterval(timer);
+        }
+      }, 1000);
     }
   }
 
