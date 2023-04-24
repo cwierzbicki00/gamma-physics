@@ -7,34 +7,38 @@
 //              manipulated by the player to be tossed at a receptacle.
 
 class Throwable {
-  constructor(ballType) {
+  constructor(ballType, scaleFactorX, scaleFactorY) {
+    //so we may use in display to scale image as well
+    this.scaleFactorX = scaleFactorX;
+    this.scaleFactorY = scaleFactorY;
+
     switch (ballType) {
       case "basketball":
         this.type = "basketball";
         this.mass = 0.625; // kilograms
         this.bounce = 0.6; // testing
-        this.radius = 74;
+        this.radius = 74 * scaleFactorX;
         this.img = loadImage("https://i.imgur.com/d5B8YI0.png");
         break;
       case "bowlingball":
         this.type = "bowlingball";
         this.mass = 6.8;
         this.bounce = 0.1; // testing
-        this.radius = 72;
+        this.radius = 72 * scaleFactorX;
         this.img = loadImage("https://i.imgur.com/NTqjnK4.png");
         break;
       case "golfball":
         this.type = "golfball";
         this.mass = 0.046;
         this.bounce = 0.85; // testing
-        this.radius = 18;
+        this.radius = 18 * scaleFactorX;
         this.img = loadImage("https://i.imgur.com/cXYIMIm.png");
         break;
       case "tennisball":
         this.type = "tennisball";
         this.mass = 0.056;
         this.bounce = 0.75; // testing
-        this.radius = 26;
+        this.radius = 26 * scaleFactorX;
         this.img = loadImage("https://i.imgur.com/ZL0oho5.png");
         break;
       default:
@@ -109,7 +113,13 @@ class Throwable {
     // Rotate the image around its center pivot
     rotate(angle);
     // Draw the image with its center pivot at the ball's position
-    image(this.img, 0, 0, this.img.width, this.img.height);
+    image(
+      this.img,
+      0,
+      0,
+      this.img.width * this.scaleFactorX,
+      this.img.height * this.scaleFactorY
+    );
 
     pop();
   }
@@ -142,24 +152,27 @@ class Throwable {
 
   // recover the throwable from beyond the mouse barrier after N seconds
   recover() {
-    let time = 15; // seconds
-    let timer;
-    this.irrecoverable = this.body.position.x > windowWidth * 0.2;
-    if (this.irrecoverable && !this.resetTimer) {
-      this.resetTimer = true;
-      timer = setInterval(() => {
-        console.log("Time until recovery: " + time + " seconds");
-        time--;
-        if (!this.irrecoverable) {
-          console.log("Recovery timer cancelled");
-          this.resetTimer = false;
-          clearInterval(timer);
-        }
-        if (time === 0) {
-          this.reset();
-          clearInterval(timer);
-        }
-      }, 1000);
+    if (!this.body == null) {
+      let time = 15; // seconds
+      let timer;
+
+      this.irrecoverable = this.body.position.x > windowWidth * 0.2;
+      if (this.irrecoverable && !this.resetTimer) {
+        this.resetTimer = true;
+        timer = setInterval(() => {
+          console.log("Time until recovery: " + time + " seconds");
+          time--;
+          if (!this.irrecoverable) {
+            console.log("Recovery timer cancelled");
+            this.resetTimer = false;
+            clearInterval(timer);
+          }
+          if (time === 0) {
+            this.reset();
+            clearInterval(timer);
+          }
+        }, 1000);
+      }
     }
   }
 
@@ -172,5 +185,11 @@ class Throwable {
     this.inside = false;
     this.bounceCount = 0;
     console.log("Throwable reset");
+  }
+
+  //destroy the throwable when we're done using it
+  destroy() {
+    World.remove(world, this.body);
+    delete this;
   }
 }

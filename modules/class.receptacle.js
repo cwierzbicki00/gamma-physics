@@ -8,11 +8,11 @@
 //              at.
 
 class Receptacle {
-  constructor(receptacleType) {
+  constructor(receptacleType, scaleFactorX, scaleFactorY) {
     this.edges = [];
     this.rType = receptacleType;
 
-    const openingSize = 50; // Adjust the size of the opening as needed
+    const openingSize = 50 * scaleFactorX; // Adjust the size of the opening as needed
     switch (receptacleType) {
       case "goblet":
         break;
@@ -27,13 +27,14 @@ class Receptacle {
         break;
 
       default:
-        const wallThickness = 10;
+        const wallThickness = 10 * scaleFactorX;
         const centerX = width / 2;
         const centerY = height / 2;
-        const halfWidth = 100;
-        const halfHeight = 100;
+        const halfWidth = 100 * scaleFactorX;
+        const halfHeight = 100 * scaleFactorY;
 
         // Define the receptacle walls
+
         const leftWall = Bodies.rectangle(
           centerX - halfWidth,
           centerY,
@@ -113,6 +114,7 @@ class Receptacle {
   }
 
   checkForEntry(throwable) {
+    if (throwable.body === null) return;
     const tPos = throwable.body.position;
     const bottomWallPos = this.walls[2].position;
     const bottomWallHeight = Math.abs(
@@ -135,5 +137,10 @@ class Receptacle {
       environment.addScore(1);
       throwable.reset();
     }
+  }
+
+  destroy() {
+    //World.remove(world, this.body);
+    delete this;
   }
 }

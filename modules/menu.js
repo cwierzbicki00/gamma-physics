@@ -25,11 +25,22 @@ function setup() {
 
   // -- set up the canvas ----------------------------------------------------
 
+  //access the canvas container div in the html file
   let canvasContainer = document.getElementById("canvas-container");
-  let canvas = createCanvas(
-    canvasContainer.offsetWidth,
-    canvasContainer.offsetHeight
-  );
+
+  // set canvas AR
+  let canvasAspectRatio = 1536 / 864;
+  let newCanvasWidth = canvasContainer.offsetWidth;
+  let newCanvasHeight = newCanvasWidth / canvasAspectRatio;
+
+  if (newCanvasHeight > canvasContainer.offsetHeight) {
+    newCanvasHeight = canvasContainer.offsetHeight;
+    newCanvasWidth = newCanvasHeight * canvasAspectRatio;
+  }
+
+  let canvas = createCanvas(newCanvasWidth, newCanvasHeight);
+
+  // set canvas to be responsive to window size
   canvas.parent(canvasContainer);
   background(0, 0, 0, 0);
   canvas.style("background-color", "transparent");
@@ -43,9 +54,9 @@ function setup() {
   world = engine.world;
 
   // Set up the mouse constraint for dragging the ball
-  const canvasElement = document.getElementById("canvas-container");
+  const canvasElement = document.getElementById("defaultCanvas0");
 
-  const mouse = Mouse.create(canvasElement);
+  const mouse = Mouse.create(canvas.elt);
   const mouseOptions = {
     mouse: mouse,
     constraint: {
@@ -54,9 +65,15 @@ function setup() {
         visible: false,
       },
     },
+    element: canvas.elt,
   };
+  //set pixel density so it has context for canvas size & scale
+  mouse.pixelRatio = pixelDensity();
+
   mConstraint = MouseConstraint.create(engine, mouseOptions);
+
   World.add(world, mConstraint);
+
   switch (level) {
     case 2:
       environment = new Environment(/*level2.json*/);
@@ -102,12 +119,12 @@ function setup() {
   });
 
   // add styling to ball buttons
-    resetButton.addClass("list buttonSize resetBtn");
-    disableBarrier.addClass("list buttonSize barrierBtn");
-    golfballButton.addClass("list buttonSize golfBtn");
-    basketballButton.addClass("list buttonSize basketballBtn");
-    tennisballButton.addClass("list buttonSize tennisBtn");
-    bowlingballButton.addClass("list buttonSize bowlingBtn");
+  resetButton.addClass("list buttonSize resetBtn");
+  disableBarrier.addClass("list buttonSize barrierBtn");
+  golfballButton.addClass("list buttonSize golfBtn");
+  basketballButton.addClass("list buttonSize basketballBtn");
+  tennisballButton.addClass("list buttonSize tennisBtn");
+  bowlingballButton.addClass("list buttonSize bowlingBtn");
 }
 
 function draw() {
@@ -115,6 +132,7 @@ function draw() {
   // TODO move this to the environment class when scoreboard is implemented
   drawScore(); // rsmith - draw score to screen
   // template for drawing objects
+
   environment.update();
   environment.receptacle.checkForEntry(environment.throwable);
   environment.display();
@@ -133,4 +151,60 @@ function drawScore() {
   fill(0, 0, 0);
   text("Score: " + environment.getScore(), width * 0.1, height * 0.1);
   pop(); // ends the above formatting
+}
+
+//Reset mouse reference when window is resized
+function updateMouseConstraint() {
+  // Remove the old mouse constraint from the world
+  World.remove(world, mConstraint);
+
+  // Create a new mouse constraint with the updated canvas element
+  const canvasElement = document.getElementById("canvas-container");
+  const mouse = Mouse.create(canvasElement);
+  const mouseOptions = {
+    mouse: mouse,
+    constraint: {
+      stiffness: 0.2,
+      render: {
+        visible: false,
+      },
+    },
+    element: canvasElement,
+
+    offset: {
+      x: canvasElement.getBoundingClientRect().left,
+      y: canvasElement.getBoundingClientRect().top,
+    },
+  };
+
+  mConstraint = MouseConstraint.create(engine, mouseOptions);
+
+  // Add the new mouse constraint to the world
+  World.add(world, mConstraint);
+}
+
+//Resize canvas when window is resized
+async function windowResized() {
+  let canvasContainer = document.getElementById("canvas-container");
+  let canvasAspectRatio = 1536 / 864;
+  let newCanvasWidth = canvasContainer.offsetWidth;
+  let newCanvasHeight = canvasContainer.offsetHeight;
+
+  let containerAspectRatio = newCanvasWidth / newCanvasHeight;
+  if (containerAspectRatio > canvasAspectRatio) {
+    newCanvasWidth = newCanvasHeight * canvasAspectRatio;
+  } else {
+    newCanvasHeight = newCanvasWidth / canvasAspectRatio;
+  }
+
+  resizeCanvas(newCanvasWidth, newCanvasHeight);
+
+  environment.updateScaleFactors();
+
+  await environment.destroy(); //nukes the old environment except state
+
+  //rebuild the environment
+  environment = new Environment(environment);
+
+  updateMouseConstraint();
 }
