@@ -10,13 +10,20 @@
 class Environment {
     constructor(data) {
 
+        console.log("canvas width: " + width + ", canvas height: " + height);
+
         // game objects
         this.addBoundaries();
-        this.receptacle = new Receptacle(data.receptacle.type); // TODO needs receptacle ctor implementation
+        this.receptacle = new Receptacle(data.receptacle.type, createVector(eval(data.receptacle.x), eval(data.receptacle.y)));
         this.throwable  = new Throwable(data.throwable.type);
-        this.platforms  = [];
-        // this.platforms.push( new Platform({ x: width/4, y: height }, width/2, 100, 40));
-        // this.platforms.push( new Platform({ x: 400, y: height/2 }, 200, 100, 0));
+        this.platforms  = data.platforms.map(platformData => new Platform(
+      { x: eval(platformData.position.x), y: eval(platformData.position.y) },
+            eval(platformData.width),
+            eval(platformData.height),
+            eval(platformData.angle))
+        );
+        //this.platforms.push( new Platform({ x: width/4, y: height }, width/2, 100, 40));
+        //this.platforms.push( new Platform({ x: 400, y: height/2 }, 200, 100, 0));
 
         // TODO awaiting implementation of scoreboard class
         // this.scoreboard = new scoreboard();
@@ -69,10 +76,10 @@ class Environment {
     }
 
     display() {
-    this.throwable.display();
-    this.receptacle.display();
-    this.platforms.forEach(platform => platform.display(this));
-    // this.scoreboard.display(this);
+        this.throwable.display();
+        this.receptacle.display();
+        this.platforms.forEach(platform => platform.display(this));
+        // this.scoreboard.display(this);
     }
 
     // ctor helper function to add the boundaries of the environment

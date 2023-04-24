@@ -18,6 +18,7 @@ class Throwable {
           restitution: 0.6, // testing
           label: "basketball",
         };
+        console.log("basketball throwable created");
         break;
       case "bowlingball":
         this.radius = 72;
@@ -28,6 +29,7 @@ class Throwable {
           restitution: 0.1,
           label: "bowlingball",
         };
+        console.log("bowlingball throwable created");
         break;
       case "golfball":
         this.radius = 18;
@@ -38,6 +40,7 @@ class Throwable {
           restitution: 0.85,
           label: "golfball",
         };
+        console.log("golfball throwable created");
         break;
       case "tennisball":
         this.radius = 26;
@@ -48,6 +51,7 @@ class Throwable {
           restitution: 0.75,
           label: "tennisball",
         };
+        console.log("tennisball throwable created");
         break;
       default:
         throw new Error("Invalid ball type");

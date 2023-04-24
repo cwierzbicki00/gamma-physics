@@ -8,16 +8,18 @@
 //              at.
 
 class Receptacle {
-  constructor(receptacleType) {
+  constructor(receptacleType, centerVector = createVector(width  * (4/5), height * (1/3))) {
     this.edges = [];
     this.rType = receptacleType;
 
     const openingSize = 50; // Adjust the size of the opening as needed
     switch (receptacleType) {
       case "goblet":
+        console.log("goblet receptacle created");
         break;
 
       case "net":
+        console.log("net receptacle created");
         break;
 
       case "trashcan":
@@ -58,15 +60,17 @@ class Receptacle {
         //   bottomWall,
         // ];
 
+        console.log("trashcan receptacle created");
         break;
 
       case "vase":
+        console.log("vase receptacle created");
         break;
 
       default:
         const wallThickness = 10;
-        const centerX = width / 2;
-        const centerY = height / 2;
+        const centerX = centerVector.x;
+        const centerY = centerVector.y;
         const halfWidth = 100;
         const halfHeight = 100;
 

@@ -19,7 +19,7 @@ let engine;
 let world;
 let mConstraint;
 
-let level = 1;
+let level = 2;
 let environment;
 
 // p5.js setup to start game on load - runs ONCE
@@ -42,7 +42,7 @@ function setup() {
   console.log("Frame rate set to 60 FPS");
 
   // -- build the environment ------------------------------------------------
-  engine = Matter.Engine.create();
+  engine = Engine.create();
   world = engine.world;
 
   setMouseConstraint();
@@ -50,7 +50,7 @@ function setup() {
 
   switch (level) {
     case 2:
-      fetch("../assets/jsons/level1-2.json")
+      fetch("../../../assets/jsons/level1-2.json")
         .then((response) => response.json())
         .then(data => {
           environment = new Environment(data);
@@ -58,7 +58,7 @@ function setup() {
       console.log("Level 2 environment created");
       break;
     case 3:
-      fetch("../assets/jsons/level1-3.json")
+      fetch("../../../assets/jsons/level1-3.json")
         .then((response) => response.json())
         .then(data => {
           environment = new Environment(data);

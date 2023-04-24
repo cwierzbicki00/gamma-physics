@@ -9,6 +9,7 @@ class Platform{
         this.height = h;
         this.body = Bodies.rectangle(center.x, center.y, this.width,this.height,option);
         World.add(world,this.body);
+        console.log("new platform added to canvas");
     }
     display(environment) {
         push();
