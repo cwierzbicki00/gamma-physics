@@ -12,8 +12,7 @@ class Environment {
     this.addBoundaries();
     this.receptacle = new Receptacle("default");
     this.throwable = new Throwable("tennisball");
-    this.popup = new Popup(200, 200, 200, 200, "test");
-    this.popup.display();
+
     this.platforms = [];
     this.platforms.push(
       new Platform({ x: width / 4, y: height }, width / 2, 100, 40)

@@ -102,12 +102,15 @@ function setup() {
   });
 
   // add styling to ball buttons
-    resetButton.addClass("list buttonSize resetBtn");
-    disableBarrier.addClass("list buttonSize barrierBtn");
-    golfballButton.addClass("list buttonSize golfBtn");
-    basketballButton.addClass("list buttonSize basketballBtn");
-    tennisballButton.addClass("list buttonSize tennisBtn");
-    bowlingballButton.addClass("list buttonSize bowlingBtn");
+  resetButton.addClass("list buttonSize resetBtn");
+  disableBarrier.addClass("list buttonSize barrierBtn");
+  golfballButton.addClass("list buttonSize golfBtn");
+  basketballButton.addClass("list buttonSize basketballBtn");
+  tennisballButton.addClass("list buttonSize tennisBtn");
+  bowlingballButton.addClass("list buttonSize bowlingBtn");
+
+  this.popup = new Popup(200, 200, 200, 200, "test");
+  // this.popup.display();
 }
 
 function draw() {
@@ -118,6 +121,7 @@ function draw() {
   environment.update();
   environment.receptacle.checkForEntry(environment.throwable);
   environment.display();
+  this.popup.display();
 }
 
 function resetGame() {

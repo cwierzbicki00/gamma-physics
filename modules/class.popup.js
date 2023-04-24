@@ -10,6 +10,8 @@
 // this could likely be implemented in update() Environment class
 class Popup {
   constructor(x, y, width, height, message) {
+    // this.style.position = "absolute";
+    // this.style.color = "red";
     this.x = x;
     this.y = y;
     this.width = width;
