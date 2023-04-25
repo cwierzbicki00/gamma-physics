@@ -10,7 +10,7 @@
     { "position": { "x": "(((272 * 4))) / 2 + (272 * 4)", "y": "(((131 * 4))) / 2 + (131 * 4)" }, "width": "(272 * 4)", "height": "((131 * 4))", "angle": 0 }
   ],
   "pointsRequired": 25,
-  "timeAllowed":  10,
+  "timeAllowed":  75,
   "gravity": { "x": 0, "y": 9.8 },
   "wind": { "x": 0, "y": 0 },
   "backgroundImage": "../../../assets/bg/bg_area1.png",
