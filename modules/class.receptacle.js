@@ -202,7 +202,18 @@ class Receptacle {
       console.log("Throwable touched the bottom of the receptacle!");
 
       // Increase the score and reset the throwable
-      environment.addScore(1);
+      //Add different scores depending on the throwable type:
+      if (throwable.type == "tennisball") {
+        environment.addScore(1);
+      } else if (throwable.type == "basketball") {
+        environment.addScore(2);
+      } else if (throwable.type == "golfball") {
+        environment.addScore(1);
+      } else if (throwable.type == "bowlingball") {
+        environment.addScore(3);
+      }
+
+      //Reset the throwable
       throwable.reset();
     }
   }

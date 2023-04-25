@@ -58,13 +58,13 @@ class Throwable {
       case "tennisball":
         this.type = "tennisball";
         this.mass = 0.056;
-        this.bounce = 0.75; // testing
+        this.bounce = 0.9; // testing
         this.radius = 26 * scaleFactorX;
         this.img = loadImage("https://i.imgur.com/ZL0oho5.png");
         this.option = {
           friction: 0.001,
           mass: 0.056,
-          restitution: 0.75,
+          restitution: 0.9,
           label: "tennisball",
         };
         console.log("tennisball throwable created");
@@ -113,7 +113,7 @@ class Throwable {
 
   //constrain to bounds of screen
   constrainToBounds() {
-    const buffer = 5;
+    const buffer = 3;
     const minPosX = this.radius + buffer;
     const maxPosX = width - this.radius - buffer;
     const minPosY = this.radius + buffer;
@@ -169,7 +169,7 @@ class Throwable {
 
   limitVelocity() {
     // Limit the ball's maximum velocity
-    const maxVelocity = 20;
+    const maxVelocity = 25;
     const currentVelocity = Matter.Vector.magnitude(this.body.velocity);
     if (currentVelocity > maxVelocity) {
       const newVelocity = Matter.Vector.mult(

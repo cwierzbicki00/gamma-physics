@@ -53,6 +53,7 @@ class Environment {
     this.score = 0;
     this.timer = null;
     this.mouseBarrierActive = true;
+    this.timerActive = false;
   }
 
   initializeCommonGameObjects(data) {
@@ -66,6 +67,9 @@ class Environment {
     //for flash on score:
 
     this.receptacleBgOpacity = 255;
+
+    //scoreboard
+    this.scoreboard = new Scoreboard(this);
 
     // game objects
     this.addBoundaries();
@@ -202,6 +206,19 @@ class Environment {
     this.mouseBarrierActive = !this.mouseBarrierActive;
   }
 
+  updateTimer() {
+    if (this.timerActive) {
+      this.timeAllowed -= deltaTime / 1000;
+
+      if (this.timeAllowed <= 0) {
+        this.timeAllowed = 0;
+        this.timerActive = false;
+        const gameWon = this.score >= this.pointsRequired;
+        alert(`Game over! You ${gameWon ? "won" : "lost"}!`);
+      }
+    }
+  }
+
   update() {
     if (this.throwable) {
       this.throwable.update(this);
@@ -214,6 +231,9 @@ class Environment {
         this.particles.splice(i, 1);
       }
     }
+
+    //Update time
+    this.updateTimer();
 
     Matter.Engine.update(engine);
   }
@@ -317,6 +337,9 @@ class Environment {
         imageHeight
       );
     }
+
+    //display score
+    this.scoreboard.display();
   }
 
   addBoundaries() {
@@ -370,7 +393,53 @@ class Environment {
   }
 }
 
-//Particles
+//Scoreboard class for displaying score, time, and goal score.
+class Scoreboard {
+  constructor(environment) {
+    this.environment = environment;
+
+    //temporary start button:
+    this.startButton = null;
+  }
+
+  createStartButton() {
+    if (!this.startButton) {
+      this.startButton = createButton("Start");
+      this.startButton.position(width / 2 - this.startButton.width / 2, 10);
+      this.startButton.mousePressed(() => {
+        this.environment.timerActive = true;
+        this.startButton.hide();
+      });
+    }
+  }
+
+  display() {
+    const score = this.environment.getScore();
+    const goal = this.environment.pointsRequired;
+    const timeRemaining = Math.round(this.environment.timeAllowed);
+    if (!this.environment.timerActive) {
+      this.createStartButton();
+    }
+    push();
+    textAlign(CENTER, CENTER);
+
+    // Background container
+    fill(0, 0, 0, 200);
+    rect(0, 0, width, 50);
+
+    // Score text
+    textSize(24);
+    fill(255);
+    text(`Score: ${score} / ${goal}`, width / 4, 25);
+
+    // Time remaining text
+    text(`Time remaining: ${timeRemaining}s`, (width / 4) * 3, 25);
+
+    pop();
+  }
+}
+
+//Particles for celebrations woohoo
 
 class Particle {
   constructor(x, y) {
