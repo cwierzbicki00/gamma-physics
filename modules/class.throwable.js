@@ -198,9 +198,9 @@ class Throwable {
     if (this.dragging) {
       tint(255, 50);
     } else if (this.rollover) {
-      tint(255, 100);
+      tint(255, 255);
     } else {
-      tint(255, 200);
+      tint(255, 255);
     }
     imageMode(CENTER);
 

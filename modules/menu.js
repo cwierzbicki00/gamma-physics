@@ -176,6 +176,8 @@ function createLevelEnvironment(level) {
 
 function draw() {
   clear(); // clears the entire canvas to be redrawn
+  background(0, 0, 0, 0); // sets the background to be transparent
+
   // TODO move this to the environment class when scoreboard is implemented
   drawScore(); // rsmith - draw score to screen
 
@@ -190,7 +192,7 @@ function draw() {
 
 function resetGame() {
   environment.getThrowable().reset();
-  environment.resetScore();
+  //environment.resetScore();
   console.log("Game reset");
 }
 

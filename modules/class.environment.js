@@ -11,6 +11,9 @@ class Environment {
     this.updateScaleFactors();
     this.initializeEnvironment(data);
     console.log("canvas width: " + width + ", canvas height: " + height);
+
+    this.particles = [];
+    this.scoreTexts = [];
   }
 
   initializeEnvironment(data) {
@@ -53,6 +56,17 @@ class Environment {
   }
 
   initializeCommonGameObjects(data) {
+    //load images
+    this.overlayImageFg = loadImage(data.overlayImageFg);
+    this.overlayImageBg = loadImage(data.overlayImageBg);
+    this.receptacleFg = loadImage(data.receptacle.fg);
+    this.receptacleBg = loadImage(data.receptacle.bg);
+    this.receptacleCollision = loadImage(data.receptacle.collision);
+
+    //for flash on score:
+
+    this.receptacleBgOpacity = 255;
+
     // game objects
     this.addBoundaries();
     this.receptacle = new Receptacle(
@@ -77,6 +91,11 @@ class Environment {
           eval(platformData.angle)
         )
     );
+
+    //receptacle properties for display
+    this.receptacleImgX = data.receptacle.x;
+    this.receptacleImgY = data.receptacle.y;
+
     //this.platforms.push( new Platform({ x: width/4, y: height }, width/2, 100, 40));
     //this.platforms.push( new Platform({ x: 400, y: height/2 }, 200, 100, 0));
 
@@ -91,7 +110,32 @@ class Environment {
     this.gravity = createVector(data.gravity.x, data.gravity.y); // earth gravity: 9.8 m/s^2
     this.wind = createVector(data.wind.x, data.wind.y); // wind force: 0 m/s^2
 
-    this.backgroundImage = null; //loadImage(data.backgroundImage);
+    this.backgroundImage = loadImage(data.backgroundImage);
+  }
+
+  //utility score celebrations
+  flashReceptacleBackground() {
+    this.receptacleBgOpacity = 100;
+  }
+
+  generateConfetti() {
+    for (let i = 0; i < 30; i++) {
+      // number of particles
+      this.particles.push(
+        new Particle(this.receptacleImgX, this.receptacleImgY)
+      );
+    }
+  }
+
+  displayScoreTexts() {
+    for (let i = this.scoreTexts.length - 1; i >= 0; i--) {
+      this.scoreTexts[i].update();
+      this.scoreTexts[i].display();
+
+      if (this.scoreTexts[i].isDone()) {
+        this.scoreTexts.splice(i, 1);
+      }
+    }
   }
 
   // accessors
@@ -141,6 +185,12 @@ class Environment {
   }
   addScore(newScore) {
     this.score += newScore;
+    this.flashReceptacleBackground();
+    this.generateConfetti();
+    this.scoreTexts.push(
+      new ScoreText(this.receptacleImgX, this.receptacleImgY - 50, newScore)
+    );
+    console.log("score: " + this.score);
   }
   resetScore() {
     this.score = 0;
@@ -157,10 +207,78 @@ class Environment {
       this.throwable.update(this);
     }
 
+    // Update particles
+    for (let i = this.particles.length - 1; i >= 0; i--) {
+      this.particles[i].update();
+      if (this.particles[i].isOffScreen()) {
+        this.particles.splice(i, 1);
+      }
+    }
+
     Matter.Engine.update(engine);
   }
 
   display() {
+    //Display background image
+    if (this.backgroundImage) {
+      let bgWidth = width;
+      let bgHeight = height;
+      imageMode(CORNER);
+      image(this.backgroundImage, 0, 0, bgWidth, bgHeight);
+    }
+
+    if (this.overlayImageBg) {
+      imageMode(CENTER);
+      let imageWidth = this.overlayImageBg.width * 4 * this.scaleFactorX;
+      let imageHeight = this.overlayImageBg.height * 4 * this.scaleFactorY;
+      image(
+        this.overlayImageBg,
+        width / 2,
+        height - imageHeight / 2,
+        imageWidth,
+        imageHeight
+      );
+    }
+
+    //Display receptacles
+    if (this.receptacleBg) {
+      imageMode(CENTER);
+      let imageWidth = this.receptacleBg.width * 4 * this.scaleFactorX;
+      let imageHeight = this.receptacleBg.height * 4 * this.scaleFactorY;
+      tint(255, this.receptacleBgOpacity); // Apply the opacity
+      image(
+        this.receptacleBg,
+        this.receptacleImgX,
+        this.receptacleImgY,
+        imageWidth,
+        imageHeight
+      );
+
+      tint(255, 255); // Reset the tint
+    }
+
+    // Display particles
+    for (const particle of this.particles) {
+      particle.display();
+    }
+
+    //Display score texts
+    this.displayScoreTexts();
+
+    if (this.receptacleCollision) {
+      imageMode(CENTER);
+      let imageWidth = this.receptacleCollision.width * 4 * this.scaleFactorX;
+      let imageHeight = this.receptacleCollision.height * 4 * this.scaleFactorY;
+
+      image(
+        this.receptacleCollision,
+        this.receptacleImgX,
+        this.receptacleImgY,
+        imageWidth,
+        imageHeight
+      );
+    }
+
     if (this.throwable) {
       this.throwable.display();
     }
@@ -171,6 +289,34 @@ class Environment {
       this.platforms.forEach((platform) => platform.display(this));
     }
     //scoreboard.display();
+
+    // Display the overlay image
+    if (this.overlayImageFg) {
+      imageMode(CENTER);
+      let imageWidth = this.overlayImageFg.width * 4 * this.scaleFactorX;
+      let imageHeight = this.overlayImageFg.height * 4 * this.scaleFactorY;
+      image(
+        this.overlayImageFg,
+        width / 2,
+        height - imageHeight / 2,
+        imageWidth,
+        imageHeight
+      );
+    }
+    //display front of receptacle
+    if (this.receptacleFg) {
+      imageMode(CENTER);
+      let imageWidth = this.receptacleFg.width * 4 * this.scaleFactorX;
+      let imageHeight = this.receptacleFg.height * 4 * this.scaleFactorY;
+
+      image(
+        this.receptacleFg,
+        this.receptacleImgX,
+        this.receptacleImgY,
+        imageWidth,
+        imageHeight
+      );
+    }
   }
 
   addBoundaries() {
@@ -221,5 +367,59 @@ class Environment {
       // Resolve the promise after completing the destroy process
       resolve();
     });
+  }
+}
+
+//Particles
+
+class Particle {
+  constructor(x, y) {
+    this.pos = createVector(x, y);
+    this.vel = createVector(random(-2, 2), random(-4, -1));
+    this.acc = createVector(0, 0.05);
+    this.size = random(4, 10);
+    this.color = color(random(255), random(255), random(255));
+  }
+
+  update() {
+    this.vel.add(this.acc);
+    this.pos.add(this.vel);
+  }
+
+  display() {
+    noStroke();
+    fill(this.color);
+    ellipse(this.pos.x, this.pos.y, this.size);
+  }
+
+  isOffScreen() {
+    return this.pos.y > height;
+  }
+}
+
+//Fun score texts that appear when you score
+class ScoreText {
+  constructor(x, y, points) {
+    this.x = x;
+    this.y = y;
+    this.points = points;
+    this.alpha = 255;
+    this.velocityY = -2;
+  }
+
+  update() {
+    this.y += this.velocityY;
+    this.alpha -= 1;
+  }
+
+  display() {
+    fill(0, 255, 0, this.alpha);
+    textSize(46);
+    textAlign(CENTER, CENTER);
+    text(`+${this.points}`, this.x, this.y);
+  }
+
+  isDone() {
+    return this.alpha <= 0;
   }
 }
