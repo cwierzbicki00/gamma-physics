@@ -169,7 +169,7 @@ class Throwable {
 
   limitVelocity() {
     // Limit the ball's maximum velocity
-    const maxVelocity = 25;
+    const maxVelocity = 25 * this.scaleFactorX;
     const currentVelocity = Matter.Vector.magnitude(this.body.velocity);
     if (currentVelocity > maxVelocity) {
       const newVelocity = Matter.Vector.mult(
@@ -230,7 +230,10 @@ class Throwable {
       const pos = this.body.position;
       const offset = mConstraint.constraint.pointB;
       const m = mConstraint.mouse;
-      const forceMultiplier = 0.0005; // Reduced force multiplier
+
+      const averageScaleFactor = (this.scaleFactorX + this.scaleFactorY) / 2;
+      const forceMultiplier = 0.0005 * averageScaleFactor; // Scale force multiplier based on screen size
+
       const forceVector = Vector.create(
         (m.position.x - pos.x - offset.x) * forceMultiplier,
         (m.position.y - pos.y - offset.y) * forceMultiplier
@@ -243,7 +246,7 @@ class Throwable {
       Matter.Body.setAngularVelocity(this.body, spin);
 
       // Limit the ball's maximum velocity
-      const maxVelocity = 20;
+      const maxVelocity = 25 * this.scaleFactorX;
       const currentVelocity = Matter.Vector.magnitude(this.body.velocity);
       if (currentVelocity > maxVelocity) {
         const newVelocity = Matter.Vector.mult(

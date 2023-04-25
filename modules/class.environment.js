@@ -47,6 +47,8 @@ class Environment {
     this.score = previousEnvironment.score;
     this.timer = previousEnvironment.timer;
     this.mouseBarrierActive = previousEnvironment.mouseBarrierActive;
+    this.timerActive = previousEnvironment.timerActive;
+    this.startButtonClicked = previousEnvironment.startButtonClicked;
   }
 
   initializeDefaultGameObjects(data) {
@@ -54,6 +56,7 @@ class Environment {
     this.timer = null;
     this.mouseBarrierActive = true;
     this.timerActive = false;
+    this.startButtonClicked = false;
   }
 
   initializeCommonGameObjects(data) {
@@ -223,6 +226,7 @@ class Environment {
           this.score >= this.pointsRequired ? "Level Finished" : "Game Over"
         );
         console.log("Game Over");
+        // this.startButtonClicked = false;
       }
     }
   }
@@ -409,19 +413,49 @@ class Environment {
 class Scoreboard {
   constructor(environment) {
     this.environment = environment;
-
-    //temporary start button:
-    this.startButton = null;
   }
 
   createStartButton() {
-    if (!this.startButton) {
+    if (!this.startButton && !this.environment.startButtonClicked) {
       this.startButton = createButton("Start");
-      this.startButton.position(width / 2 - this.startButton.width / 2, 10);
+      //give button ID of start-button
+      this.startButton.id("start-button");
+
+      this.startButton.parent("canvas-container");
       this.startButton.mousePressed(() => {
         this.environment.timerActive = true;
         this.startButton.hide();
+        this.environment.startButtonClicked = true;
       });
+
+      // Style the start button make it green
+      this.startButton.style("background-color", "#4CAF50");
+      this.startButton.style("color", "white");
+      this.startButton.style("border-radius", "5px");
+      this.startButton.style("border", "none");
+      this.startButton.style("font-size", "18px");
+      //make it bold
+      this.startButton.style("font-weight", "bold");
+      this.startButton.style("padding", "8px 16px");
+      //center it
+      this.startButton.style("display", "flex");
+      this.startButton.style("margin", "auto");
+      this.startButton.style("justify-content", "center");
+      this.startButton.style("align-items", "center");
+      this.startButton.style("position", "absolute");
+      this.startButton.style("top", "0");
+      this.startButton.style("bottom", "0");
+      this.startButton.style("left", "0");
+      this.startButton.style("right", "0");
+      this.startButton.style("width", "100px");
+      this.startButton.style("height", "50px");
+      this.startButton.style("z-index", "1");
+
+      if (this.startButton) {
+        const verticalCenter = 0;
+        const horizontalCenter = 0;
+        this.startButton.position(horizontalCenter, verticalCenter);
+      }
     }
   }
 
@@ -429,8 +463,21 @@ class Scoreboard {
     const score = this.environment.getScore();
     const goal = this.environment.pointsRequired;
     const timeRemaining = Math.round(this.environment.timeAllowed);
-    if (!this.environment.timerActive) {
+    if (
+      !this.environment.timerActive &&
+      !this.environment.startButtonClicked &&
+      !this.startButton
+    ) {
+      //clear all other start buttons (have id start-button)
+      const startButtons = document.querySelectorAll("#start-button");
+
+      startButtons.forEach((button) => button.remove());
       this.createStartButton();
+    } else if (this.startButton && this.environment.startButtonClicked) {
+      this.startButton.remove();
+      this.startButton = null;
+      this.environment.resetScore();
+      this.environment.resetTimer(this.environment.timeAllowed);
     }
     push();
     textAlign(CENTER, CENTER);
