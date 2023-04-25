@@ -43,11 +43,22 @@ function toggleFullscreen() {
 let fullscreenButton = document.getElementById("fullscreen-btn");
 fullscreenButton.addEventListener("click", toggleFullscreen);
 
+//Preload the level, images, and set up the world.
+function preload() {
+  //Start engine and define world
+  engine = Engine.create();
+  world = engine.world;
+
+  // Load the level
+  // Create the environment, by selecting the level
+  createLevelEnvironment(level);
+}
+
 // p5.js setup to start game on load - runs ONCE
 function setup() {
   console.log("Game started");
 
-  // -- set up the canvas ----------------------------------------------------
+  // -- set up the canvas-----------------------------------------------------
 
   //access the canvas container div in the html file
   let canvasContainer = document.getElementById("canvas-container");
@@ -73,10 +84,6 @@ function setup() {
   frameRate(60);
   console.log("Frame rate set to 60 FPS");
 
-  // -- build the environment ------------------------------------------------
-  engine = Engine.create();
-  world = engine.world;
-
   // Set up the mouse constraint for dragging the ball
   const canvasElement = document.getElementById("defaultCanvas0");
 
@@ -97,9 +104,6 @@ function setup() {
   mConstraint = MouseConstraint.create(engine, mouseOptions);
 
   World.add(world, mConstraint);
-
-  // Create the environment, by selecting the level
-  createLevelEnvironment(level);
 }
 
 function createLevelEnvironment(level) {
@@ -197,9 +201,6 @@ function draw() {
   clear(); // clears the entire canvas to be redrawn
   background(0, 0, 0, 0); // sets the background to be transparent
 
-  // TODO move this to the environment class when scoreboard is implemented
-  drawScore(); // rsmith - draw score to screen
-
   // template for drawing objects
 
   if (environment && environment.receptacle) {
@@ -213,15 +214,6 @@ function resetGame() {
   environment.getThrowable().reset();
   //environment.resetScore();
   console.log("Game reset");
-}
-
-// rsmith - draw score to top left of screen
-function drawScore() {
-  push(); // allows the following formatting to be temporary
-  textSize(64);
-  fill(0, 0, 0);
-  text("Score: " + environment.getScore(), width * 0.1, height * 0.1);
-  pop(); // ends the above formatting
 }
 
 //Reset mouse reference when window is resized
