@@ -19,6 +19,23 @@ class Environment {
     } else {
       this.initializeDefaultGameObjects(data);
     }
+    console.log("data: " + data);
+
+    // Scale positions, width, and height of the platforms and receptacles
+    data.platforms.forEach((platformData) => {
+      platformData.position.x =
+        eval(platformData.position.x) * this.scaleFactorX;
+      console.log("platformData.position.x: " + platformData.position.x);
+      platformData.position.y =
+        eval(platformData.position.y) * this.scaleFactorY;
+      console.log("platformData.position.y: " + platformData.position.y);
+      platformData.width = eval(platformData.width);
+      platformData.height = eval(platformData.height);
+    });
+
+    data.receptacle.x = eval(data.receptacle.x) * this.scaleFactorX;
+    data.receptacle.y = eval(data.receptacle.y) * this.scaleFactorY;
+
     this.initializeCommonGameObjects(data);
   }
 
@@ -40,7 +57,8 @@ class Environment {
     this.addBoundaries();
     this.receptacle = new Receptacle(
       data.receptacle.type,
-      createVector(eval(data.receptacle.x), eval(data.receptacle.y))
+      this.scaleFactorX,
+      this.scaleFactorY
     );
     this.throwable = new Throwable(
       data.throwable.type,
@@ -54,8 +72,8 @@ class Environment {
             x: eval(platformData.position.x),
             y: eval(platformData.position.y),
           },
-          eval(platformData.width),
-          eval(platformData.height),
+          eval(platformData.width) * this.scaleFactorX,
+          eval(platformData.height) * this.scaleFactorY,
           eval(platformData.angle)
         )
     );
@@ -68,13 +86,6 @@ class Environment {
     // progression variables
     this.pointsRequired = data.pointsRequired;
     this.timeAllowed = data.timeAllowed; // seconds
-
-    this.addBoundaries();
-    this.receptacle = new Receptacle(
-      "default",
-      this.scaleFactorX,
-      this.scaleFactorY
-    );
 
     // environmental physics
     this.gravity = createVector(data.gravity.x, data.gravity.y); // earth gravity: 9.8 m/s^2
@@ -142,18 +153,26 @@ class Environment {
   }
 
   update() {
-    this.throwable.update(this);
-    Matter.Engine.update(engine);
-    // this.receptacle.update(this);
+    if (this.throwable) {
+      this.throwable.update(this);
+    }
 
-    // this.scoreboard.update(this);
+    Matter.Engine.update(engine);
   }
+
   display() {
-    this.throwable.display();
-    this.receptacle.display();
-    this.platforms.forEach((platform) => platform.display(this));
-    // this.scoreboard.display(this);
+    if (this.throwable) {
+      this.throwable.display();
+    }
+    if (this.receptacle) {
+      this.receptacle.display();
+    }
+    if (this.platforms) {
+      this.platforms.forEach((platform) => platform.display(this));
+    }
+    //scoreboard.display();
   }
+
   addBoundaries() {
     // create the ground
     const edgeOptions = {
@@ -175,17 +194,23 @@ class Environment {
 
   destroy() {
     return new Promise((resolve) => {
-      // Destroy throwable
-      this.throwable.destroy();
-      this.throwable = null;
+      // Destroy throwable if it exists
+      if (this.throwable) {
+        this.throwable.destroy();
+        this.throwable = null;
+      }
 
-      // Destroy receptacle
-      this.receptacle.destroy();
-      this.receptacle = null;
+      // Destroy receptacle if it exists
+      if (this.receptacle) {
+        this.receptacle.destroy();
+        this.receptacle = null;
+      }
 
-      // Destroy platforms
-      this.platforms.forEach((platform) => platform.destroy());
-      this.platforms = null;
+      // Destroy platforms if they exist
+      if (this.platforms) {
+        this.platforms.forEach((platform) => platform.destroy());
+        this.platforms = null;
+      }
 
       //nuke the whole world >:)
       World.clear(world, false);

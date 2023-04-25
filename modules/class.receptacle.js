@@ -12,7 +12,7 @@ class Receptacle {
     this.edges = [];
     this.rType = receptacleType;
 
-    const openingSize = 50 * scaleFactorX; // Adjust the size of the opening as needed
+    const openingSize = 80 * scaleFactorX; // Adjust the size of the opening as needed
     switch (receptacleType) {
       case "goblet":
         console.log("goblet receptacle created");
@@ -69,8 +69,8 @@ class Receptacle {
 
       default:
         const wallThickness = 10 * scaleFactorX;
-        const centerX = width / 2;
-        const centerY = height / 2;
+        const centerX = 350 * 4 * scaleFactorX;
+        const centerY = 104 * 4 * scaleFactorY;
         const halfWidth = 100 * scaleFactorX;
         const halfHeight = 100 * scaleFactorY;
 

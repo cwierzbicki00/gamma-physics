@@ -73,8 +73,12 @@ class Throwable {
         throw new Error("Invalid ball type");
     }
 
-    // positional variables
-    this.initialPos = { x: 150, y: height - 150 };
+    // positional variables (adjust for resizing)
+    this.initialPos = createVector(
+      // initial position
+      width / 5,
+      height - this.radius - 10
+    );
     this.angle = 0;
     this.angleV = 0;
 
@@ -219,7 +223,6 @@ class Throwable {
   }
 
   // allow user to drag ball if it was clicked on
-  // allow user to drag ball if it was clicked on
   mousePressed(environment) {
     if (mConstraint.body == this.body && environment.getBarrierStatus()) {
       console.log(mConstraint.body.label);
@@ -233,6 +236,12 @@ class Throwable {
         (m.position.y - pos.y - offset.y) * forceMultiplier
       );
       Matter.Body.applyForce(this.body, pos, forceVector);
+
+      // Calculate the torque and apply it to the ball
+      const spinMultiplier = 0.01;
+      const spin = (m.position.x - pos.x - offset.x) * spinMultiplier;
+      Matter.Body.setAngularVelocity(this.body, spin);
+
       // Limit the ball's maximum velocity
       const maxVelocity = 20;
       const currentVelocity = Matter.Vector.magnitude(this.body.velocity);
@@ -248,25 +257,27 @@ class Throwable {
 
   // recover the throwable from beyond the mouse barrier after N seconds
   recover() {
-    let time = 15; // seconds
-    let timer;
+    if (this.body) {
+      let time = 15; // seconds
+      let timer;
 
-    this.irrecoverable = this.body.position.x > windowWidth * 0.2;
-    if (this.irrecoverable && !this.resetTimer) {
-      this.resetTimer = true;
-      timer = setInterval(() => {
-        console.log("Time until recovery: " + time + " seconds");
-        time--;
-        if (!this.irrecoverable) {
-          console.log("Recovery timer cancelled");
-          this.resetTimer = false;
-          clearInterval(timer);
-        }
-        if (time === 0) {
-          this.reset();
-          clearInterval(timer);
-        }
-      }, 1000);
+      this.irrecoverable = this.body.position.x > windowWidth * 0.2;
+      if (this.irrecoverable && !this.resetTimer) {
+        this.resetTimer = true;
+        timer = setInterval(() => {
+          console.log("Time until recovery: " + time + " seconds");
+          time--;
+          if (!this.irrecoverable) {
+            console.log("Recovery timer cancelled");
+            this.resetTimer = false;
+            clearInterval(timer);
+          }
+          if (time === 0) {
+            this.reset();
+            clearInterval(timer);
+          }
+        }, 1000);
+      }
     }
   }
 
@@ -285,5 +296,6 @@ class Throwable {
   destroy() {
     World.remove(world, this.body);
     delete this;
+    console.log("Throwable destroyed" + this);
   }
 }

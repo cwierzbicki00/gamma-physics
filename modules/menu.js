@@ -19,8 +19,10 @@ let engine;
 let world;
 let mConstraint;
 
-let level = 1000;
+let level = 2;
 let environment;
+
+let canvas;
 
 // p5.js setup to start game on load - runs ONCE
 function setup() {
@@ -41,7 +43,7 @@ function setup() {
     newCanvasWidth = newCanvasHeight * canvasAspectRatio;
   }
 
-  let canvas = createCanvas(newCanvasWidth, newCanvasHeight);
+  canvas = createCanvas(newCanvasWidth, newCanvasHeight);
 
   // set canvas to be responsive to window size
   canvas.parent(canvasContainer);
@@ -77,11 +79,24 @@ function setup() {
 
   World.add(world, mConstraint);
 
+  // Create the environment, by selecting the level
+  createLevelEnvironment(level);
+}
+
+function createLevelEnvironment(level) {
   switch (level) {
     case 2:
       fetch("../../../assets/jsons/level1-2.json")
         .then((response) => response.json())
         .then((data) => {
+          //if environment already exists, take score, timer, mouseBarrierActive
+          //and add to data
+          if (environment) {
+            data.score = environment.score;
+            data.timer = environment.timer;
+            data.mouseBarrierActive = environment.mouseBarrierActive;
+          }
+
           environment = new Environment(data);
         });
       console.log("Level 2 environment created");
@@ -90,6 +105,14 @@ function setup() {
       fetch("../../../assets/jsons/level1-3.json")
         .then((response) => response.json())
         .then((data) => {
+          //if environment already exists, take score, timer, mouseBarrierActive
+          //and add to data
+          if (environment) {
+            data.score = environment.score;
+            data.timer = environment.timer;
+            data.mouseBarrierActive = environment.mouseBarrierActive;
+          }
+
           environment = new Environment(data);
         });
       console.log("Level 3 environment created");
@@ -98,11 +121,20 @@ function setup() {
       fetch("../../../assets/jsons/level1-1.json")
         .then((response) => response.json())
         .then((data) => {
+          //if environment already exists, take score, timer, mouseBarrierActive
+          //and add to data
+          if (environment) {
+            data.score = environment.score;
+            data.timer = environment.timer;
+            data.mouseBarrierActive = environment.mouseBarrierActive;
+          }
+
           environment = new Environment(data);
         });
       console.log("Level 1 environment created");
       break;
   }
+
   // -- create and arrange buttons -------------------------------------------
   let resetButton = createButton("Reset");
   resetButton.mousePressed(resetGame);
@@ -149,9 +181,11 @@ function draw() {
 
   // template for drawing objects
 
-  environment.update();
-  environment.receptacle.checkForEntry(environment.throwable);
-  environment.display();
+  if (environment && environment.receptacle) {
+    environment.update();
+    environment.receptacle.checkForEntry(environment.throwable);
+    environment.display();
+  }
 }
 
 function resetGame() {
@@ -174,8 +208,6 @@ function updateMouseConstraint() {
   // Remove the old mouse constraint from the world
   World.remove(world, mConstraint);
 
-  // Create a new mouse constraint with the updated canvas element
-  const canvasElement = document.getElementById("canvas-container");
   const mouse = Mouse.create(canvas.elt);
   const mouseOptions = {
     mouse: mouse,
@@ -186,16 +218,12 @@ function updateMouseConstraint() {
       },
     },
     element: canvas.elt,
-
-    offset: {
-      x: canvasElement.getBoundingClientRect().left,
-      y: canvasElement.getBoundingClientRect().top,
-    },
   };
+  //set pixel density so it has context for canvas size & scale
+  mouse.pixelRatio = pixelDensity();
 
   mConstraint = MouseConstraint.create(engine, mouseOptions);
 
-  // Add the new mouse constraint to the world
   World.add(world, mConstraint);
 }
 
@@ -213,14 +241,14 @@ async function windowResized() {
     newCanvasHeight = newCanvasWidth / canvasAspectRatio;
   }
 
+  await environment.destroy(); //nukes the old environment except state
+
   resizeCanvas(newCanvasWidth, newCanvasHeight);
 
   environment.updateScaleFactors();
 
-  await environment.destroy(); //nukes the old environment except state
-
   //rebuild the environment
-  environment = new Environment(environment);
+  createLevelEnvironment(level);
 
   updateMouseConstraint();
 }
