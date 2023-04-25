@@ -29,6 +29,7 @@ class Popup {
       textAlign(CENTER, CENTER);
       text(this.message, this.x, this.y);
       pop();
+      console.log("Popup displayed");
     }
   }
 

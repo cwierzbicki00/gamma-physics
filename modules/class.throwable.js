@@ -186,7 +186,6 @@ class Throwable {
     this.recover();
     this.limitVelocity();
     this.constrainToBounds();
-    environment.levelTimer();
   }
 
   display() {
