@@ -1,0 +1,10 @@
+{
+  "receptacle": { "type": "trashcandebug" },
+  "throwable": { "type": "basketball" },
+  "platforms": [],
+  "pointsRequired": 5,
+  "timeAllowed":  90,
+  "gravity": { "x": 0, "y": 9.8 },
+  "wind": { "x": 0, "y": 0 },
+  "backgroundImage": "IMGUR LINK HERE"
+}
