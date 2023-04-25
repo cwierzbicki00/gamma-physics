@@ -84,6 +84,7 @@ class Throwable {
   update(environment) {
     this.mousePressed(environment);
     this.recover();
+    environment.levelTimer();
   }
 
   display() {

@@ -110,7 +110,9 @@ class Environment {
       this.popup.display();
       console.log("level pass");
     }
-    // this.scoreboard.display(this);
+    if (this.popup) {
+      this.popup.display();
+    }
   }
   addBoundaries() {
     // create the ground
@@ -123,5 +125,29 @@ class Environment {
     let rightWall = Bodies.rectangle(width, height / 2, 5, height, edgeOptions);
     let ceiling = Bodies.rectangle(width / 2, 0, width, 5, edgeOptions);
     World.add(world, [ground, leftWall, rightWall, ceiling]);
+  }
+
+  levelTimer() {
+    let time = 10; // seconds, subject to change
+    let timer;
+
+    // this.resetTimer = true;
+    timer = setInterval(() => {
+      // console.log("Level time: " + time + " seconds");
+      time--;
+      if (time === 0) {
+        clearInterval(timer);
+        //game over popup
+        let canvasContainer = document.getElementById("canvas-container");
+        this.popup = new Popup(
+          canvasContainer.offsetWidth / 2,
+          canvasContainer.offsetHeight / 2,
+          canvasContainer.offsetWidth / 4,
+          canvasContainer.offsetHeight / 2,
+          "Game Over"
+        );
+        // console.log("Game Over");
+      }
+    }, 1000);
   }
 }
