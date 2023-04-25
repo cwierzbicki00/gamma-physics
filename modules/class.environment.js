@@ -210,7 +210,7 @@ class Environment {
   levelTimer() {
     if (this.timerActive) {
       this.timeAllowed -= deltaTime / 1000;
-      if (this.timeAllowed <= 0) {
+      if (this.timeAllowed <= 0 || this.score >= this.pointsRequired) {
         this.timeAllowed = 0;
         this.timerActive = false;
         let canvasContainer = document.getElementById("canvas-container");
@@ -219,7 +219,8 @@ class Environment {
           height / 2,
           canvasContainer.offsetWidth / 4,
           canvasContainer.offsetHeight / 2,
-          "Game Over"
+          //Set message as Game Over if time runs out, or set message as Level Finished if score reached
+          this.score >= this.pointsRequired ? "Level Finished" : "Game Over"
         );
         console.log("Game Over");
       }
