@@ -79,21 +79,6 @@ class Environment {
   resetScore() {
     this.score = 0;
   }
-  checkScore() {
-    if (this.score >= this.targetScore) {
-      //create win popup
-      let canvasContainer = document.getElementById("canvas-container");
-      this.popup = new Popup(
-        canvasContainer.offsetWidth / 2,
-        canvasContainer.offsetHeight / 2,
-        canvasContainer.offsetWidth / 4,
-        canvasContainer.offsetHeight / 2,
-        "Level Passed!"
-      );
-      this.popup.display();
-      console.log("level pass");
-    }
-  }
   resetTimer(seconds) {
     this.timer = seconds;
   }
@@ -112,6 +97,19 @@ class Environment {
     this.throwable.display();
     this.receptacle.display();
     this.platforms.forEach((platform) => platform.display(this));
+    if (this.score >= this.targetScore) {
+      //create win popup
+      let canvasContainer = document.getElementById("canvas-container");
+      this.popup = new Popup(
+        canvasContainer.offsetWidth / 2,
+        canvasContainer.offsetHeight / 2,
+        canvasContainer.offsetWidth / 4,
+        canvasContainer.offsetHeight / 2,
+        "Level Passed!"
+      );
+      this.popup.display();
+      console.log("level pass");
+    }
     // this.scoreboard.display(this);
   }
   addBoundaries() {
