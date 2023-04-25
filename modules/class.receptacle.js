@@ -133,6 +133,7 @@ class Receptacle {
 
       // Increase the score and reset the throwable
       environment.addScore(1);
+      environment.checkScore();
       throwable.reset();
     }
   }
