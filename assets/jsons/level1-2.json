@@ -1,0 +1,19 @@
+{
+  "receptacle": { "type": "trashcan", "x": "350 * 4", "y": "104 * 4", "bg": "../../../assets/sprites/recepticles/trashcan/trashcan_bg.png", "fg": "../../../assets/sprites/recepticles/trashcan/trashcan_bg.png", "collision": "../../../assets/sprites/recepticles/trashcan/trashcan_collision.png" },
+  "throwable": { "type": "tennisball" },
+  "platforms": [
+    { "position": { "x": "(((56 * 4))) / 2 + (56 * 4)"    , "y": "(((206 * 4))) / 2 + (206 * 4)" }, "width": "(176 * 4)"  , "height": "((206 * 4))", "angle": 0 },
+    { "position": { "x": "(((112 * 4))) / 2 + (112 * 4)", "y": "(((191 * 4))) / 2 + (191 * 4)" }, "width": "(112 * 4)", "height": "((191 * 4))", "angle": 0 },
+    { "position": { "x": "(((176 * 4))) / 2 + (176 * 4)", "y": "(((176 * 4))) / 2 + (176 * 4)" }, "width": "(176 * 4)", "height": "((176 * 4))", "angle": 0 },
+    { "position": { "x": "(((208 * 4))) / 2 + (208 * 4)", "y": "(((161 * 4))) / 2 + (161 * 4)" }, "width": "(208 * 4)", "height": "((161 * 4))", "angle": 0 },
+    { "position": { "x": "(((240 * 4))) / 2 + (240 * 4)", "y": "(((146 * 4))) / 2 + (146 * 4)" }, "width": "(240 * 4)", "height": "((146 * 4))", "angle": 0 },
+    { "position": { "x": "(((272 * 4))) / 2 + (272 * 4)", "y": "(((131 * 4))) / 2 + (131 * 4)" }, "width": "(272 * 4)", "height": "((131 * 4))", "angle": 0 }
+  ],
+  "pointsRequired": 25,
+  "timeAllowed":  75,
+  "gravity": { "x": 0, "y": 9.8 },
+  "wind": { "x": 0, "y": 0 },
+  "backgroundImage": "../../../assets/bg/bg_area1.png",
+  "overlayImageFg": "../../../assets/layout/level1-2/level1-2_tile_layout_fg.png",
+  "overlayImageBg": "../../../assets/layout/level1-2/level1-2_tile_layout_bg.png"
+}
