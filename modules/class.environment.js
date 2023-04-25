@@ -206,19 +206,25 @@ class Environment {
     this.mouseBarrierActive = !this.mouseBarrierActive;
   }
 
-  updateTimer() {
+  //Popup timer
+  levelTimer() {
     if (this.timerActive) {
       this.timeAllowed -= deltaTime / 1000;
-
       if (this.timeAllowed <= 0) {
         this.timeAllowed = 0;
         this.timerActive = false;
-        const gameWon = this.score >= this.pointsRequired;
-        alert(`Game over! You ${gameWon ? "won" : "lost"}!`);
+        let canvasContainer = document.getElementById("canvas-container");
+        this.popup = new Popup(
+          width / 2,
+          height / 2,
+          canvasContainer.offsetWidth / 4,
+          canvasContainer.offsetHeight / 2,
+          "Game Over"
+        );
+        console.log("Game Over");
       }
     }
   }
-
   update() {
     if (this.throwable) {
       this.throwable.update(this);
@@ -232,8 +238,8 @@ class Environment {
       }
     }
 
-    //Update time
-    this.updateTimer();
+    //Level timer
+    this.levelTimer();
 
     Matter.Engine.update(engine);
   }
@@ -340,6 +346,11 @@ class Environment {
 
     //display score
     this.scoreboard.display();
+
+    //Display popup above all other elements
+    if (this.popup) {
+      this.popup.display();
+    }
   }
 
   addBoundaries() {
