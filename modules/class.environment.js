@@ -1,32 +1,113 @@
-//     file name: class.environment.js
-//       authors: Quoc, Ryan Smith
-//  date created: 13 Apr 2023
-// date modified: 13 Apr 2023 (rsmith)
+// Filename: class.environment.js
+// Authors: Quoc, Ryan Smith
+// Date created: 13 Apr 2023
+// Date modified: 13 Apr 2023 (rsmith)
 
-// description: Contains a base class for an environment object, which is
-//              intended to hold information related to the current level.
+
+// Description: Contains a base class for an environment object, which is
+// intended to hold information related to the current level.
 
 class Environment {
-  constructor(/*json file*/) {
+  constructor(data) {
+    this.updateScaleFactors();
+    this.initializeEnvironment(data);
+    console.log("canvas width: " + width + ", canvas height: " + height);
+
+    this.particles = [];
+    this.scoreTexts = [];
+  }
+
+  initializeEnvironment(data) {
+    if (data.score != null) {
+      this.retainOngoingGameObjects(data);
+    } else {
+      this.initializeDefaultGameObjects(data);
+    }
+    console.log("data: " + data);
+
+    // Scale positions, width, and height of the platforms and receptacles
+    data.platforms.forEach((platformData) => {
+      platformData.position.x =
+        eval(platformData.position.x) * this.scaleFactorX;
+      console.log("platformData.position.x: " + platformData.position.x);
+      platformData.position.y =
+        eval(platformData.position.y) * this.scaleFactorY;
+      console.log("platformData.position.y: " + platformData.position.y);
+      platformData.width = eval(platformData.width);
+      platformData.height = eval(platformData.height);
+    });
+
+    data.receptacle.x = eval(data.receptacle.x) * this.scaleFactorX;
+    data.receptacle.y = eval(data.receptacle.y) * this.scaleFactorY;
+
+    this.initializeCommonGameObjects(data);
+  }
+
+  //Necessary for scaling the environment when the window is resized
+  retainOngoingGameObjects(previousEnvironment) {
+    this.score = previousEnvironment.score;
+    this.timer = previousEnvironment.timer;
+    this.mouseBarrierActive = previousEnvironment.mouseBarrierActive;
+  }
+
+  initializeDefaultGameObjects(data) {
+    this.score = 0;
+    this.timer = null;
+    this.mouseBarrierActive = true;
+    this.timerActive = false;
+  }
+
+  initializeCommonGameObjects(data) {
+    //load images
+    this.overlayImageFg = loadImage(data.overlayImageFg);
+    this.overlayImageBg = loadImage(data.overlayImageBg);
+    this.receptacleFg = loadImage(data.receptacle.fg);
+    this.receptacleBg = loadImage(data.receptacle.bg);
+    this.receptacleCollision = loadImage(data.receptacle.collision);
+
+    //for flash on score:
+
+    this.receptacleBgOpacity = 255;
+
+    //scoreboard
+    this.scoreboard = new Scoreboard(this);
+
     // game objects
     this.addBoundaries();
-    this.receptacle = new Receptacle("default");
-    this.throwable = new Throwable("tennisball");
-
-    this.platforms = [];
-    this.platforms.push(
-      new Platform({ x: width / 4, y: height }, width / 2, 100, 40)
+    this.receptacle = new Receptacle(
+      data.receptacle.type,
+      this.scaleFactorX,
+      this.scaleFactorY
     );
-    this.platforms.push(new Platform({ x: 400, y: height / 2 }, 200, 100, 0));
+    this.throwable = new Throwable(
+      data.throwable.type,
+      this.scaleFactorX,
+      this.scaleFactorY
+    );
+    this.platforms = data.platforms.map(
+      (platformData) =>
+        new Platform(
+          {
+            x: eval(platformData.position.x),
+            y: eval(platformData.position.y),
+          },
+          eval(platformData.width) * this.scaleFactorX,
+          eval(platformData.height) * this.scaleFactorY,
+          eval(platformData.angle)
+        )
+    );
+
+    //receptacle properties for display
+    this.receptacleImgX = data.receptacle.x;
+    this.receptacleImgY = data.receptacle.y;
+
+    //this.platforms.push( new Platform({ x: width/4, y: height }, width/2, 100, 40));
+    //this.platforms.push( new Platform({ x: 400, y: height/2 }, 200, 100, 0));
 
     // TODO awaiting implementation of scoreboard class
     // this.scoreboard = new scoreboard();
 
-    // environmental physics
-    this.gravity = createVector(0, 9.8); // earth gravity: 9.8 m/s^2
-    this.wind = createVector(0, 0); // wind force: 0 m/s^2
-    this.backgroundimage = null;
-    // TODO move into class.scoreboard.js
+
     // scoreboard variables
     this.score = 0;
     this.targetScore = 3;
@@ -34,7 +115,40 @@ class Environment {
 
     this.mouseBarrierActive = true;
 
-    console.log("Environment created");
+    // progression variables
+    this.pointsRequired = data.pointsRequired;
+    this.timeAllowed = data.timeAllowed; // seconds
+
+    // environmental physics
+    this.gravity = createVector(data.gravity.x, data.gravity.y); // earth gravity: 9.8 m/s^2
+    this.wind = createVector(data.wind.x, data.wind.y); // wind force: 0 m/s^2
+
+    this.backgroundImage = loadImage(data.backgroundImage);
+  }
+
+  //utility score celebrations
+  flashReceptacleBackground() {
+    this.receptacleBgOpacity = 100;
+  }
+
+  generateConfetti() {
+    for (let i = 0; i < 30; i++) {
+      // number of particles
+      this.particles.push(
+        new Particle(this.receptacleImgX, this.receptacleImgY)
+      );
+    }
+  }
+
+  displayScoreTexts() {
+    for (let i = this.scoreTexts.length - 1; i >= 0; i--) {
+      this.scoreTexts[i].update();
+      this.scoreTexts[i].display();
+
+      if (this.scoreTexts[i].isDone()) {
+        this.scoreTexts.splice(i, 1);
+      }
+    }
   }
 
   // accessors
@@ -62,10 +176,19 @@ class Environment {
 
   // modifiers
   setThrowable(newType) {
-    this.throwable = new Throwable(newType);
+    this.throwable.destroy();
+    this.throwable = new Throwable(
+      newType,
+      this.scaleFactorX,
+      this.scaleFactorY
+    );
   }
   setReceptacle(newType) {
-    this.receptacle = new Receptacle(newType);
+    this.receptacle = new Receptacle(
+      newType,
+      this.scaleFactorX,
+      this.scaleFactorY
+    );
   }
   setGravity(newGravity) {
     this.gravity = createVector(0, newGravity * -1);
@@ -75,6 +198,12 @@ class Environment {
   }
   addScore(newScore) {
     this.score += newScore;
+    this.flashReceptacleBackground();
+    this.generateConfetti();
+    this.scoreTexts.push(
+      new ScoreText(this.receptacleImgX, this.receptacleImgY - 50, newScore)
+    );
+    console.log("score: " + this.score);
   }
   resetScore() {
     this.score = 0;
@@ -86,17 +215,108 @@ class Environment {
     this.mouseBarrierActive = !this.mouseBarrierActive;
   }
 
-  update() {
-    this.throwable.update(this);
-    Matter.Engine.update(engine);
-    // this.receptacle.update(this);
+display() {
+    //Display background image
+    if (this.backgroundImage) {
+      let bgWidth = width;
+      let bgHeight = height;
+      imageMode(CORNER);
+      image(this.backgroundImage, 0, 0, bgWidth, bgHeight);
+    }
 
-    // this.scoreboard.update(this);
-  }
-  display() {
-    this.throwable.display();
-    this.receptacle.display();
-    this.platforms.forEach((platform) => platform.display(this));
+    if (this.overlayImageBg) {
+      imageMode(CENTER);
+      let imageWidth = this.overlayImageBg.width * 4 * this.scaleFactorX;
+      let imageHeight = this.overlayImageBg.height * 4 * this.scaleFactorY;
+      image(
+        this.overlayImageBg,
+        width / 2,
+        height - imageHeight / 2,
+        imageWidth,
+        imageHeight
+      );
+    }
+
+    //Display receptacles
+    if (this.receptacleBg) {
+      imageMode(CENTER);
+      let imageWidth = this.receptacleBg.width * 4 * this.scaleFactorX;
+      let imageHeight = this.receptacleBg.height * 4 * this.scaleFactorY;
+      tint(255, this.receptacleBgOpacity); // Apply the opacity
+      image(
+        this.receptacleBg,
+        this.receptacleImgX,
+        this.receptacleImgY,
+        imageWidth,
+        imageHeight
+      );
+
+      tint(255, 255); // Reset the tint
+    }
+
+    // Display particles
+    for (const particle of this.particles) {
+      particle.display();
+    }
+
+    //Display score texts
+    this.displayScoreTexts();
+
+    if (this.receptacleCollision) {
+      imageMode(CENTER);
+      let imageWidth = this.receptacleCollision.width * 4 * this.scaleFactorX;
+      let imageHeight = this.receptacleCollision.height * 4 * this.scaleFactorY;
+
+      image(
+        this.receptacleCollision,
+        this.receptacleImgX,
+        this.receptacleImgY,
+        imageWidth,
+        imageHeight
+      );
+    }
+
+    if (this.throwable) {
+      this.throwable.display();
+    }
+    if (this.receptacle) {
+      this.receptacle.display();
+    }
+    if (this.platforms) {
+      this.platforms.forEach((platform) => platform.display(this));
+    }
+    //scoreboard.display();
+
+    // Display the overlay image
+    if (this.overlayImageFg) {
+      imageMode(CENTER);
+      let imageWidth = this.overlayImageFg.width * 4 * this.scaleFactorX;
+      let imageHeight = this.overlayImageFg.height * 4 * this.scaleFactorY;
+      image(
+        this.overlayImageFg,
+        width / 2,
+        height - imageHeight / 2,
+        imageWidth,
+        imageHeight
+      );
+    }
+    //display front of receptacle
+    if (this.receptacleFg) {
+      imageMode(CENTER);
+      let imageWidth = this.receptacleFg.width * 4 * this.scaleFactorX;
+      let imageHeight = this.receptacleFg.height * 4 * this.scaleFactorY;
+
+      image(
+        this.receptacleFg,
+        this.receptacleImgX,
+        this.receptacleImgY,
+        imageWidth,
+        imageHeight
+      );
+    }
+
+    //display score
+    this.scoreboard.display();
     if (this.score >= this.targetScore) {
       //create win popup
       let canvasContainer = document.getElementById("canvas-container");
@@ -127,7 +347,7 @@ class Environment {
     World.add(world, [ground, leftWall, rightWall, ceiling]);
   }
 
-  levelTimer() {
+ levelTimer() {
     let time = 10; // seconds, subject to change
     let timer;
 
@@ -149,5 +369,141 @@ class Environment {
         // console.log("Game Over");
       }
     }, 1000);
+  }
+  //for maintaining position and scale of objects for the aspect ratio.
+  updateScaleFactors() {
+    this.scaleFactorX = width / 1536;
+    this.scaleFactorY = height / 864;
+  }
+
+  destroy() {
+    return new Promise((resolve) => {
+      // Destroy throwable if it exists
+      if (this.throwable) {
+        this.throwable.destroy();
+        this.throwable = null;
+      }
+
+      // Destroy receptacle if it exists
+      if (this.receptacle) {
+        this.receptacle.destroy();
+        this.receptacle = null;
+      }
+
+      // Destroy platforms if they exist
+      if (this.platforms) {
+        this.platforms.forEach((platform) => platform.destroy());
+        this.platforms = null;
+      }
+
+      //nuke the whole world >:)
+      World.clear(world, false);
+
+      //notify destruction
+      console.log("Environment destroyed");
+
+      // Resolve the promise after completing the destroy process
+      resolve();
+    });
+  }
+}
+
+//Scoreboard class for displaying score, time, and goal score.
+class Scoreboard {
+  constructor(environment) {
+    this.environment = environment;
+
+    //temporary start button:
+    this.startButton = null;
+  }
+
+  createStartButton() {
+    if (!this.startButton) {
+      this.startButton = createButton("Start");
+      this.startButton.position(width / 2 - this.startButton.width / 2, 10);
+      this.startButton.mousePressed(() => {
+        this.environment.timerActive = true;
+        this.startButton.hide();
+      });
+    }
+  }
+
+  display() {
+    const score = this.environment.getScore();
+    const goal = this.environment.pointsRequired;
+    const timeRemaining = Math.round(this.environment.timeAllowed);
+    if (!this.environment.timerActive) {
+      this.createStartButton();
+    }
+    push();
+    textAlign(CENTER, CENTER);
+
+    // Background container
+    fill(0, 0, 0, 200);
+    rect(0, 0, width, 50);
+
+    // Score text
+    textSize(24);
+    fill(255);
+    text(`Score: ${score} / ${goal}`, width / 4, 25);
+
+    // Time remaining text
+    text(`Time remaining: ${timeRemaining}s`, (width / 4) * 3, 25);
+
+    pop();
+  }
+}
+
+//Particles for celebrations woohoo
+
+class Particle {
+  constructor(x, y) {
+    this.pos = createVector(x, y);
+    this.vel = createVector(random(-2, 2), random(-4, -1));
+    this.acc = createVector(0, 0.05);
+    this.size = random(4, 10);
+    this.color = color(random(255), random(255), random(255));
+  }
+
+  update() {
+    this.vel.add(this.acc);
+    this.pos.add(this.vel);
+  }
+
+  display() {
+    noStroke();
+    fill(this.color);
+    ellipse(this.pos.x, this.pos.y, this.size);
+  }
+
+  isOffScreen() {
+    return this.pos.y > height;
+  }
+}
+
+//Fun score texts that appear when you score
+class ScoreText {
+  constructor(x, y, points) {
+    this.x = x;
+    this.y = y;
+    this.points = points;
+    this.alpha = 255;
+    this.velocityY = -2;
+  }
+
+  update() {
+    this.y += this.velocityY;
+    this.alpha -= 1;
+  }
+
+  display() {
+    fill(0, 255, 0, this.alpha);
+    textSize(46);
+    textAlign(CENTER, CENTER);
+    text(`+${this.points}`, this.x, this.y);
+  }
+
+  isDone() {
+    return this.alpha <= 0;
   }
 }
