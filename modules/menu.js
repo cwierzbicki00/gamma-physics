@@ -24,6 +24,25 @@ let environment;
 
 let canvas;
 
+//Fullscreen via javascript API
+function toggleFullscreen() {
+  let canvasContainer = document.getElementById("canvas-container");
+
+  if (!document.fullscreenElement) {
+    canvasContainer.requestFullscreen().catch((err) => {
+      alert(
+        `Error attempting to enable full-screen mode: ${err.message} (${err.name})`
+      );
+    });
+  } else {
+    document.exitFullscreen();
+  }
+}
+
+// Add an event listener to the full screen button
+let fullscreenButton = document.getElementById("fullscreen-btn");
+fullscreenButton.addEventListener("click", toggleFullscreen);
+
 // p5.js setup to start game on load - runs ONCE
 function setup() {
   console.log("Game started");
