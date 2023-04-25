@@ -15,15 +15,56 @@ class Receptacle {
     const openingSize = 50 * scaleFactorX; // Adjust the size of the opening as needed
     switch (receptacleType) {
       case "goblet":
+        console.log("goblet receptacle created");
         break;
 
       case "net":
+        console.log("net receptacle created");
         break;
 
       case "trashcan":
+        // this.img = [loadImage("BACKGROUND IMGUR"),
+        //             loadImage("COLLISION IMGUR"),
+        //             loadImage("FOREGROUND IMGUR")];
+        // this.center = Vector.create(width * (2/3), height * (5/7));
+        // let refVertex = createVector(this.center.x-25, this.center.y-27);
+        //
+        // // create the walls of the trashcan
+        // let leftWall = Bodies.fromVertices(refVertex.x, refVertex.y, [
+        //     {x: refVertex.x+1, y: refVertex.y}, // top right
+        //     {x: refVertex.x+11, y: refVertex.y+54}, // bottom left
+        //     {x: refVertex.x+13, y: refVertex.y+54}, // bottom right
+        //     ],
+        //     {isStatic: true}
+        // );
+        //
+        // let rightWall = Bodies.rectangle(
+        //     this.center.x+25, this.center.y-27, 51, 2, {isStatic: true}
+        // );
+        // Body.rotate(rightWall, 98, Vector.create(this.center.x+25, this.center.y-27));
+        // let bottomWall = Bodies.rectangle(
+        //     this.center.x-15, this.center.y+27, 30, 2, {isStatic: true}
+        // );
+        //
+        // // create a composite for the trashcan
+        // this.body = Composite.create();
+        // Composite.add(this.body, leftWall);
+        // Composite.add(this.body, rightWall);
+        // Composite.add(this.body, bottomWall);
+        // World.add(world, this.body);
+        //
+        // // temporary render of trashcan walls for debugging
+        // this.walls = [
+        //   leftWall,
+        //   rightWall,
+        //   bottomWall,
+        // ];
+
+        console.log("trashcan receptacle created");
         break;
 
       case "vase":
+        console.log("vase receptacle created");
         break;
 
       default:

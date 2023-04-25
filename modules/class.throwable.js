@@ -1,7 +1,7 @@
 //     file name: class.throwable.js
-//       authors: Ryan Smith
+//       authors: Ryan Smith, Christian Wierzbicki
 //  date created: 02 Mar 2023
-// date modified: 13 Apr 2023 (rsmith)
+// date modified: 24 Apr 2023 (rsmith)
 
 // description: Contains a base class for a throwable object, which is
 //              manipulated by the player to be tossed at a receptacle.
@@ -19,6 +19,13 @@ class Throwable {
         this.bounce = 0.6; // testing
         this.radius = 74 * scaleFactorX;
         this.img = loadImage("https://i.imgur.com/d5B8YI0.png");
+        this.option = {
+          friction: 0.001,
+          mass: 0.625, // kilograms
+          restitution: 0.6, // testing
+          label: "basketball",
+        };
+        console.log("basketball throwable created");
         break;
       case "bowlingball":
         this.type = "bowlingball";
@@ -26,6 +33,13 @@ class Throwable {
         this.bounce = 0.1; // testing
         this.radius = 72 * scaleFactorX;
         this.img = loadImage("https://i.imgur.com/NTqjnK4.png");
+        this.option = {
+          friction: 0.001,
+          mass: 6.8,
+          restitution: 0.1,
+          label: "bowlingball",
+        };
+        console.log("bowlingball throwable created");
         break;
       case "golfball":
         this.type = "golfball";
@@ -33,6 +47,13 @@ class Throwable {
         this.bounce = 0.85; // testing
         this.radius = 18 * scaleFactorX;
         this.img = loadImage("https://i.imgur.com/cXYIMIm.png");
+        this.option = {
+          friction: 0.001,
+          mass: 0.046,
+          restitution: 0.85,
+          label: "golfball",
+        };
+        console.log("golfball throwable created");
         break;
       case "tennisball":
         this.type = "tennisball";
@@ -40,6 +61,13 @@ class Throwable {
         this.bounce = 0.75; // testing
         this.radius = 26 * scaleFactorX;
         this.img = loadImage("https://i.imgur.com/ZL0oho5.png");
+        this.option = {
+          friction: 0.001,
+          mass: 0.056,
+          restitution: 0.75,
+          label: "tennisball",
+        };
+        console.log("tennisball throwable created");
         break;
       default:
         throw new Error("Invalid ball type");
@@ -58,17 +86,12 @@ class Throwable {
     this.irrecoverable = false;
     this.resetTimer = false;
 
-    let option = {
-      friction: 0.001,
-      mass: 10,
-      restitution: this.bounce,
-      label: "Ball",
-    };
+    // matter.js body
     this.body = Bodies.circle(
       this.initialPos.x,
       this.initialPos.y,
       this.radius,
-      option
+      this.option
     );
     World.add(world, this.body);
   }
@@ -84,10 +107,81 @@ class Throwable {
     return this.dragging;
   }
 
+  //constrain to bounds of screen
+  constrainToBounds() {
+    const buffer = 5;
+    const minPosX = this.radius + buffer;
+    const maxPosX = width - this.radius - buffer;
+    const minPosY = this.radius + buffer;
+    const maxPosY = height - this.radius - buffer;
+
+    if (this.body.position.x < minPosX) {
+      Matter.Body.setPosition(this.body, {
+        x: minPosX,
+        y: this.body.position.y,
+      });
+      Matter.Body.setVelocity(this.body, {
+        x: Math.abs(this.body.velocity.x),
+        y: this.body.velocity.y,
+      });
+    } else if (this.body.position.x > maxPosX) {
+      Matter.Body.setPosition(this.body, {
+        x: maxPosX,
+        y: this.body.position.y,
+      });
+      Matter.Body.setVelocity(this.body, {
+        x: -Math.abs(this.body.velocity.x),
+        y: this.body.velocity.y,
+      });
+    }
+
+    if (this.body.position.y < minPosY) {
+      Matter.Body.setPosition(this.body, {
+        x: this.body.position.x,
+        y: minPosY,
+      });
+      Matter.Body.setVelocity(this.body, {
+        x: this.body.velocity.x,
+        y: Math.abs(this.body.velocity.y),
+      });
+    } else if (this.body.position.y > maxPosY) {
+      Matter.Body.setPosition(this.body, {
+        x: this.body.position.x,
+        y: maxPosY,
+      });
+      Matter.Body.setVelocity(this.body, {
+        x: this.body.velocity.x,
+        y: -Math.abs(this.body.velocity.y),
+      });
+    }
+  }
+
+  //limit velocity of ball
+  update(environment) {
+    this.mousePressed(environment);
+    this.limitVelocity();
+    this.recover();
+  }
+
+  limitVelocity() {
+    // Limit the ball's maximum velocity
+    const maxVelocity = 20;
+    const currentVelocity = Matter.Vector.magnitude(this.body.velocity);
+    if (currentVelocity > maxVelocity) {
+      const newVelocity = Matter.Vector.mult(
+        Matter.Vector.normalise(this.body.velocity),
+        maxVelocity
+      );
+      Matter.Body.setVelocity(this.body, newVelocity);
+    }
+  }
+
   // updates the location of the throwable on the screen
   update(environment) {
     this.mousePressed(environment);
     this.recover();
+    this.limitVelocity();
+    this.constrainToBounds();
   }
 
   display() {
@@ -125,17 +219,19 @@ class Throwable {
   }
 
   // allow user to drag ball if it was clicked on
+  // allow user to drag ball if it was clicked on
   mousePressed(environment) {
-    if (mConstraint.body && environment.getBarrierStatus()) {
+    if (mConstraint.body == this.body && environment.getBarrierStatus()) {
       console.log(mConstraint.body.label);
       this.dragging = true;
       const pos = this.body.position;
       const offset = mConstraint.constraint.pointB;
       const m = mConstraint.mouse;
-      const forceVector = {
-        x: (m.position.x - pos.x - offset.x) * 0.001,
-        y: (m.position.y - pos.y - offset.y) * 0.001,
-      };
+      const forceMultiplier = 0.0005; // Reduced force multiplier
+      const forceVector = Vector.create(
+        (m.position.x - pos.x - offset.x) * forceMultiplier,
+        (m.position.y - pos.y - offset.y) * forceMultiplier
+      );
       Matter.Body.applyForce(this.body, pos, forceVector);
       // Limit the ball's maximum velocity
       const maxVelocity = 20;
@@ -176,7 +272,7 @@ class Throwable {
 
   // Reset ball to initial state
   reset() {
-    Matter.Body.setVelocity(this.body, { x: 0, y: 0 });
+    Matter.Body.setVelocity(this.body, Vector.create(0, 0));
     Matter.Body.setPosition(this.body, this.initialPos);
     this.irrecoverable = false;
     this.resetTimer = false;

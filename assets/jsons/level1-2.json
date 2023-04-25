@@ -1,0 +1,17 @@
+{
+  "receptacle": { "type": "vasedebug", "x": "width / 2", "y": "height / 2" },
+  "throwable": { "type": "bowlingball" },
+  "platforms": [
+    { "position": { "x": "((width - (0 * 4))) / 2 + (0 * 4)"    , "y": "((height - (206 * 4))) / 2 + (206 * 4)" }, "width": "width - (0 * 4)"  , "height": "(height - (206 * 4))", "angle": 0 },
+    { "position": { "x": "((width - (112 * 4))) / 2 + (112 * 4)", "y": "((height - (191 * 4))) / 2 + (191 * 4)" }, "width": "width - (112 * 4)", "height": "(height - (191 * 4))", "angle": 0 },
+    { "position": { "x": "((width - (176 * 4))) / 2 + (176 * 4)", "y": "((height - (176 * 4))) / 2 + (176 * 4)" }, "width": "width - (176 * 4)", "height": "(height - (176 * 4))", "angle": 0 },
+    { "position": { "x": "((width - (208 * 4))) / 2 + (208 * 4)", "y": "((height - (161 * 4))) / 2 + (161 * 4)" }, "width": "width - (208 * 4)", "height": "(height - (161 * 4))", "angle": 0 },
+    { "position": { "x": "((width - (240 * 4))) / 2 + (240 * 4)", "y": "((height - (146 * 4))) / 2 + (146 * 4)" }, "width": "width - (240 * 4)", "height": "(height - (146 * 4))", "angle": 0 },
+    { "position": { "x": "((width - (272 * 4))) / 2 + (272 * 4)", "y": "((height - (131 * 4))) / 2 + (131 * 4)" }, "width": "width - (272 * 4)", "height": "(height - (131 * 4))", "angle": 0 }
+  ],
+  "pointsRequired": 5,
+  "timeAllowed":  75,
+  "gravity": { "x": 0, "y": 9.8 },
+  "wind": { "x": 0, "y": 0 },
+  "backgroundImage": "IMGUR LINK HERE"
+}

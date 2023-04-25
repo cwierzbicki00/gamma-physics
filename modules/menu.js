@@ -10,13 +10,16 @@
 const Engine = Matter.Engine;
 const World = Matter.World;
 const Bodies = Matter.Bodies;
+
+const Vector = Matter.Vector;
+const Composite = Matter.Composite;
 const Mouse = Matter.Mouse;
 const MouseConstraint = Matter.MouseConstraint;
 let engine;
 let world;
 let mConstraint;
 
-let level = 1;
+let level = 1000;
 let environment;
 
 // p5.js setup to start game on load - runs ONCE
@@ -50,7 +53,7 @@ function setup() {
   console.log("Frame rate set to 60 FPS");
 
   // -- build the environment ------------------------------------------------
-  engine = Matter.Engine.create();
+  engine = Engine.create();
   world = engine.world;
 
   // Set up the mouse constraint for dragging the ball
@@ -76,15 +79,27 @@ function setup() {
 
   switch (level) {
     case 2:
-      environment = new Environment(/*level2.json*/);
+      fetch("../../../assets/jsons/level1-2.json")
+        .then((response) => response.json())
+        .then((data) => {
+          environment = new Environment(data);
+        });
       console.log("Level 2 environment created");
       break;
     case 3:
-      environment = new Environment(/*level3.json*/);
+      fetch("../../../assets/jsons/level1-3.json")
+        .then((response) => response.json())
+        .then((data) => {
+          environment = new Environment(data);
+        });
       console.log("Level 3 environment created");
       break;
     default: // level 1
-      environment = new Environment(/*level1.json*/);
+      fetch("../../../assets/jsons/level1-1.json")
+        .then((response) => response.json())
+        .then((data) => {
+          environment = new Environment(data);
+        });
       console.log("Level 1 environment created");
       break;
   }
@@ -131,6 +146,7 @@ function draw() {
   clear(); // clears the entire canvas to be redrawn
   // TODO move this to the environment class when scoreboard is implemented
   drawScore(); // rsmith - draw score to screen
+
   // template for drawing objects
 
   environment.update();
@@ -160,7 +176,7 @@ function updateMouseConstraint() {
 
   // Create a new mouse constraint with the updated canvas element
   const canvasElement = document.getElementById("canvas-container");
-  const mouse = Mouse.create(canvasElement);
+  const mouse = Mouse.create(canvas.elt);
   const mouseOptions = {
     mouse: mouse,
     constraint: {
@@ -169,7 +185,7 @@ function updateMouseConstraint() {
         visible: false,
       },
     },
-    element: canvasElement,
+    element: canvas.elt,
 
     offset: {
       x: canvasElement.getBoundingClientRect().left,

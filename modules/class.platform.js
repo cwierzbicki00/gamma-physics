@@ -25,7 +25,6 @@ class Platform {
     rect(0, 0, this.width, this.height);
     pop();
   }
-
   destroy() {
     //World.remove(world, this.body);
     delete this;

@@ -7,25 +7,19 @@
 // intended to hold information related to the current level.
 
 class Environment {
-  constructor(/*json of environment*/ previousEnvironment = null) {
+  constructor(data) {
     this.updateScaleFactors();
-    this.initializeEnvironment(previousEnvironment);
+    this.initializeEnvironment(data);
+    console.log("canvas width: " + width + ", canvas height: " + height);
   }
 
-  //Initialize the environment depending on whether it is a new game or a
-  //recreation of a previous environment
-  initializeEnvironment(previousEnvironment) {
-    if (previousEnvironment) {
-      this.retainOngoingGameObjects(previousEnvironment);
+  initializeEnvironment(data) {
+    if (data.score != null) {
+      this.retainOngoingGameObjects(data);
     } else {
-      this.initializeDefaultGameObjects();
+      this.initializeDefaultGameObjects(data);
     }
-    //restart the world
-
-    this.initializeCommonGameObjects();
-    // console.log(
-    //   previousEnvironment ? "Environment recreated" : "Environment created"
-    // );
+    this.initializeCommonGameObjects(data);
   }
 
   //Necessary for scaling the environment when the window is resized
@@ -35,46 +29,58 @@ class Environment {
     this.mouseBarrierActive = previousEnvironment.mouseBarrierActive;
   }
 
-  initializeDefaultGameObjects() {
+  initializeDefaultGameObjects(data) {
     this.score = 0;
     this.timer = null;
     this.mouseBarrierActive = true;
   }
 
-  initializeCommonGameObjects() {
+  initializeCommonGameObjects(data) {
+    // game objects
+    this.addBoundaries();
+    this.receptacle = new Receptacle(
+      data.receptacle.type,
+      createVector(eval(data.receptacle.x), eval(data.receptacle.y))
+    );
+    this.throwable = new Throwable(
+      data.throwable.type,
+      this.scaleFactorX,
+      this.scaleFactorY
+    );
+    this.platforms = data.platforms.map(
+      (platformData) =>
+        new Platform(
+          {
+            x: eval(platformData.position.x),
+            y: eval(platformData.position.y),
+          },
+          eval(platformData.width),
+          eval(platformData.height),
+          eval(platformData.angle)
+        )
+    );
+    //this.platforms.push( new Platform({ x: width/4, y: height }, width/2, 100, 40));
+    //this.platforms.push( new Platform({ x: 400, y: height/2 }, 200, 100, 0));
+
+    // TODO awaiting implementation of scoreboard class
+    // this.scoreboard = new scoreboard();
+
+    // progression variables
+    this.pointsRequired = data.pointsRequired;
+    this.timeAllowed = data.timeAllowed; // seconds
+
     this.addBoundaries();
     this.receptacle = new Receptacle(
       "default",
       this.scaleFactorX,
       this.scaleFactorY
     );
-    this.throwable = new Throwable(
-      "tennisball",
-      this.scaleFactorX,
-      this.scaleFactorY
-    );
-    this.platforms = [];
 
-    this.platforms.push(
-      new Platform(
-        { x: width / 4, y: height },
-        (width / 2) * this.scaleFactorX,
-        100 * this.scaleFactorY,
-        40
-      )
-    );
-    this.platforms.push(
-      new Platform(
-        { x: 400 * this.scaleFactorX, y: height / 2 },
-        200 * this.scaleFactorX,
-        100 * this.scaleFactorY,
-        0
-      )
-    );
+    // environmental physics
+    this.gravity = createVector(data.gravity.x, data.gravity.y); // earth gravity: 9.8 m/s^2
+    this.wind = createVector(data.wind.x, data.wind.y); // wind force: 0 m/s^2
 
-    this.gravity = createVector(0, 9.8);
-    this.wind = createVector(0, 0);
-    this.backgroundimage = null;
+    this.backgroundImage = null; //loadImage(data.backgroundImage);
   }
 
   // accessors
