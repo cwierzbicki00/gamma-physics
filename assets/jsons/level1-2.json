@@ -1,6 +1,6 @@
 {
   "receptacle": { "type": "trashcan", "x": "350 * 4", "y": "104 * 4", "bg": "../../../assets/sprites/recepticles/trashcan/trashcan_bg.png", "fg": "../../../assets/sprites/recepticles/trashcan/trashcan_bg.png", "collision": "../../../assets/sprites/recepticles/trashcan/trashcan_collision.png" },
-  "throwable": { "type": "tennisball" },
+  "throwable": { "type": "basketball" },
   "platforms": [
     { "position": { "x": "(((56 * 4))) / 2 + (56 * 4)"    , "y": "(((206 * 4))) / 2 + (206 * 4)" }, "width": "(176 * 4)"  , "height": "((206 * 4))", "angle": 0 },
     { "position": { "x": "(((112 * 4))) / 2 + (112 * 4)", "y": "(((191 * 4))) / 2 + (191 * 4)" }, "width": "(112 * 4)", "height": "((191 * 4))", "angle": 0 },

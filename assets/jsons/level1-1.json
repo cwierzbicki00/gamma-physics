@@ -1,10 +1,14 @@
 {
-  "receptacle": { "type": "trashcandebug" },
+  "receptacle": { "type": "trashcan", "x": "350 * 4", "y": "720", "bg": "../../../assets/sprites/recepticles/trashcan/trashcan_bg.png", "fg": "../../../assets/sprites/recepticles/trashcan/trashcan_bg.png", "collision": "../../../assets/sprites/recepticles/trashcan/trashcan_collision.png" },
   "throwable": { "type": "tennisball" },
-  "platforms": [],
+  "platforms": [
+    { "position": { "x": "(((56 * 4))) / 2 + (56 * 4)"    , "y": "(((206 * 4))) / 2 + (206 * 4)" }, "width": "(2500)"  , "height": "((206 * 4))", "angle": 0 }
+  ],
   "pointsRequired": 5,
   "timeAllowed":  90,
   "gravity": { "x": 0, "y": 9.8 },
   "wind": { "x": 0, "y": 0 },
-  "backgroundImage": null
+  "backgroundImage": "../../../assets/bg/bg_area1.png",
+  "overlayImageFg": "../../../assets/layout/level1-1/level1-1_tile_layout_fg.png",
+  "overlayImageBg": "../../../assets/layout/level1-1/level1-1_tile_layout_bg.png"
 }

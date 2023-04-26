@@ -49,6 +49,7 @@ class Environment {
     this.mouseBarrierActive = previousEnvironment.mouseBarrierActive;
     this.timerActive = previousEnvironment.timerActive;
     this.startButtonClicked = previousEnvironment.startButtonClicked;
+    this.edit = previousEnvironment.edit;
   }
 
   initializeDefaultGameObjects(data) {
@@ -79,7 +80,8 @@ class Environment {
     this.receptacle = new Receptacle(
       data.receptacle.type,
       this.scaleFactorX,
-      this.scaleFactorY
+      this.scaleFactorY,
+      this.edit
     );
     this.throwable = new Throwable(
       data.throwable.type,

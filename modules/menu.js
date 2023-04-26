@@ -56,11 +56,7 @@ function preload() {
 
 // p5.js setup to start game on load - runs ONCE
 function setup() {
-
-
-
-  if(edit)
-  {
+  if (edit) {
     startTest();
   }
   console.log("Game started");
@@ -116,17 +112,15 @@ function setup() {
 function createLevelEnvironment(level) {
   switch (level) {
     case 2:
-      fetch("https://cwierzbicki00.github.io/gamma-physics/assets/jsons/level1-2.json")
+      fetch(
+        "https://cwierzbicki00.github.io/gamma-physics/assets/jsons/level1-2.json"
+      )
         .then((response) => response.json())
         .then((data) => {
           //if environment already exists, take score, timer, mouseBarrierActive
           //and add to data
           if (environment) {
-            data.score = environment.score;
-            data.timerActive = environment.timerActive;
-            data.mouseBarrierActive = environment.mouseBarrierActive;
-            data.startButtonClicked = environment.startButtonClicked;
-            data.timeAllowed = environment.timeAllowed;
+            setRetainingData(data);
           }
 
           environment = new Environment(data);
@@ -140,9 +134,7 @@ function createLevelEnvironment(level) {
           //if environment already exists, take score, timer, mouseBarrierActive
           //and add to data
           if (environment) {
-            data.score = environment.score;
-            data.timer = environment.timer;
-            data.mouseBarrierActive = environment.mouseBarrierActive;
+            setRetainingData(data);
           }
 
           environment = new Environment(data);
@@ -156,15 +148,23 @@ function createLevelEnvironment(level) {
           //if environment already exists, take score, timer, mouseBarrierActive
           //and add to data
           if (environment) {
-            data.score = environment.score;
-            data.timer = environment.timer;
-            data.mouseBarrierActive = environment.mouseBarrierActive;
+            setRetainingData(data);
           }
 
           environment = new Environment(data);
         });
       console.log("Level 1 environment created");
       break;
+  }
+
+  //Generalize retaining data
+  function setRetainingData(data) {
+    data.score = environment.score;
+    data.timerActive = environment.timerActive;
+    data.mouseBarrierActive = environment.mouseBarrierActive;
+    data.startButtonClicked = environment.startButtonClicked;
+    data.timeAllowed = environment.timeAllowed;
+    data.edit = edit;
   }
 
   // -- create and arrange buttons -------------------------------------------
@@ -276,11 +276,9 @@ async function windowResized() {
   updateMouseConstraint();
 }
 
-
-
 //Physic EDITOR
 let vertices;
-let edit = true;
+let edit = false;
 let index;
 let radius = 10;
 let dragged = false;
@@ -293,40 +291,39 @@ let buttonX0 = 20; // X coordinate of the button
 let buttonY0 = 60; // Y coordinate of the button
 let buttonWidth0 = 100; // Width of the button
 let buttonHeight0 = 50; // Height of the button
-function mousePressed()
-{
-  if(edit)
-  {
+function mousePressed() {
+  if (edit) {
     let check = false;
-    if (mouseX >= buttonX && mouseX <= buttonX + buttonWidth &&
-      mouseY >= buttonY && mouseY <= buttonY + buttonHeight) {
+    if (
+      mouseX >= buttonX &&
+      mouseX <= buttonX + buttonWidth &&
+      mouseY >= buttonY &&
+      mouseY <= buttonY + buttonHeight
+    ) {
       endTestSection(); // call the buttonClicked() function if the mouse is clicked inside the button area
       check = true;
     }
-    if (mouseX >= buttonX0 && mouseX <= buttonX0 + buttonWidth0 &&
-      mouseY >= buttonY0 && mouseY <= buttonY0 + buttonHeight0) {
+    if (
+      mouseX >= buttonX0 &&
+      mouseX <= buttonX0 + buttonWidth0 &&
+      mouseY >= buttonY0 &&
+      mouseY <= buttonY0 + buttonHeight0
+    ) {
       resetTest(); // call the buttonClicked() function if the mouse is clicked inside the button area
       check = true;
     }
 
-
-    if(!check)
-    {
-      if(vertices.length == 0)
-      {
+    if (!check) {
+      if (vertices.length == 0) {
         vertices = [];
-        vertices.push({x:mouseX, y:mouseY});
-      }
-      else
-      {
+        vertices.push({ x: mouseX, y: mouseY });
+      } else {
         let check = true;
-        for (let i = 0 ; i < vertices.length; i++)
-        {
+        for (let i = 0; i < vertices.length; i++) {
           let v = vertices[i];
-          let p = {x:mouseX, y:mouseY};
+          let p = { x: mouseX, y: mouseY };
           let distance = Matter.Vector.magnitude(Matter.Vector.sub(v, p));
-          if(distance < radius) 
-          {
+          if (distance < radius) {
             console.log("DRAGGINGGG");
             dragged = true;
             index = i;
@@ -334,73 +331,63 @@ function mousePressed()
             break;
           }
         }
-        if(check)
-        {
+        if (check) {
           dragged = false;
-          vertices.push({x:mouseX, y: mouseY});
+          vertices.push({ x: mouseX, y: mouseY });
         }
       }
-  
     }
-    
-    }
-
-   
-}
-function mouseDragged()
-{
-  if(edit && dragged)
-  {
-      vertices[index].x = mouseX;
-      vertices[index].y = mouseY;
   }
 }
-function resetTest()
-{
-  vertices = [];   
+function mouseDragged() {
+  if (edit && dragged) {
+    vertices[index].x = mouseX;
+    vertices[index].y = mouseY;
+  }
 }
-function startTest()
-{
+function resetTest() {
+  vertices = [];
+}
+function startTest() {
   vertices = [];
   index = 0;
 }
 
-function testing()
-{
-  if(edit)
-  {
-    for (const v of vertices)
-  {
-    stroke(0); // set the stroke color to black
-    fill(0); // set the fill color to black
-    ellipse(v.x, v.y, radius, radius);
-  }
-  for(let i = 0 ; i < vertices.length - 1; i ++)
-  {
-    stroke(0); // set the stroke color to black
-    fill(0); // set the fill color to black
-    line(vertices[i].x, vertices[i].y, vertices[i + 1].x, vertices[i + 1].y);
-  }
+function testing() {
+  if (edit) {
+    for (const v of vertices) {
+      stroke(0); // set the stroke color to black
+      fill(0); // set the fill color to black
+      ellipse(v.x, v.y, radius, radius);
+    }
+    for (let i = 0; i < vertices.length - 1; i++) {
+      stroke(0); // set the stroke color to black
+      fill(0); // set the fill color to black
+      line(vertices[i].x, vertices[i].y, vertices[i + 1].x, vertices[i + 1].y);
+    }
 
-  rect(buttonX, buttonY, buttonWidth, buttonHeight); // draw the button
-  fill(255,0,0,255); // set the fill color to black
-  textSize(20); // set the text size to 20
-  text("clickhere", buttonX + 10, buttonY + 30); // draw the text on top of the button
+    rect(buttonX, buttonY, buttonWidth, buttonHeight); // draw the button
+    fill(255, 0, 0, 255); // set the fill color to black
+    textSize(20); // set the text size to 20
+    text("clickhere", buttonX + 10, buttonY + 30); // draw the text on top of the button
 
-
-  rect(buttonX0, buttonY0, buttonWidth0, buttonHeight0); // draw the button
-  fill(255,0,0,255); // set the fill color to black
-  textSize(15); // set the text size to 20
-  text("RESET Test", buttonX0 + 10, buttonY0 + 30); // draw the text on top of the button
+    rect(buttonX0, buttonY0, buttonWidth0, buttonHeight0); // draw the button
+    fill(255, 0, 0, 255); // set the fill color to black
+    textSize(15); // set the text size to 20
+    text("RESET Test", buttonX0 + 10, buttonY0 + 30); // draw the text on top of the button
   }
 }
-function endTestSection()
-{
+function endTestSection() {
   edit = false;
   let s = "[";
-  for(const v of vertices) 
-  {
-    s += "{ x:" + Math.round(v.x/environment.scaleFactorX) + "*scaleFactorX ," + "y:" +  Math.round(v.y/environment.scaleFactorY)+ "*scaleFactorY},";   
+  for (const v of vertices) {
+    s +=
+      "{ x:" +
+      Math.round(v.x / environment.scaleFactorX) +
+      "*scaleFactorX ," +
+      "y:" +
+      Math.round(v.y / environment.scaleFactorY) +
+      "*scaleFactorY},";
   }
   s += "];";
   console.log(s);
