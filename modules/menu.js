@@ -280,7 +280,7 @@ async function windowResized() {
 
 //Physic EDITOR
 let vertices;
-let edit = true;
+let edit = false;
 let index;
 let radius = 10;
 let dragged = false;
@@ -367,7 +367,9 @@ function startTest()
 
 function testing()
 {
-  for (const v of vertices)
+  if(edit)
+  {
+    for (const v of vertices)
   {
     stroke(0); // set the stroke color to black
     fill(0); // set the fill color to black
@@ -390,6 +392,7 @@ function testing()
   fill(255,0,0,255); // set the fill color to black
   textSize(15); // set the text size to 20
   text("RESET Test", buttonX0 + 10, buttonY0 + 30); // draw the text on top of the button
+  }
 }
 function endTestSection()
 {
