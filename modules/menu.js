@@ -286,6 +286,11 @@ let buttonX = 0; // X coordinate of the button
 let buttonY = 0; // Y coordinate of the button
 let buttonWidth = 100; // Width of the button
 let buttonHeight = 50; // Height of the button
+
+let buttonX0 = 20; // X coordinate of the button
+let buttonY0 = 60; // Y coordinate of the button
+let buttonWidth0 = 100; // Width of the button
+let buttonHeight0 = 50; // Height of the button
 function mousePressed()
 {
   if(edit)
@@ -296,6 +301,13 @@ function mousePressed()
       endTestSection(); // call the buttonClicked() function if the mouse is clicked inside the button area
       check = true;
     }
+    if (mouseX >= buttonX0 && mouseX <= buttonX0 + buttonWidth0 &&
+      mouseY >= buttonY0 && mouseY <= buttonY0 + buttonHeight0) {
+      resetTest(); // call the buttonClicked() function if the mouse is clicked inside the button area
+      check = true;
+    }
+
+
     if(!check)
     {
       if(vertices.length == 0)
@@ -341,11 +353,16 @@ function mouseDragged()
       vertices[index].y = mouseY;
   }
 }
+function resetTest()
+{
+  vertices = [];   
+}
 function startTest()
 {
   vertices = [];
   index = 0;
 }
+
 function testing()
 {
   for (const v of vertices)
@@ -365,6 +382,12 @@ function testing()
   fill(255,0,0,255); // set the fill color to black
   textSize(20); // set the text size to 20
   text("clickhere", buttonX + 10, buttonY + 30); // draw the text on top of the button
+
+
+  rect(buttonX0, buttonY0, buttonWidth0, buttonHeight0); // draw the button
+  fill(255,0,0,255); // set the fill color to black
+  textSize(15); // set the text size to 20
+  text("RESET Test", buttonX0 + 10, buttonY0 + 30); // draw the text on top of the button
 }
 function endTestSection()
 {

@@ -96,14 +96,13 @@ class Receptacle {
     ];
     this.thickness = 5;
     this.walls = [];
+    this.wallsBounds = [];
     for(let i = 0 ; i < vertices.length - 1; i ++)
     {
       let z = this.createRectangle(vertices[i],vertices[i + 1]);
       this.walls.push(z);
     }
-    
     // Create a Matter.js body for the polygon
-
     // Add the trashcan to the Matter.js world
     World.add(engine.world, this.walls);
 }
@@ -178,8 +177,10 @@ buildDefaultReceptacle(scaleFactorX, scaleFactorY, openingSize) {
 
 display() {
    
-    for (const wall of this.walls)
+    for (let i = 0 ; i < this.walls.length; i++)
     {
+      let wall = this.walls[i]
+      let bound = this.wallsBounds[i];
       push();
       fill(255); // set the fill color to white
       stroke(0); // set the stroke color to black
@@ -187,12 +188,11 @@ display() {
       rotate(wall.angle);
       rectMode(CENTER);
       rect(0, 0, 
-        wall.bounds.max.x - wall.bounds.min.x,
-        (wall.bounds.max.y - wall.bounds.min.y) /16);
+        bound.x,
+        bound.y);
       pop();
     }
   }
-
   checkForEntry(throwable) {
     return;
     if (throwable.body === null) return;
@@ -247,6 +247,7 @@ display() {
       angle: angle,
     });
     // Return the rectangle body
+    this.wallsBounds.push({x: distance, y:this.thickness});
     return rect;
   }
 
