@@ -38,68 +38,68 @@ class Receptacle {
   }
 
   buildTrashcan(scaleFactorX, scaleFactorY, openingSize) {
-    const wallThickness = 5 * scaleFactorX;
-    const centerX = 350 * 4 * scaleFactorX;
-    const centerY = 104 * 4 * scaleFactorY;
-    const halfWidth = 75 * scaleFactorX;
-    const halfHeight = 95 * scaleFactorY;
-    const trashcanAngle = PI / 24; // Adjust the angle as needed (15 degrees tilt in this example)
+    // const wallThickness = 5 * scaleFactorX;
+    // const centerX = 350 * 4 * scaleFactorX;
+    // const centerY = 104 * 4 * scaleFactorY;
+    // const halfWidth = 75 * scaleFactorX;
+    // const halfHeight = 95 * scaleFactorY;
+    // const trashcanAngle = PI / 24; // Adjust the angle as needed (15 degrees tilt in this example)
 
-    // Define the trash can walls
-    const walls = [
-      Bodies.rectangle(
-        centerX - halfWidth,
-        centerY,
-        wallThickness,
-        halfHeight * 2,
-        {
-          isStatic: true,
-          label: "receptacle",
-        }
-      ),
-      Bodies.rectangle(
-        centerX + halfWidth,
-        centerY,
-        wallThickness,
-        halfHeight * 2,
-        {
-          isStatic: true,
-          label: "receptacle",
-        }
-      ),
-      Bodies.rectangle(
-        centerX,
-        centerY + halfHeight,
-        halfWidth * 2 + wallThickness,
-        wallThickness,
-        {
-          isStatic: true,
-          label: "receptacle",
-        }
-      ),
-    ];
+    // // Define the trash can walls
+    // const walls = [
+    //   Bodies.rectangle(
+    //     centerX - halfWidth,
+    //     centerY,
+    //     wallThickness,
+    //     halfHeight * 2,
+    //     {
+    //       isStatic: true,
+    //       label: "receptacle",
+    //     }
+    //   ),
+    //   Bodies.rectangle(
+    //     centerX + halfWidth,
+    //     centerY,
+    //     wallThickness,
+    //     halfHeight * 2,
+    //     {
+    //       isStatic: true,
+    //       label: "receptacle",
+    //     }
+    //   ),
+    //   Bodies.rectangle(
+    //     centerX,
+    //     centerY + halfHeight,
+    //     halfWidth * 2 + wallThickness,
+    //     wallThickness,
+    //     {
+    //       isStatic: true,
+    //       label: "receptacle",
+    //     }
+    //   ),
+    // ];
 
-    // Rotate wall using the trashcanAngle
-    Matter.Body.rotate(walls[0], -trashcanAngle);
-    Matter.Body.rotate(walls[1], trashcanAngle);
+    // // Rotate wall using the trashcanAngle
+    // Matter.Body.rotate(walls[0], -trashcanAngle);
+    // Matter.Body.rotate(walls[1], trashcanAngle);
 
-    // Add the walls to the world
-    World.add(world, walls);
+    // // Add the walls to the world
+    // World.add(world, walls);
 
     // Store the wall bodies for rendering
-    this.walls = walls;
-    // const vertices = [{ x:235,y:238},{ x:291,y:415},{ x:602,y:337},{ x:825,y:97},{ x:624,y:102},{ x:503,y:167},{ x:441,y:106},];
-    // this.thickness = 5;
-    // this.walls = [];
-    // this.wallsBounds = [];
-    // for(let i = 0 ; i < vertices.length - 1; i ++)
-    // {
-    //   let z = this.createRectangle(vertices[i],vertices[i + 1]);
-    //   this.walls.push(z);
-    // }
-    // // Create a Matter.js body for the polygon
-    // // Add the trashcan to the Matter.js world
-    // World.add(engine.world, this.walls);
+    // this.walls = walls;
+    const vertices = [{ x:1303*scaleFactorX ,y:336*scaleFactorY},{ x:1325*scaleFactorX ,y:502*scaleFactorY},{ x:1474*scaleFactorX ,y:508*scaleFactorY},{ x:1497*scaleFactorX ,y:335*scaleFactorY},];
+    this.thickness = 5;
+    this.walls = [];
+    this.wallsBounds = [];
+    for(let i = 0 ; i < vertices.length - 1; i ++)
+    {
+      let z = this.createRectangle(vertices[i],vertices[i + 1]);
+      this.walls.push(z);
+    }
+    // Create a Matter.js body for the polygon
+    // Add the trashcan to the Matter.js world
+    World.add(engine.world, this.walls);
 }
 
 buildDefaultReceptacle(scaleFactorX, scaleFactorY, openingSize) {
@@ -172,21 +172,21 @@ buildDefaultReceptacle(scaleFactorX, scaleFactorY, openingSize) {
 
 display() {
    
-    // for (let i = 0 ; i < this.walls.length; i++)
-    // {
-    //   let wall = this.walls[i]
-    //   let bound = this.wallsBounds[i];
-    //   push();
-    //   fill(255); // set the fill color to white
-    //   stroke(0); // set the stroke color to black
-    //   translate(wall.position.x, wall.position.y); // translate to the correct position after rotation
-    //   rotate(wall.angle);
-    //   rectMode(CENTER);
-    //   rect(0, 0, 
-    //     bound.x,
-    //     bound.y);
-    //   pop();
-    // }
+    for (let i = 0 ; i < this.walls.length; i++)
+    {
+      let wall = this.walls[i]
+      let bound = this.wallsBounds[i];
+      push();
+      fill(255); // set the fill color to white
+      stroke(0); // set the stroke color to black
+      translate(wall.position.x, wall.position.y); // translate to the correct position after rotation
+      rotate(wall.angle);
+      rectMode(CENTER);
+      rect(0, 0, 
+        bound.x,
+        bound.y);
+      pop();
+    }
   }
   checkForEntry(throwable) {
     
