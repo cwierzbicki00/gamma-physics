@@ -88,12 +88,7 @@ class Receptacle {
 
     // // Store the wall bodies for rendering
     // this.walls = walls;
-    const vertices = [
-      { x: 400, y: 200 },
-      { x: 300, y: 100 },
-      { x: 0, y: 200 },
-      { x: 200, y: 100 },
-    ];
+    const vertices = [{ x:235,y:238},{ x:291,y:415},{ x:602,y:337},{ x:825,y:97},{ x:624,y:102},{ x:503,y:167},{ x:441,y:106},];
     this.thickness = 5;
     this.walls = [];
     this.wallsBounds = [];

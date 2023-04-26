@@ -397,6 +397,6 @@ function endTestSection()
   {
     s += "{ x:" + Math.round(v.x) + "," + "y:" +  Math.round(v.y) + "},";   
   }
-  s += "]";
+  s += "];";
   console.log(s);
 }
