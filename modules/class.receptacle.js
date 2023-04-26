@@ -38,150 +38,163 @@ class Receptacle {
   }
 
   buildTrashcan(scaleFactorX, scaleFactorY, openingSize) {
-    const wallThickness = 5 * scaleFactorX;
-    const centerX = 350 * 4 * scaleFactorX;
-    const centerY = 104 * 4 * scaleFactorY;
-    const halfWidth = 75 * scaleFactorX;
-    const halfHeight = 95 * scaleFactorY;
-    const trashcanAngle = PI / 24; // Adjust the angle as needed (15 degrees tilt in this example)
+    // const wallThickness = 5 * scaleFactorX;
+    // const centerX = 350 * 4 * scaleFactorX;
+    // const centerY = 104 * 4 * scaleFactorY;
+    // const halfWidth = 75 * scaleFactorX;
+    // const halfHeight = 95 * scaleFactorY;
+    // const trashcanAngle = PI / 24; // Adjust the angle as needed (15 degrees tilt in this example)
 
-    // Define the trash can walls
-    const walls = [
-      Bodies.rectangle(
-        centerX - halfWidth,
-        centerY,
-        wallThickness,
-        halfHeight * 2,
-        {
-          isStatic: true,
-          label: "receptacle",
-        }
-      ),
-      Bodies.rectangle(
-        centerX + halfWidth,
-        centerY,
-        wallThickness,
-        halfHeight * 2,
-        {
-          isStatic: true,
-          label: "receptacle",
-        }
-      ),
-      Bodies.rectangle(
-        centerX,
-        centerY + halfHeight,
-        halfWidth * 2 + wallThickness,
-        wallThickness,
-        {
-          isStatic: true,
-          label: "receptacle",
-        }
-      ),
+    // // Define the trash can walls
+    // const walls = [
+    //   Bodies.rectangle(
+    //     centerX - halfWidth,
+    //     centerY,
+    //     wallThickness,
+    //     halfHeight * 2,
+    //     {
+    //       isStatic: true,
+    //       label: "receptacle",
+    //     }
+    //   ),
+    //   Bodies.rectangle(
+    //     centerX + halfWidth,
+    //     centerY,
+    //     wallThickness,
+    //     halfHeight * 2,
+    //     {
+    //       isStatic: true,
+    //       label: "receptacle",
+    //     }
+    //   ),
+    //   Bodies.rectangle(
+    //     centerX,
+    //     centerY + halfHeight,
+    //     halfWidth * 2 + wallThickness,
+    //     wallThickness,
+    //     {
+    //       isStatic: true,
+    //       label: "receptacle",
+    //     }
+    //   ),
+    // ];
+
+    // // Rotate wall using the trashcanAngle
+    // Matter.Body.rotate(walls[0], -trashcanAngle);
+    // Matter.Body.rotate(walls[1], trashcanAngle);
+
+    // // Add the walls to the world
+    // World.add(world, walls);
+
+    // // Store the wall bodies for rendering
+    // this.walls = walls;
+    const vertices = [
+      { x: 400, y: 200 },
+      { x: 300, y: 100 },
+      { x: 0, y: 200 },
+      { x: 200, y: 100 },
     ];
+    this.thickness = 5;
+    this.walls = [];
+    for(let i = 0 ; i < vertices.length - 1; i ++)
+    {
+      let z = this.createRectangle(vertices[i],vertices[i + 1]);
+      this.walls.push(z);
+    }
+    
+    // Create a Matter.js body for the polygon
 
-    // Rotate wall using the trashcanAngle
-    Matter.Body.rotate(walls[0], -trashcanAngle);
-    Matter.Body.rotate(walls[1], trashcanAngle);
+    // Add the trashcan to the Matter.js world
+    World.add(engine.world, this.walls);
+}
 
-    // Add the walls to the world
-    World.add(world, walls);
+buildDefaultReceptacle(scaleFactorX, scaleFactorY, openingSize) {
+  const wallThickness = 10 * scaleFactorX;
+  const centerX = 350 * 4 * scaleFactorX;
+  const centerY = 104 * 4 * scaleFactorY;
+  const halfWidth = 100 * scaleFactorX;
+  const halfHeight = 100 * scaleFactorY;
 
-    // Store the wall bodies for rendering
-    this.walls = walls;
-  }
+  // Define the receptacle walls
+  const walls = [
+    Bodies.rectangle(
+      centerX - halfWidth,
+      centerY,
+      wallThickness,
+      halfHeight * 2,
+      {
+        isStatic: true,
+        label: "receptacle",
+      }
+    ),
+    Bodies.rectangle(
+      centerX + halfWidth,
+      centerY,
+      wallThickness,
+      halfHeight * 2,
+      {
+        isStatic: true,
+        label: "receptacle",
+      }
+    ),
+    Bodies.rectangle(
+      centerX,
+      centerY + halfHeight,
+      halfWidth * 2 + wallThickness,
+      wallThickness,
+      {
+        isStatic: true,
+        label: "receptacle",
+      }
+    ),
+    Bodies.rectangle(
+      centerX - halfWidth + openingSize / 2,
+      centerY - halfHeight,
+      openingSize / 2,
+      wallThickness,
+      {
+        isStatic: true,
+        label: "receptacle",
+      }
+    ),
+    Bodies.rectangle(
+      centerX + halfWidth - openingSize / 2,
+      centerY - halfHeight,
+      openingSize / 2,
+      wallThickness,
+      {
+        isStatic: true,
+        label: "receptacle",
+      }
+    ),
+  ];
 
-  buildDefaultReceptacle(scaleFactorX, scaleFactorY, openingSize) {
-    const wallThickness = 10 * scaleFactorX;
-    const centerX = 350 * 4 * scaleFactorX;
-    const centerY = 104 * 4 * scaleFactorY;
-    const halfWidth = 100 * scaleFactorX;
-    const halfHeight = 100 * scaleFactorY;
+  // Add the walls to the world
+  World.add(world, walls);
 
-    // Define the receptacle walls
-    const walls = [
-      Bodies.rectangle(
-        centerX - halfWidth,
-        centerY,
-        wallThickness,
-        halfHeight * 2,
-        {
-          isStatic: true,
-          label: "receptacle",
-        }
-      ),
-      Bodies.rectangle(
-        centerX + halfWidth,
-        centerY,
-        wallThickness,
-        halfHeight * 2,
-        {
-          isStatic: true,
-          label: "receptacle",
-        }
-      ),
-      Bodies.rectangle(
-        centerX,
-        centerY + halfHeight,
-        halfWidth * 2 + wallThickness,
-        wallThickness,
-        {
-          isStatic: true,
-          label: "receptacle",
-        }
-      ),
-      Bodies.rectangle(
-        centerX - halfWidth + openingSize / 2,
-        centerY - halfHeight,
-        openingSize / 2,
-        wallThickness,
-        {
-          isStatic: true,
-          label: "receptacle",
-        }
-      ),
-      Bodies.rectangle(
-        centerX + halfWidth - openingSize / 2,
-        centerY - halfHeight,
-        openingSize / 2,
-        wallThickness,
-        {
-          isStatic: true,
-          label: "receptacle",
-        }
-      ),
-    ];
+  // Store the wall bodies for rendering
+  this.walls = walls;
+}
 
-    // Add the walls to the world
-    World.add(world, walls);
-
-    // Store the wall bodies for rendering
-    this.walls = walls;
-  }
-
-  display() {
-    for (const wall of this.walls) {
-      const pos = wall.position;
-      const angle = wall.angle;
-
+display() {
+   
+    for (const wall of this.walls)
+    {
       push();
-      translate(pos.x, pos.y);
-      rotate(angle);
+      fill(255); // set the fill color to white
+      stroke(0); // set the stroke color to black
+      translate(wall.position.x, wall.position.y); // translate to the correct position after rotation
+      rotate(wall.angle);
       rectMode(CENTER);
-      strokeWeight(0);
-      stroke(0, 0, 0);
-      fill(0, 0, 0, 0);
-      tint(0, 0, 0);
-      rect(
-        0,
-        0,
+      rect(0, 0, 
         wall.bounds.max.x - wall.bounds.min.x,
-        wall.bounds.max.y - wall.bounds.min.y
-      );
+        (wall.bounds.max.y - wall.bounds.min.y) /16);
       pop();
     }
   }
 
   checkForEntry(throwable) {
+    return;
     if (throwable.body === null) return;
     const tPos = throwable.body.position;
     const bottomWallPos = this.walls[2].position;
@@ -216,6 +229,25 @@ class Receptacle {
       //Reset the throwable
       throwable.reset();
     }
+  }
+  createRectangle(vec1, vec2) {
+    // Calculate the distance and angle between the two vectors
+    let distance = Matter.Vector.magnitude(Matter.Vector.sub(vec1, vec2));
+    let angle = Matter.Vector.angle(vec1, vec2);
+  
+    // Calculate the center point between the two vectors
+    let center = {
+      x: (vec1.x + vec2.x) / 2,
+      y: (vec1.y + vec2.y) / 2
+    };
+    
+    // Create a rectangle body using the center point, distance, and thickness
+    let rect = Matter.Bodies.rectangle(center.x, center.y, distance, this.thickness, {
+      isStatic: true,
+      angle: angle,
+    });
+    // Return the rectangle body
+    return rect;
   }
 
   destroy() {

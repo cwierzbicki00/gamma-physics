@@ -56,6 +56,13 @@ function preload() {
 
 // p5.js setup to start game on load - runs ONCE
 function setup() {
+
+
+
+  if(edit)
+  {
+    startTest();
+  }
   console.log("Game started");
 
   // -- set up the canvas-----------------------------------------------------
@@ -109,7 +116,7 @@ function setup() {
 function createLevelEnvironment(level) {
   switch (level) {
     case 2:
-      fetch("../../../assets/jsons/level1-2.json")
+      fetch("https://cwierzbicki00.github.io/gamma-physics/assets/jsons/level1-2.json")
         .then((response) => response.json())
         .then((data) => {
           //if environment already exists, take score, timer, mouseBarrierActive
@@ -208,6 +215,7 @@ function draw() {
     environment.receptacle.checkForEntry(environment.throwable);
     environment.display();
   }
+  testing();
 }
 
 function resetGame() {
@@ -264,4 +272,108 @@ async function windowResized() {
   createLevelEnvironment(level);
 
   updateMouseConstraint();
+}
+
+
+
+//Physic EDITOR
+let vertices;
+let edit = true;
+let index;
+let radius = 10;
+let dragged = false;
+let buttonX = 0; // X coordinate of the button
+let buttonY = 0; // Y coordinate of the button
+let buttonWidth = 100; // Width of the button
+let buttonHeight = 50; // Height of the button
+function mousePressed()
+{
+  if(edit)
+  {
+    let check = false;
+    if (mouseX >= buttonX && mouseX <= buttonX + buttonWidth &&
+      mouseY >= buttonY && mouseY <= buttonY + buttonHeight) {
+      endTestSection(); // call the buttonClicked() function if the mouse is clicked inside the button area
+      check = true;
+    }
+    if(!check)
+    {
+      if(vertices.length == 0)
+      {
+        vertices = [];
+        vertices.push({x:mouseX, y:mouseY});
+      }
+      else
+      {
+        let check = true;
+        for (let i = 0 ; i < vertices.length; i++)
+        {
+          let v = vertices[i];
+          let p = {x:mouseX, y:mouseY};
+          let distance = Matter.Vector.magnitude(Matter.Vector.sub(v, p));
+          if(distance < radius) 
+          {
+            console.log("DRAGGINGGG");
+            dragged = true;
+            index = i;
+            check = false;
+            break;
+          }
+        }
+        if(check)
+        {
+          dragged = false;
+          vertices.push({x:mouseX, y: mouseY});
+        }
+      }
+  
+    }
+    
+    }
+
+   
+}
+function mouseDragged()
+{
+  if(edit && dragged)
+  {
+      vertices[index].x = mouseX;
+      vertices[index].y = mouseY;
+  }
+}
+function startTest()
+{
+  vertices = [];
+  index = 0;
+}
+function testing()
+{
+  for (const v of vertices)
+  {
+    stroke(0); // set the stroke color to black
+    fill(0); // set the fill color to black
+    ellipse(v.x, v.y, radius, radius);
+  }
+  for(let i = 0 ; i < vertices.length - 1; i ++)
+  {
+    stroke(0); // set the stroke color to black
+    fill(0); // set the fill color to black
+    line(vertices[i].x, vertices[i].y, vertices[i + 1].x, vertices[i + 1].y);
+  }
+
+  rect(buttonX, buttonY, buttonWidth, buttonHeight); // draw the button
+  fill(255,0,0,255); // set the fill color to black
+  textSize(20); // set the text size to 20
+  text("clickhere", buttonX + 10, buttonY + 30); // draw the text on top of the button
+}
+function endTestSection()
+{
+  edit = false;
+  let s = "[";
+  for(const v of vertices) 
+  {
+    s += "{ x:" + Math.round(v.x) + "," + "y:" +  Math.round(v.y) + "},";   
+  }
+  s += "]";
+  console.log(s);
 }
