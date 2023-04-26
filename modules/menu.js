@@ -123,8 +123,10 @@ function createLevelEnvironment(level) {
           //and add to data
           if (environment) {
             data.score = environment.score;
-            data.timer = environment.timer;
+            data.timerActive = environment.timerActive;
             data.mouseBarrierActive = environment.mouseBarrierActive;
+            data.startButtonClicked = environment.startButtonClicked;
+            data.timeAllowed = environment.timeAllowed;
           }
 
           environment = new Environment(data);
