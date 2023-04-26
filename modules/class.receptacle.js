@@ -86,9 +86,9 @@ class Receptacle {
     // // Add the walls to the world
     // World.add(world, walls);
 
-    // // Store the wall bodies for rendering
+    // Store the wall bodies for rendering
     // this.walls = walls;
-    const vertices = [{ x:235,y:238},{ x:291,y:415},{ x:602,y:337},{ x:825,y:97},{ x:624,y:102},{ x:503,y:167},{ x:441,y:106},];
+    const vertices = [{ x:1303*scaleFactorX ,y:336*scaleFactorY},{ x:1325*scaleFactorX ,y:502*scaleFactorY},{ x:1474*scaleFactorX ,y:508*scaleFactorY},{ x:1497*scaleFactorX ,y:335*scaleFactorY},];
     this.thickness = 5;
     this.walls = [];
     this.wallsBounds = [];
@@ -189,7 +189,7 @@ display() {
     }
   }
   checkForEntry(throwable) {
-    return;
+    
     if (throwable.body === null) return;
     const tPos = throwable.body.position;
     const bottomWallPos = this.walls[2].position;

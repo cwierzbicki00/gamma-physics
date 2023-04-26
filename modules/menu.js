@@ -280,7 +280,7 @@ async function windowResized() {
 
 //Physic EDITOR
 let vertices;
-let edit = false;
+let edit = true;
 let index;
 let radius = 10;
 let dragged = false;
@@ -400,7 +400,7 @@ function endTestSection()
   let s = "[";
   for(const v of vertices) 
   {
-    s += "{ x:" + Math.round(v.x) + "," + "y:" +  Math.round(v.y) + "},";   
+    s += "{ x:" + Math.round(v.x/environment.scaleFactorX) + "*scaleFactorX ," + "y:" +  Math.round(v.y/environment.scaleFactorY)+ "*scaleFactorY},";   
   }
   s += "];";
   console.log(s);
