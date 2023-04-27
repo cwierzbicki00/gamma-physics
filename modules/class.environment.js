@@ -49,12 +49,17 @@ class Environment {
     this.mouseBarrierActive = previousEnvironment.mouseBarrierActive;
     this.timerActive = previousEnvironment.timerActive;
     this.startButtonClicked = previousEnvironment.startButtonClicked;
+    this.timeAllowed = previousEnvironment.timeAllowed;
+    console.log("timeAllowed from retain: " + this.timeAllowed);
+    this.edit = previousEnvironment.edit;
   }
 
   initializeDefaultGameObjects(data) {
     this.score = 0;
     this.timer = null;
     this.mouseBarrierActive = true;
+    this.timeAllowed = data.timeAllowed;
+    console.log("timeAllowed from initialize: " + this.timeAllowed);
     this.timerActive = false;
     this.startButtonClicked = false;
   }
@@ -79,7 +84,8 @@ class Environment {
     this.receptacle = new Receptacle(
       data.receptacle.type,
       this.scaleFactorX,
-      this.scaleFactorY
+      this.scaleFactorY,
+      this.edit
     );
     this.throwable = new Throwable(
       data.throwable.type,
@@ -99,6 +105,18 @@ class Environment {
         )
     );
 
+    if (data.vertexColliders) {
+      //Create vertex colliders from the vertex objects supplied in data
+      this.vertexColliders = data.vertexColliders.map(
+        (vertexColliderData) =>
+          new VertexCollider(
+            vertexColliderData,
+            this.scaleFactorX,
+            this.scaleFactorY
+          )
+      );
+    }
+
     //receptacle properties for display
     this.receptacleImgX = data.receptacle.x;
     this.receptacleImgY = data.receptacle.y;
@@ -112,6 +130,7 @@ class Environment {
     // progression variables
     this.pointsRequired = data.pointsRequired;
     this.timeAllowed = data.timeAllowed; // seconds
+    console.log("timeAllowed from initializeCommon: " + this.timeAllowed);
 
     // environmental physics
     this.gravity = createVector(data.gravity.x, data.gravity.y); // earth gravity: 9.8 m/s^2
@@ -123,6 +142,10 @@ class Environment {
   //utility score celebrations
   flashReceptacleBackground() {
     this.receptacleBgOpacity = 100;
+    //wait 0.5 seconds, then fade back in
+    setTimeout(() => {
+      this.receptacleBgOpacity = 255;
+    }, 500);
   }
 
   generateConfetti() {
@@ -193,6 +216,7 @@ class Environment {
   addScore(newScore) {
     this.score += newScore;
     this.flashReceptacleBackground();
+    this.receptacleBgOpacity = 255;
     this.generateConfetti();
     this.scoreTexts.push(
       new ScoreText(this.receptacleImgX, this.receptacleImgY - 50, newScore)
@@ -214,16 +238,17 @@ class Environment {
     if (this.timerActive) {
       this.timeAllowed -= deltaTime / 1000;
       if (this.timeAllowed <= 0 || this.score >= this.pointsRequired) {
+        timeRemainingStat = this.timeAllowed;
         this.timeAllowed = 0;
         this.timerActive = false;
         let canvasContainer = document.getElementById("canvas-container");
         this.popup = new Popup(
           width / 2,
           height / 2,
-          canvasContainer.offsetWidth / 4,
+          canvasContainer.offsetWidth / 2,
           canvasContainer.offsetHeight / 2,
           //Set message as Game Over if time runs out, or set message as Level Finished if score reached
-          this.score >= this.pointsRequired ? "Level Finished" : "Game Over"
+          this.score >= this.pointsRequired ? "Level Complete!" : "Game Over :("
         );
         console.log("Game Over");
         // this.startButtonClicked = false;
@@ -285,7 +310,7 @@ class Environment {
         imageHeight
       );
 
-      tint(255, 255); // Reset the tint
+      //tint(255, 255); // Reset the tint
     }
 
     // Display particles
@@ -319,7 +344,16 @@ class Environment {
     if (this.platforms) {
       this.platforms.forEach((platform) => platform.display(this));
     }
-    //scoreboard.display();
+
+    if (this.popup) {
+      this.popup.display();
+    }
+
+    if (this.vertexCollider) {
+      this.vertexColliders.forEach((vertexCollider) =>
+        vertexCollider.display()
+      );
+    }
 
     // Display the overlay image
     if (this.overlayImageFg) {
@@ -407,6 +441,15 @@ class Environment {
       resolve();
     });
   }
+
+  //Prep for next level - destroy current environment, reset start button, and reset timer.
+  async nextLevel() {
+    await this.destroy();
+    this.startButton = null;
+    this.timerActive = false;
+    this.startButtonClicked = false;
+    this.timer = 0;
+  }
 }
 
 //Scoreboard class for displaying score, time, and goal score.
@@ -487,9 +530,12 @@ class Scoreboard {
     rect(0, 0, width, 50);
 
     // Score text
-    textSize(24);
+    textSize(32 * this.environment.scaleFactorX);
     fill(255);
     text(`Score: ${score} / ${goal}`, width / 4, 25);
+
+    //Level text
+    text(`Level: ${level}`, (width / 4) * 2, 25);
 
     // Time remaining text
     text(`Time remaining: ${timeRemaining}s`, (width / 4) * 3, 25);

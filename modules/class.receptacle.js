@@ -8,10 +8,11 @@
 // at.
 
 class Receptacle {
-  constructor(receptacleType, scaleFactorX, scaleFactorY) {
+  constructor(receptacleType, scaleFactorX, scaleFactorY, edit) {
     this.edges = [];
     this.rType = receptacleType;
     this.walls = [];
+    this.edit = edit;
 
     const openingSize = 80 * scaleFactorX; // Adjust the size of the opening as needed
     switch (receptacleType) {
@@ -24,7 +25,7 @@ class Receptacle {
         break;
 
       case "trashcan":
-        this.buildTrashcan(scaleFactorX, scaleFactorY, openingSize);
+        this.buildTrashcan(scaleFactorX, scaleFactorY);
         console.log("trashcan receptacle created");
         break;
 
@@ -37,57 +38,42 @@ class Receptacle {
     }
   }
 
-  buildTrashcan(scaleFactorX, scaleFactorY, openingSize) {
-    const wallThickness = 5 * scaleFactorX;
-    const centerX = 350 * 4 * scaleFactorX;
-    const centerY = 104 * 4 * scaleFactorY;
-    const halfWidth = 75 * scaleFactorX;
-    const halfHeight = 95 * scaleFactorY;
-    const trashcanAngle = PI / 24; // Adjust the angle as needed (15 degrees tilt in this example)
+  buildTrashcan(scaleFactorX, scaleFactorY) {
+    let vertices;
 
-    // Define the trash can walls
-    const walls = [
-      Bodies.rectangle(
-        centerX - halfWidth,
-        centerY,
-        wallThickness,
-        halfHeight * 2,
-        {
-          isStatic: true,
-          label: "receptacle",
-        }
-      ),
-      Bodies.rectangle(
-        centerX + halfWidth,
-        centerY,
-        wallThickness,
-        halfHeight * 2,
-        {
-          isStatic: true,
-          label: "receptacle",
-        }
-      ),
-      Bodies.rectangle(
-        centerX,
-        centerY + halfHeight,
-        halfWidth * 2 + wallThickness,
-        wallThickness,
-        {
-          isStatic: true,
-          label: "receptacle",
-        }
-      ),
-    ];
+    if (level == 1) {
+      vertices = [
+        { x: 1306 * scaleFactorX, y: 635 * scaleFactorY },
+        { x: 1337 * scaleFactorX, y: 804 * scaleFactorY },
+        { x: 1470 * scaleFactorX, y: 804 * scaleFactorY },
+        { x: 1498 * scaleFactorX, y: 635 * scaleFactorY },
+      ];
+    } else if (level == 2) {
+      vertices = [
+        { x: 1303 * scaleFactorX, y: 336 * scaleFactorY },
+        { x: 1325 * scaleFactorX, y: 502 * scaleFactorY },
+        { x: 1474 * scaleFactorX, y: 508 * scaleFactorY },
+        { x: 1497 * scaleFactorX, y: 335 * scaleFactorY },
+      ];
+    } else if (level == 3) {
+      vertices = [
+        { x: 1164 * scaleFactorX, y: 595 * scaleFactorY },
+        { x: 1193 * scaleFactorX, y: 756 * scaleFactorY },
+        { x: 1332 * scaleFactorX, y: 761 * scaleFactorY },
+        { x: 1359 * scaleFactorX, y: 585 * scaleFactorY },
+      ];
+    }
 
-    // Rotate wall using the trashcanAngle
-    Matter.Body.rotate(walls[0], -trashcanAngle);
-    Matter.Body.rotate(walls[1], trashcanAngle);
-
-    // Add the walls to the world
-    World.add(world, walls);
-
-    // Store the wall bodies for rendering
-    this.walls = walls;
+    this.thickness = 5;
+    this.walls = [];
+    this.wallsBounds = [];
+    for (let i = 0; i < vertices.length - 1; i++) {
+      let z = this.createRectangle(vertices[i], vertices[i + 1]);
+      this.walls.push(z);
+    }
+    // Create a Matter.js body for the polygon
+    // Add the trashcan to the Matter.js world
+    World.add(engine.world, this.walls);
   }
 
   buildDefaultReceptacle(scaleFactorX, scaleFactorY, openingSize) {
@@ -159,24 +145,21 @@ class Receptacle {
   }
 
   display() {
-    for (const wall of this.walls) {
-      const pos = wall.position;
-      const angle = wall.angle;
-
+    for (let i = 0; i < this.walls.length; i++) {
+      let wall = this.walls[i];
+      let bound = this.wallsBounds[i];
       push();
-      translate(pos.x, pos.y);
-      rotate(angle);
+      if (edit) {
+        fill(255); //set to white if in edit mode
+      } else {
+        fill(0, 0); //set to transparent if not in edit mode
+      }
+      stroke(0, 0); // set the stroke color to black
+      translate(wall.position.x, wall.position.y); // translate to the correct position after rotation
+      rotate(wall.angle);
+
       rectMode(CENTER);
-      strokeWeight(0);
-      stroke(0, 0, 0);
-      fill(0, 0, 0, 0);
-      tint(0, 0, 0);
-      rect(
-        0,
-        0,
-        wall.bounds.max.x - wall.bounds.min.x,
-        wall.bounds.max.y - wall.bounds.min.y
-      );
+      rect(0, 0, bound.x, bound.y);
       pop();
     }
   }
@@ -184,22 +167,16 @@ class Receptacle {
   checkForEntry(throwable) {
     if (throwable.body === null) return;
     const tPos = throwable.body.position;
-    const bottomWallPos = this.walls[2].position;
-    const bottomWallHeight = Math.abs(
-      this.walls[2].bounds.max.y - this.walls[2].bounds.min.y
-    );
+    const firstVertex = this.walls[0].position;
+    const lastVertex = this.walls[this.walls.length - 1].position;
 
-    // Define a range around the bottom wall's top edge
-    const range = bottomWallHeight / 6;
-
-    // Check if the throwable is within the receptacle bounds and close to the bottom wall's top edge
+    // Check if the throwable is within the receptacle bounds defined by the first and last vertices
     if (
-      tPos.x > this.walls[0].position.x &&
-      tPos.x < this.walls[1].position.x &&
-      tPos.y > this.walls[1].position.y &&
-      tPos.y < bottomWallPos.y - range
+      tPos.x > firstVertex.x &&
+      tPos.x < lastVertex.x &&
+      tPos.y > firstVertex.y
     ) {
-      console.log("Throwable touched the bottom of the receptacle!");
+      console.log("Throwable entered the receptacle!");
 
       // Increase the score and reset the throwable
       //Add different scores depending on the throwable type:
@@ -216,6 +193,33 @@ class Receptacle {
       //Reset the throwable
       throwable.reset();
     }
+  }
+
+  createRectangle(vec1, vec2) {
+    // Calculate the distance and angle between the two vectors
+    let distance = Matter.Vector.magnitude(Matter.Vector.sub(vec1, vec2));
+    let angle = Matter.Vector.angle(vec1, vec2);
+
+    // Calculate the center point between the two vectors
+    let center = {
+      x: (vec1.x + vec2.x) / 2,
+      y: (vec1.y + vec2.y) / 2,
+    };
+
+    // Create a rectangle body using the center point, distance, and thickness
+    let rect = Matter.Bodies.rectangle(
+      center.x,
+      center.y,
+      distance,
+      this.thickness,
+      {
+        isStatic: true,
+        angle: angle,
+      }
+    );
+    // Return the rectangle body
+    this.wallsBounds.push({ x: distance, y: this.thickness });
+    return rect;
   }
 
   destroy() {
