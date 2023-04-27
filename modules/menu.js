@@ -111,7 +111,11 @@ function createLevelEnvironment(level) {
     data.score = environment.score;
     data.timerActive = environment.timerActive;
     data.mouseBarrierActive = environment.mouseBarrierActive;
-    data.startButtonClicked = environment.startButtonClicked;
+    if (restart) {
+      data.startButtonClicked = false;
+    } else {
+      data.startButtonClicked = environment.startButtonClicked;
+    }
     environment.timeAllowed == 0
       ? (data.timeAllowed = data.timeAllowed)
       : (data.timeAllowed = environment.timeAllowed);
@@ -176,7 +180,9 @@ function draw() {
     //Reset all values
     environment.destroy(); //nukes the old environment except state
     environment.resetScore();
+    environment.startButtonClicked = false;
     createLevelEnvironment(level);
+    //Start
     //reset mouse constraint
     updateMouseConstraint();
     restart = false;
