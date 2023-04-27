@@ -49,6 +49,8 @@ class Environment {
     this.mouseBarrierActive = previousEnvironment.mouseBarrierActive;
     this.timerActive = previousEnvironment.timerActive;
     this.startButtonClicked = previousEnvironment.startButtonClicked;
+    this.timeAllowed = previousEnvironment.timeAllowed;
+    console.log("timeAllowed from retain: " + this.timeAllowed);
     this.edit = previousEnvironment.edit;
   }
 
@@ -56,6 +58,8 @@ class Environment {
     this.score = 0;
     this.timer = null;
     this.mouseBarrierActive = true;
+    this.timeAllowed = data.timeAllowed;
+    console.log("timeAllowed from initialize: " + this.timeAllowed);
     this.timerActive = false;
     this.startButtonClicked = false;
   }
@@ -114,6 +118,7 @@ class Environment {
     // progression variables
     this.pointsRequired = data.pointsRequired;
     this.timeAllowed = data.timeAllowed; // seconds
+    console.log("timeAllowed from initializeCommon: " + this.timeAllowed);
 
     // environmental physics
     this.gravity = createVector(data.gravity.x, data.gravity.y); // earth gravity: 9.8 m/s^2
@@ -125,6 +130,10 @@ class Environment {
   //utility score celebrations
   flashReceptacleBackground() {
     this.receptacleBgOpacity = 100;
+    //wait 0.5 seconds, then fade back in
+    setTimeout(() => {
+      this.receptacleBgOpacity = 255;
+    }, 500);
   }
 
   generateConfetti() {
@@ -195,6 +204,7 @@ class Environment {
   addScore(newScore) {
     this.score += newScore;
     this.flashReceptacleBackground();
+    this.receptacleBgOpacity = 255;
     this.generateConfetti();
     this.scoreTexts.push(
       new ScoreText(this.receptacleImgX, this.receptacleImgY - 50, newScore)
@@ -287,7 +297,7 @@ class Environment {
         imageHeight
       );
 
-      tint(255, 255); // Reset the tint
+      //tint(255, 255); // Reset the tint
     }
 
     // Display particles
@@ -408,6 +418,15 @@ class Environment {
       // Resolve the promise after completing the destroy process
       resolve();
     });
+  }
+
+  //Prep for next level - destroy current environment, reset start button, and reset timer.
+  async nextLevel() {
+    await this.destroy();
+    this.startButton = null;
+    this.timerActive = false;
+    this.startButtonClicked = false;
+    this.timer = 0;
   }
 }
 

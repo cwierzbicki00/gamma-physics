@@ -19,8 +19,10 @@ let engine;
 let world;
 let mConstraint;
 
-let level = 2;
+let level = 1;
 let environment;
+
+let nextLevel = false;
 
 let canvas;
 
@@ -112,9 +114,7 @@ function setup() {
 function createLevelEnvironment(level) {
   switch (level) {
     case 2:
-      fetch(
-        "https://cwierzbicki00.github.io/gamma-physics/assets/jsons/level1-2.json"
-      )
+      fetch("../../../assets/jsons/level1-2.json")
         .then((response) => response.json())
         .then((data) => {
           //if environment already exists, take score, timer, mouseBarrierActive
@@ -163,7 +163,14 @@ function createLevelEnvironment(level) {
     data.timerActive = environment.timerActive;
     data.mouseBarrierActive = environment.mouseBarrierActive;
     data.startButtonClicked = environment.startButtonClicked;
-    data.timeAllowed = environment.timeAllowed;
+    if (environment.timeAllowed == 0) {
+      data.timeAllowed = data.timeAllowed;
+      console.log("next level time allowed: " + data.timeAllowed);
+    } else {
+      data.timeAllowed = environment.timeAllowed;
+      console.log("current level time allowed: " + data.timeAllowed);
+    }
+
     data.edit = edit;
   }
 
@@ -217,6 +224,19 @@ function draw() {
     environment.receptacle.checkForEntry(environment.throwable);
     environment.display();
   }
+
+  if (nextLevel) {
+    //Reset all values
+    environment.destroy(); //nukes the old environment except state
+    environment.resetScore();
+    environment.nextLevel();
+    createLevelEnvironment(level);
+    //reset mouse constraint
+    updateMouseConstraint();
+
+    nextLevel = false;
+  }
+
   testing();
 }
 
