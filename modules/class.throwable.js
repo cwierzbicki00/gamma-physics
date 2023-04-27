@@ -8,6 +8,14 @@
 
 class Throwable {
   constructor(ballType, scaleFactorX, scaleFactorY) {
+    // Add dragArea property
+    this.dragArea = {
+      x: width / 5 - 150,
+      y: height - 100 - 150,
+      width: 300,
+      height: 300,
+    };
+
     //so we may use in display to scale image as well
     this.scaleFactorX = scaleFactorX;
     this.scaleFactorY = scaleFactorY;
@@ -17,7 +25,7 @@ class Throwable {
         this.type = "basketball";
         this.mass = 0.625; // kilograms
         this.bounce = 0.6; // testing
-        this.radius = 74 * scaleFactorX;
+        this.radius = 74 * 0.75 * scaleFactorX;
         this.img = loadImage("https://i.imgur.com/d5B8YI0.png");
         this.option = {
           friction: 0.001,
@@ -31,7 +39,7 @@ class Throwable {
         this.type = "bowlingball";
         this.mass = 6.8;
         this.bounce = 0.1; // testing
-        this.radius = 72 * scaleFactorX;
+        this.radius = 72 * 0.75 * scaleFactorX;
         this.img = loadImage("https://i.imgur.com/NTqjnK4.png");
         this.option = {
           friction: 0.001,
@@ -77,7 +85,7 @@ class Throwable {
     this.initialPos = createVector(
       // initial position
       width / 5,
-      height - this.radius - 10
+      height - 100 - this.radius - 10
     );
     this.angle = 0;
     this.angleV = 0;
@@ -109,6 +117,24 @@ class Throwable {
   }
   getDragging() {
     return this.dragging;
+  }
+
+  // Check if mouse is inside the drag area
+  isMouseInsideDragArea() {
+    return (
+      mouseX >= this.dragArea.x &&
+      mouseX <= this.dragArea.x + this.dragArea.width &&
+      mouseY >= this.dragArea.y &&
+      mouseY <= this.dragArea.y + this.dragArea.height
+    );
+  }
+
+  // Spawn a new ball of the same type
+  spawnNewBall() {
+    // Create a new ball if only 1 ball exists. Otherwise, do nothing.
+    //THIS IS A TODO: Make it so that a new ball
+    //is spawned when the ball is thrown into the basket, or if there are
+    //no balls currently in the draggable area.
   }
 
   //constrain to bounds of screen
@@ -211,13 +237,25 @@ class Throwable {
     // Rotate the image around its center pivot
     rotate(angle);
     // Draw the image with its center pivot at the ball's position
-    image(
-      this.img,
-      0,
-      0,
-      this.img.width * this.scaleFactorX,
-      this.img.height * this.scaleFactorY
-    );
+
+    //If the ball is a basketball or bowling ball draw 0.75 width and height
+    if (this.type == "basketball" || this.type == "bowlingball") {
+      image(
+        this.img,
+        0,
+        0,
+        this.img.width * 0.75 * this.scaleFactorX,
+        this.img.height * 0.75 * this.scaleFactorY
+      );
+    } else {
+      image(
+        this.img,
+        0,
+        0,
+        this.img.width * this.scaleFactorX,
+        this.img.height * this.scaleFactorY
+      );
+    }
 
     pop();
   }
@@ -225,35 +263,40 @@ class Throwable {
   // allow user to drag ball if it was clicked on
   mousePressed(environment) {
     if (mConstraint.body == this.body && environment.getBarrierStatus()) {
-      console.log(mConstraint.body.label);
-      this.dragging = true;
-      const pos = this.body.position;
-      const offset = mConstraint.constraint.pointB;
-      const m = mConstraint.mouse;
+      if (this.isMouseInsideDragArea()) {
+        console.log(mConstraint.body.label);
+        this.dragging = true;
+        const pos = this.body.position;
+        const offset = mConstraint.constraint.pointB;
+        const m = mConstraint.mouse;
 
-      const averageScaleFactor = (this.scaleFactorX + this.scaleFactorY) / 2;
-      const forceMultiplier = 0.0005 * averageScaleFactor; // Scale force multiplier based on screen size
+        const averageScaleFactor = (this.scaleFactorX + this.scaleFactorY) / 2;
+        const forceMultiplier = 0.0005 * averageScaleFactor; // Scale force multiplier based on screen size
 
-      const forceVector = Vector.create(
-        (m.position.x - pos.x - offset.x) * forceMultiplier,
-        (m.position.y - pos.y - offset.y) * forceMultiplier
-      );
-      Matter.Body.applyForce(this.body, pos, forceVector);
-
-      // Calculate the torque and apply it to the ball
-      const spinMultiplier = 0.01;
-      const spin = (m.position.x - pos.x - offset.x) * spinMultiplier;
-      Matter.Body.setAngularVelocity(this.body, spin);
-
-      // Limit the ball's maximum velocity
-      const maxVelocity = 25 * this.scaleFactorX;
-      const currentVelocity = Matter.Vector.magnitude(this.body.velocity);
-      if (currentVelocity > maxVelocity) {
-        const newVelocity = Matter.Vector.mult(
-          Matter.Vector.normalise(this.body.velocity),
-          maxVelocity
+        const forceVector = Vector.create(
+          (m.position.x - pos.x - offset.x) * forceMultiplier,
+          (m.position.y - pos.y - offset.y) * forceMultiplier
         );
-        Matter.Body.setVelocity(this.body, newVelocity);
+        Matter.Body.applyForce(this.body, pos, forceVector);
+
+        // Calculate the torque and apply it to the ball
+        const spinMultiplier = 0.01;
+        const spin = (m.position.x - pos.x - offset.x) * spinMultiplier;
+        Matter.Body.setAngularVelocity(this.body, spin);
+
+        // Limit the ball's maximum velocity
+        const maxVelocity = 25 * this.scaleFactorX;
+        const currentVelocity = Matter.Vector.magnitude(this.body.velocity);
+        if (currentVelocity > maxVelocity) {
+          const newVelocity = Matter.Vector.mult(
+            Matter.Vector.normalise(this.body.velocity),
+            maxVelocity
+          );
+          Matter.Body.setVelocity(this.body, newVelocity);
+        }
+      } else {
+        // Clicked outside the draggable area, spawn a new ball
+        this.spawnNewBall();
       }
     } else this.dragging = false;
   }

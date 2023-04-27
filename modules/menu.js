@@ -1,35 +1,28 @@
-//     file name: menu.js
-//       authors: Quoc, Ryan Smith, Nathan Fleet, Nick Weber
-//  date created: 2 Mar 2023
+// menu.js
+// authors: Quoc, Ryan Smith, Nathan Fleet, Nick Weber
+// date created: 2 Mar 2023
 // date modified: 19 Apr 2023 (quoc)
-
 // description: Contains the driver code for the "Throw it in!" game.
 
-// global variables for environment
 // Import Matter.js modules
-const Engine = Matter.Engine;
-const World = Matter.World;
-const Bodies = Matter.Bodies;
+const { Engine, World, Bodies, Vector, Composite, Mouse, MouseConstraint } =
+  Matter;
 
-const Vector = Matter.Vector;
-const Composite = Matter.Composite;
-const Mouse = Matter.Mouse;
-const MouseConstraint = Matter.MouseConstraint;
-let engine;
-let world;
-let mConstraint;
+// Global variables
+let engine,
+  world,
+  mConstraint,
+  level = 1,
+  environment,
+  nextLevel = false,
+  restart = false,
+  timeRemainingStat, //for popup
+  throwables,
+  canvas;
 
-let level = 1;
-let environment;
-
-let nextLevel = false;
-
-let canvas;
-
-//Fullscreen via javascript API
+// Fullscreen via javascript API
 function toggleFullscreen() {
-  let canvasContainer = document.getElementById("canvas-container");
-
+  const canvasContainer = document.getElementById("canvas-container");
   if (!document.fullscreenElement) {
     canvasContainer.requestFullscreen().catch((err) => {
       alert(
@@ -42,34 +35,30 @@ function toggleFullscreen() {
 }
 
 // Add an event listener to the full screen button
-let fullscreenButton = document.getElementById("fullscreen-btn");
-fullscreenButton.addEventListener("click", toggleFullscreen);
+document
+  .getElementById("fullscreen-btn")
+  .addEventListener("click", toggleFullscreen);
 
-//Preload the level, images, and set up the world.
+// Preload the level, images, and set up the world.
 function preload() {
-  //Start engine and define world
   engine = Engine.create();
   world = engine.world;
-
-  // Load the level
-  // Create the environment, by selecting the level
   createLevelEnvironment(level);
 }
 
 // p5.js setup to start game on load - runs ONCE
 function setup() {
-  if (edit) {
-    startTest();
-  }
+  if (edit) startTest();
   console.log("Game started");
+  setupCanvas();
+  setupMouseConstraint();
+  frameRate(60);
+  console.log("Frame rate set to 60 FPS");
+}
 
-  // -- set up the canvas-----------------------------------------------------
-
-  //access the canvas container div in the html file
-  let canvasContainer = document.getElementById("canvas-container");
-
-  // set canvas AR
-  let canvasAspectRatio = 1536 / 864;
+function setupCanvas() {
+  const canvasContainer = document.getElementById("canvas-container");
+  const canvasAspectRatio = 1536 / 864;
   let newCanvasWidth = canvasContainer.offsetWidth;
   let newCanvasHeight = newCanvasWidth / canvasAspectRatio;
 
@@ -79,83 +68,43 @@ function setup() {
   }
 
   canvas = createCanvas(newCanvasWidth, newCanvasHeight);
-
-  // set canvas to be responsive to window size
   canvas.parent(canvasContainer);
   background(0, 0, 0, 0);
   canvas.style("background-color", "transparent");
   console.log("Canvas created");
+}
 
-  frameRate(60);
-  console.log("Frame rate set to 60 FPS");
-
-  // Set up the mouse constraint for dragging the ball
-  const canvasElement = document.getElementById("defaultCanvas0");
-
+function setupMouseConstraint() {
   const mouse = Mouse.create(canvas.elt);
   const mouseOptions = {
     mouse: mouse,
     constraint: {
       stiffness: 0.2,
-      render: {
-        visible: false,
-      },
+      render: { visible: false },
     },
     element: canvas.elt,
   };
-  //set pixel density so it has context for canvas size & scale
   mouse.pixelRatio = pixelDensity();
-
   mConstraint = MouseConstraint.create(engine, mouseOptions);
-
   World.add(world, mConstraint);
 }
 
 function createLevelEnvironment(level) {
-  switch (level) {
-    case 2:
-      fetch("../../../assets/jsons/level1-2.json")
-        .then((response) => response.json())
-        .then((data) => {
-          //if environment already exists, take score, timer, mouseBarrierActive
-          //and add to data
-          if (environment) {
-            setRetainingData(data);
-          }
+  const levelJSONPaths = [
+    "../../../assets/jsons/level1-1.json",
+    "../../../assets/jsons/level1-2.json",
+    "../../../assets/jsons/level1-3.json",
+  ];
+  const levelIndex = level > levelJSONPaths.length ? 0 : level - 1;
 
-          environment = new Environment(data);
-        });
-      console.log("Level 2 environment created");
-      break;
-    case 3:
-      fetch("../../../assets/jsons/level1-3.json")
-        .then((response) => response.json())
-        .then((data) => {
-          //if environment already exists, take score, timer, mouseBarrierActive
-          //and add to data
-          if (environment) {
-            setRetainingData(data);
-          }
+  fetch(levelJSONPaths[levelIndex])
+    .then((response) => response.json())
+    .then((data) => {
+      if (environment) setRetainingData(data);
+      environment = new Environment(data);
+    });
 
-          environment = new Environment(data);
-        });
-      console.log("Level 3 environment created");
-      break;
-    default: // level 1
-      fetch("../../../assets/jsons/level1-1.json")
-        .then((response) => response.json())
-        .then((data) => {
-          //if environment already exists, take score, timer, mouseBarrierActive
-          //and add to data
-          if (environment) {
-            setRetainingData(data);
-          }
-
-          environment = new Environment(data);
-        });
-      console.log("Level 1 environment created");
-      break;
-  }
+  console.log(`Level ${level} environment created`);
 
   //Generalize retaining data
   function setRetainingData(data) {
@@ -163,55 +112,41 @@ function createLevelEnvironment(level) {
     data.timerActive = environment.timerActive;
     data.mouseBarrierActive = environment.mouseBarrierActive;
     data.startButtonClicked = environment.startButtonClicked;
-    if (environment.timeAllowed == 0) {
-      data.timeAllowed = data.timeAllowed;
-      console.log("next level time allowed: " + data.timeAllowed);
-    } else {
-      data.timeAllowed = environment.timeAllowed;
-      console.log("current level time allowed: " + data.timeAllowed);
-    }
-
+    environment.timeAllowed == 0
+      ? (data.timeAllowed = data.timeAllowed)
+      : (data.timeAllowed = environment.timeAllowed);
     data.edit = edit;
   }
-
-  // -- create and arrange buttons -------------------------------------------
-  let resetButton = createButton("Reset");
-  resetButton.mousePressed(resetGame);
-
-  let golfballButton = createButton("Golfball");
-  golfballButton.mousePressed(() => {
-    environment.setThrowable("golfball");
-  });
-
-  let basketballButton = createButton("Basketball");
-  basketballButton.mousePressed(() => {
-    environment.setThrowable("basketball");
-  });
-
-  let bowlingballButton = createButton("Bowlingball");
-  bowlingballButton.mousePressed(() => {
-    environment.setThrowable("bowlingball");
-  });
-
-  let tennisballButton = createButton("Tennisball");
-  tennisballButton.mousePressed(() => {
-    environment.setThrowable("tennisball");
-  });
-
-  // rsmith - for turning off mouse barrier for debugging purposes
-  let disableBarrier = createButton("DEBUG: Disable Barrier");
-  disableBarrier.mousePressed(() => {
-    environment.invertBarrierStatus();
-  });
-
-  // add styling to ball buttons
-  resetButton.addClass("list buttonSize resetBtn");
-  disableBarrier.addClass("list buttonSize barrierBtn");
-  golfballButton.addClass("list buttonSize golfBtn");
-  basketballButton.addClass("list buttonSize basketballBtn");
-  tennisballButton.addClass("list buttonSize tennisBtn");
-  bowlingballButton.addClass("list buttonSize bowlingBtn");
 }
+
+//REFACTOR FROM HERE:
+
+// -- create and arrange buttons -------------------------------------------
+function createButton(text, className, onClick) {
+  const button = document.createElement("button");
+  button.innerText = text;
+  button.classList.add("list", "buttonSize", className);
+  button.addEventListener("click", onClick);
+  document.body.appendChild(button);
+  return button;
+}
+
+createButton("Reset", "resetBtn", resetGame);
+createButton("Golfball", "golfBtn", () => environment.setThrowable("golfball"));
+createButton("Basketball", "basketballBtn", () =>
+  environment.setThrowable("basketball")
+);
+createButton("Bowlingball", "bowlingBtn", () =>
+  environment.setThrowable("bowlingball")
+);
+createButton("Tennisball", "tennisBtn", () =>
+  environment.setThrowable("tennisball")
+);
+
+// rsmith - for turning off mouse barrier for debugging purposes
+createButton("DEBUG: Disable Barrier", "barrierBtn", () =>
+  environment.invertBarrierStatus()
+);
 
 function draw() {
   clear(); // clears the entire canvas to be redrawn
@@ -235,6 +170,16 @@ function draw() {
     updateMouseConstraint();
 
     nextLevel = false;
+  }
+
+  if (restart) {
+    //Reset all values
+    environment.destroy(); //nukes the old environment except state
+    environment.resetScore();
+    createLevelEnvironment(level);
+    //reset mouse constraint
+    updateMouseConstraint();
+    restart = false;
   }
 
   testing();

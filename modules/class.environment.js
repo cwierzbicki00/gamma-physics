@@ -105,6 +105,18 @@ class Environment {
         )
     );
 
+    if (data.vertexColliders) {
+      //Create vertex colliders from the vertex objects supplied in data
+      this.vertexColliders = data.vertexColliders.map(
+        (vertexColliderData) =>
+          new VertexCollider(
+            vertexColliderData,
+            this.scaleFactorX,
+            this.scaleFactorY
+          )
+      );
+    }
+
     //receptacle properties for display
     this.receptacleImgX = data.receptacle.x;
     this.receptacleImgY = data.receptacle.y;
@@ -226,16 +238,17 @@ class Environment {
     if (this.timerActive) {
       this.timeAllowed -= deltaTime / 1000;
       if (this.timeAllowed <= 0 || this.score >= this.pointsRequired) {
+        timeRemainingStat = this.timeAllowed;
         this.timeAllowed = 0;
         this.timerActive = false;
         let canvasContainer = document.getElementById("canvas-container");
         this.popup = new Popup(
           width / 2,
           height / 2,
-          canvasContainer.offsetWidth / 4,
+          canvasContainer.offsetWidth / 2,
           canvasContainer.offsetHeight / 2,
           //Set message as Game Over if time runs out, or set message as Level Finished if score reached
-          this.score >= this.pointsRequired ? "Level Finished" : "Game Over"
+          this.score >= this.pointsRequired ? "Level Complete!" : "Game Over :("
         );
         console.log("Game Over");
         // this.startButtonClicked = false;
@@ -331,7 +344,16 @@ class Environment {
     if (this.platforms) {
       this.platforms.forEach((platform) => platform.display(this));
     }
-    //scoreboard.display();
+
+    if (this.popup) {
+      this.popup.display();
+    }
+
+    if (this.vertexCollider) {
+      this.vertexColliders.forEach((vertexCollider) =>
+        vertexCollider.display()
+      );
+    }
 
     // Display the overlay image
     if (this.overlayImageFg) {
@@ -508,9 +530,12 @@ class Scoreboard {
     rect(0, 0, width, 50);
 
     // Score text
-    textSize(24);
+    textSize(32 * this.environment.scaleFactorX);
     fill(255);
     text(`Score: ${score} / ${goal}`, width / 4, 25);
+
+    //Level text
+    text(`Level: ${level}`, (width / 4) * 2, 25);
 
     // Time remaining text
     text(`Time remaining: ${timeRemaining}s`, (width / 4) * 3, 25);

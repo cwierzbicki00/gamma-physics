@@ -1,10 +1,19 @@
 {
-  "receptacle": { "type": "trashcandebug" },
+  "receptacle": { "type": "trashcan", "x": "315 * 4", "y": "168 * 4", "bg": "../../../assets/sprites/recepticles/trashcan/trashcan_bg.png", "fg": "../../../assets/sprites/recepticles/trashcan/trashcan_fg.png", "collision": "../../../assets/sprites/recepticles/trashcan/trashcan_collision.png" },
   "throwable": { "type": "basketball" },
-  "platforms": [],
-  "pointsRequired": 5,
+  "platforms": [
+    
+  ],
+  "vertexColliders": [
+    [  { "x": "112", "y": "0" },  { "x": "112", "y": "765" },  { "x": "441", "y": "759" },  { "x": "447", "y": "319" },  { "x": "580", "y": "316" },  { "x": "621", "y": "344" },  { "x": "626", "y": "380" },  { "x": "718", "y": "379" },  { "x": "745", "y": "401" },  { "x": "753", "y": "443" },  { "x": "839", "y": "441" },  { "x": "878", "y": "471" },  { "x": "879", "y": "509" },  { "x": "967", "y": "507" },  { "x": "1006", "y": "534" },  { "x": "1009", "y": "571" },  { "x": "1095", "y": "568" },  { "x": "1127", "y": "598" },  { "x": "1135", "y": "761" },  { "x": "1467", "y": "759" },  { "x": "1470", "y": "354" },  { "x": "1269", "y": "352" },  { "x": "1214", "y": "325" },  { "x": "1214", "y": "164" },  { "x": "504", "y": "160" },  { "x": "446", "y": "130" },  { "x": "446", "y": "9" }]
+
+    
+  ],
+  "pointsRequired": 30,
   "timeAllowed":  90,
   "gravity": { "x": 0, "y": 9.8 },
   "wind": { "x": 0, "y": 0 },
-  "backgroundImage": "IMGUR LINK HERE"
+  "backgroundImage": "../../../assets/bg/bg_area1.png",
+  "overlayImageFg": "../../../assets/layout/level1-3/level1-3_tile_layout_fg.png",
+  "overlayImageBg": "../../../assets/layout/level1-3/level1-3_tile_layout_bg.png"
 }

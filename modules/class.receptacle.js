@@ -39,65 +39,14 @@ class Receptacle {
   }
 
   buildTrashcan(scaleFactorX, scaleFactorY) {
-    // const wallThickness = 5 * scaleFactorX;
-    // const centerX = 350 * 4 * scaleFactorX;
-    // const centerY = 104 * 4 * scaleFactorY;
-    // const halfWidth = 75 * scaleFactorX;
-    // const halfHeight = 95 * scaleFactorY;
-    // const trashcanAngle = PI / 24; // Adjust the angle as needed (15 degrees tilt in this example)
-
-    // // Define the trash can walls
-    // const walls = [
-    //   Bodies.rectangle(
-    //     centerX - halfWidth,
-    //     centerY,
-    //     wallThickness,
-    //     halfHeight * 2,
-    //     {
-    //       isStatic: true,
-    //       label: "receptacle",
-    //     }
-    //   ),
-    //   Bodies.rectangle(
-    //     centerX + halfWidth,
-    //     centerY,
-    //     wallThickness,
-    //     halfHeight * 2,
-    //     {
-    //       isStatic: true,
-    //       label: "receptacle",
-    //     }
-    //   ),
-    //   Bodies.rectangle(
-    //     centerX,
-    //     centerY + halfHeight,
-    //     halfWidth * 2 + wallThickness,
-    //     wallThickness,
-    //     {
-    //       isStatic: true,
-    //       label: "receptacle",
-    //     }
-    //   ),
-    // ];
-
-    // // Rotate wall using the trashcanAngle
-    // Matter.Body.rotate(walls[0], -trashcanAngle);
-    // Matter.Body.rotate(walls[1], trashcanAngle);
-
-    // // Add the walls to the world
-    // World.add(world, walls);
-
-    // Store the wall bodies for rendering
-    // this.walls = walls;
-
     let vertices;
 
     if (level == 1) {
       vertices = [
-        { x: 1304 * scaleFactorX, y: 633 * scaleFactorY },
-        { x: 1337 * scaleFactorX, y: 808 * scaleFactorY },
-        { x: 1470 * scaleFactorX, y: 808 * scaleFactorY },
-        { x: 1497 * scaleFactorX, y: 633 * scaleFactorY },
+        { x: 1306 * scaleFactorX, y: 635 * scaleFactorY },
+        { x: 1337 * scaleFactorX, y: 804 * scaleFactorY },
+        { x: 1470 * scaleFactorX, y: 804 * scaleFactorY },
+        { x: 1498 * scaleFactorX, y: 635 * scaleFactorY },
       ];
     } else if (level == 2) {
       vertices = [
@@ -105,6 +54,13 @@ class Receptacle {
         { x: 1325 * scaleFactorX, y: 502 * scaleFactorY },
         { x: 1474 * scaleFactorX, y: 508 * scaleFactorY },
         { x: 1497 * scaleFactorX, y: 335 * scaleFactorY },
+      ];
+    } else if (level == 3) {
+      vertices = [
+        { x: 1164 * scaleFactorX, y: 595 * scaleFactorY },
+        { x: 1193 * scaleFactorX, y: 756 * scaleFactorY },
+        { x: 1332 * scaleFactorX, y: 761 * scaleFactorY },
+        { x: 1359 * scaleFactorX, y: 585 * scaleFactorY },
       ];
     }
 
