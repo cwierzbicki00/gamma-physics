@@ -18,6 +18,7 @@ let engine,
   restart = false,
   timeRemainingStat, //for popup
   throwables,
+  ballButton,
   canvas;
 
 // Fullscreen via javascript API
@@ -238,6 +239,12 @@ async function windowResized() {
   await environment.destroy(); //nukes the old environment except state
 
   resizeCanvas(newCanvasWidth, newCanvasHeight);
+
+  //remove ball button if it exists
+  if (ballButton) {
+    ballButton.remove();
+    ballButton = null;
+  }
 
   environment.updateScaleFactors();
 

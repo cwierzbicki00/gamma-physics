@@ -274,6 +274,56 @@ class Environment {
     Matter.Engine.update(engine);
   }
 
+  // Add the updateBallButton function to the Environment class
+  updateBallButton() {
+    if (
+      this.throwable &&
+      this.throwable.body.position.x > width * 0.5 &&
+      !ballButton
+    ) {
+      console.log("add button");
+      //add a simple button to get the ball back
+      ballButton = createButton("Get Ball Back");
+
+      //set canvas container to parent so button is on top of canvas
+      ballButton.parent("#canvas-container");
+
+      //Set position within canvas container (use canvas container width and height)
+      //get canvas container width
+      let canvasContainer = document.getElementById("canvas-container");
+
+      //Style button to be blue and rounded, looking cool and fun
+      ballButton.style("background-color", "#362162");
+      ballButton.style("border-radius", "8px");
+      ballButton.style("border", "none");
+      ballButton.style("color", "white");
+      ballButton.style("padding", "15px 32px");
+
+      ballButton.style("display", "flex");
+      //make text larger
+      ballButton.style("font-size", "16px");
+      ballButton.style("cursor", "pointer");
+      ballButton.style("z-index", "999");
+
+      //Set position and scale
+      ballButton.position(
+        width / 4.75,
+        height - 100 - this.throwable.radius - 20
+      );
+      //Scale button size w/ scale factors
+      ballButton.style(
+        "transform",
+        "scale(" + this.scaleFactorX * 1.5 + "," + this.scaleFactorY * 1.5 + ")"
+      );
+
+      ballButton.mousePressed(() => {
+        this.throwable.reset();
+        ballButton.remove();
+        ballButton = null;
+      });
+    }
+  }
+
   display() {
     //Display background image
     if (this.backgroundImage) {
@@ -382,6 +432,24 @@ class Environment {
         imageHeight
       );
     }
+
+    //display the barrier line
+    if (this.mouseBarrierActive) {
+      strokeWeight(3);
+      //black color
+      stroke(0);
+      //make it dashed line
+      drawingContext.setLineDash([5, 15]);
+      line(width * 0.5, 0, width * 0.5, height);
+
+      //reset stroke weight, color, and line dash
+      drawingContext.setLineDash([]);
+      strokeWeight(1);
+      stroke(0);
+    }
+
+    // Call updateBallButton() at the end of the display() function
+    this.updateBallButton();
 
     //display score
     this.scoreboard.display();
@@ -492,7 +560,7 @@ class Scoreboard {
       this.startButton.style("right", "0");
       this.startButton.style("width", "100px");
       this.startButton.style("height", "50px");
-      this.startButton.style("z-index", "1");
+      this.startButton.style("z-index", "9999");
 
       if (this.startButton) {
         const verticalCenter = 0;

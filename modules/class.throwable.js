@@ -121,12 +121,12 @@ class Throwable {
 
   // Check if mouse is inside the drag area
   isMouseInsideDragArea() {
-    return (
-      mouseX >= this.dragArea.x &&
-      mouseX <= this.dragArea.x + this.dragArea.width &&
-      mouseY >= this.dragArea.y &&
-      mouseY <= this.dragArea.y + this.dragArea.height
-    );
+    // return (
+    //   mouseX >= this.dragArea.x &&
+    //   mouseX <= this.dragArea.x + this.dragArea.width &&
+    //   mouseY >= this.dragArea.y &&
+    //   mouseY <= this.dragArea.y + this.dragArea.height
+    // );
   }
 
   // Spawn a new ball of the same type
@@ -260,10 +260,17 @@ class Throwable {
     pop();
   }
 
+  // Check if the throwable is within the draggable area
+  isWithinDraggableArea() {
+    console.log(this.body.position.x <= width * 0.5);
+    return this.body.position.x <= width * 0.5;
+  }
+
   // allow user to drag ball if it was clicked on
   mousePressed(environment) {
     if (mConstraint.body == this.body && environment.getBarrierStatus()) {
-      if (this.isMouseInsideDragArea()) {
+      if (this.isWithinDraggableArea()) {
+        //Stop the dragging if it's not in the draggable area
         console.log(mConstraint.body.label);
         this.dragging = true;
         const pos = this.body.position;
@@ -295,10 +302,18 @@ class Throwable {
           Matter.Body.setVelocity(this.body, newVelocity);
         }
       } else {
+        this.dragging = false;
+        // Detach the ball from the mouse constraint
+        mConstraint.constraint.bodyB = null;
         // Clicked outside the draggable area, spawn a new ball
         this.spawnNewBall();
       }
     } else this.dragging = false;
+
+    if (this.dragging && !this.isWithinDraggableArea()) {
+      this.dragging = false;
+      mConstraint.constraint.bodyB = null;
+    }
   }
 
   // recover the throwable from beyond the mouse barrier after N seconds
@@ -335,6 +350,10 @@ class Throwable {
     this.resetTimer = false;
     this.inside = false;
     this.bounceCount = 0;
+    if (ballButton) {
+      ballButton.remove();
+      ballButton = null;
+    }
     console.log("Throwable reset");
   }
 
