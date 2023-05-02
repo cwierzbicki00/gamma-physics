@@ -335,8 +335,8 @@ class Environment {
 
     if (this.overlayImageBg) {
       imageMode(CENTER);
-      let imageWidth = this.overlayImageBg.width * 4 * this.scaleFactorX;
-      let imageHeight = this.overlayImageBg.height * 4 * this.scaleFactorY;
+      let imageWidth = this.overlayImageBg.width * this.scaleFactorX;
+      let imageHeight = this.overlayImageBg.height * this.scaleFactorY;
       image(
         this.overlayImageBg,
         width / 2,
@@ -349,8 +349,8 @@ class Environment {
     //Display receptacles
     if (this.receptacleBg) {
       imageMode(CENTER);
-      let imageWidth = this.receptacleBg.width * 4 * this.scaleFactorX;
-      let imageHeight = this.receptacleBg.height * 4 * this.scaleFactorY;
+      let imageWidth = this.receptacleBg.width * this.scaleFactorX;
+      let imageHeight = this.receptacleBg.height * this.scaleFactorY;
       tint(255, this.receptacleBgOpacity); // Apply the opacity
       image(
         this.receptacleBg,
@@ -373,8 +373,8 @@ class Environment {
 
     if (this.receptacleCollision) {
       imageMode(CENTER);
-      let imageWidth = this.receptacleCollision.width * 4 * this.scaleFactorX;
-      let imageHeight = this.receptacleCollision.height * 4 * this.scaleFactorY;
+      let imageWidth = this.receptacleCollision.width * this.scaleFactorX;
+      let imageHeight = this.receptacleCollision.height * this.scaleFactorY;
 
       image(
         this.receptacleCollision,
@@ -408,8 +408,8 @@ class Environment {
     // Display the overlay image
     if (this.overlayImageFg) {
       imageMode(CENTER);
-      let imageWidth = this.overlayImageFg.width * 4 * this.scaleFactorX;
-      let imageHeight = this.overlayImageFg.height * 4 * this.scaleFactorY;
+      let imageWidth = this.overlayImageFg.width * this.scaleFactorX;
+      let imageHeight = this.overlayImageFg.height * this.scaleFactorY;
       image(
         this.overlayImageFg,
         width / 2,
@@ -421,8 +421,8 @@ class Environment {
     //display front of receptacle
     if (this.receptacleFg) {
       imageMode(CENTER);
-      let imageWidth = this.receptacleFg.width * 4 * this.scaleFactorX;
-      let imageHeight = this.receptacleFg.height * 4 * this.scaleFactorY;
+      let imageWidth = this.receptacleFg.width * this.scaleFactorX;
+      let imageHeight = this.receptacleFg.height * this.scaleFactorY;
 
       image(
         this.receptacleFg,
