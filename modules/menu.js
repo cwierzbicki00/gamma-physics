@@ -257,6 +257,10 @@ async function windowResized() {
 //Physic EDITOR
 let vertices;
 let edit = false;
+//Set edit mode to true if the file is edit.html
+if (window.location.href.includes("edit.html")) {
+  edit = true;
+}
 let index;
 let radius = 10;
 let dragged = false;
@@ -368,5 +372,5 @@ function endTestSection() {
       "*scaleFactorY},";
   }
   s += "];";
-  console.log(s);
+  console.log("Vertex object:" + s);
 }
